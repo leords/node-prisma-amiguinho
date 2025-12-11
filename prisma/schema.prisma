@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  //provider  = "postgresql"
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id      Int     @id @default(autoincrement())
+  nome    String
+  email   String  @unique
+  usuario String  @unique
+  senha   String
+  nivelAcessoId Int
+  status  Boolean @default(true)
+  resetToken     String?  
+  resetExpires   DateTime?
+
+  nivelAcesso NivelAcesso @relation(fields: [nivelAcessoId], references: [id])
+  pedidosDelivery PedidoDelivery[]
+  pedidosExterno  PedidoExterno[]
+  pedidosBalcao   PedidoBalcao[]
+
+  @@map("usuarios")
+}
+
+model NivelAcesso {
+  id     Int    @id @default(autoincrement())
+  nome   String
+  status Boolean @default(true)
+
+  usuarios Usuario[]
+
+  @@map("niveisAcesso")
+  }
+
+model Produto {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  embalagem     String?
+  segmento      String?
+  fornecedor    String?
+  precoVenda    Decimal  @default(0.0)
+  precoCompra   Decimal? @default(0.0)
+  peso          Decimal? @default(0.0)
+  lucro         Float?   @default(0.0)
+  margem        Float?   @default(0.0)
+  quantidade    Int      @default(0)
+  precoUndVenda Decimal    @default(0.0)
+
+  estoque Int @default(0)
+
+  itensPedidoDelivery ItemPedidoDelivery[] @relation("ItemPedidoDeliveryProduto")
+  itensPedidoExterno  ItemPedidoExterno[]  @relation("ItemPedidoExternoProduto")
+  itensPedidoBalcao  ItemPedidoBalcao[]  @relation("ItemPedidoBalcaoProduto")
+
+  @@map("produtos")
+}
+
+model ClienteDelivery {
+  id         Int     @id
+  nome       String
+  telefone   String?
+  endereco   String?
+  numero     Int?
+  bairro     String?
+  cidade     String?
+  referencia String?
+
+  pedidos PedidoDelivery[]
+}
+
+model ClienteExterno {
+  id          Int     @id
+  nome        String
+  cnpj        String
+  cidade      String?
+  endereco    String?
+  telefone    String?
+  vendedor    String?
+  atendimento String?
+  frequencia  String?
+
+  pedidos PedidoExterno[]
+}
+
+model PedidoDelivery {
+  id               Int      @id @default(autoincrement())
+  uuid             String   @unique @default(uuid())
+  clienteId        Int
+  formaPagamentoId Int
+  vendedor         String?
+  total            Float
+  status           String   @default("pendente")
+  data             DateTime @default(now())
+  usuarioId        Int?
+
+  cliente        ClienteDelivery      @relation(fields: [clienteId], references: [id])
+  formaPagamento FormaPagamento       @relation("PedidoDeliveryFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario        Usuario?           @relation(fields: [usuarioId], references: [id])
+  itens          ItemPedidoDelivery[]
+}
+
+model PedidoExterno {
+  id               Int      @id @default(autoincrement())
+  uuid             String   @unique @default(uuid())
+  clienteId        Int
+  formaPagamentoId Int
+  vendedor         String? // vai pegar o vendedor cadastrado no cliente!
+  total            Float
+  status           String   @default("pendente")
+  data             DateTime @default(now())
+  usuarioId        Int?
+
+  cliente        ClienteExterno      @relation(fields: [clienteId], references: [id])
+  formaPagamento FormaPagamento      @relation("PedidoExternoFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario        Usuario?          @relation(fields: [usuarioId], references: [id])
+  itens          ItemPedidoExterno[]
+}
+
+model PedidoBalcao {
+  id               Int      @id @default(autoincrement())
+  uuid             String   @unique @default(uuid())
+  cliente          String?
+  formaPagamentoId Int
+  vendedor         String?
+  total            Float
+  status           String   @default("carregado")
+  data             DateTime @default(now())
+  usuarioId        Int?
+  nomeUsuario      String
+
+
+  formaPagamento FormaPagamento      @relation("PedidoBalcaoFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario        Usuario?          @relation(fields: [usuarioId], references: [id])
+  itens          ItemPedidoBalcao[]
+}
+
+model ItemPedidoBalcao {
+  id         Int   @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+
+  pedido  PedidoBalcao @relation(fields: [pedidoId], references: [id])
+  produto Produto        @relation("ItemPedidoBalcaoProduto", fields: [produtoId], references: [id])
+}
+
+model ItemPedidoDelivery {
+  id         Int   @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+
+  pedido  PedidoDelivery @relation(fields: [pedidoId], references: [id])
+  produto Produto        @relation("ItemPedidoDeliveryProduto", fields: [produtoId], references: [id])
+}
+
+model ItemPedidoExterno {
+  id         Int   @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+
+  pedido  PedidoExterno @relation(fields: [pedidoId], references: [id])
+  produto Produto       @relation("ItemPedidoExternoProduto", fields: [produtoId], references: [id])
+}
+
+model FormaPagamento {
+  id     Int    @id @default(autoincrement())
+  nome   String
+  status String @default("ATIVO")
+
+  pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
+  pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
+  pedidosBalcao  PedidoBalcao[]  @relation("PedidoBalcaoFormaPagamento")
+
+  @@map("formaPagamentos")
+}
