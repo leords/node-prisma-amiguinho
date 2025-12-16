@@ -127,6 +127,7 @@ export const ERRO_MSG_PEDIDOS = {
   LISTA_PEDIDOS: 'Lista de pedido é obrigatória',
   SETOR: 'Setor invalido. Use delivery, externo ou balcao',
   CAMPO_AUSENTE: 'Campo obrigatório ausente em algum item',
+  VENDEDOR_BALCAO: 'Vendedor invalido. Use b1, b2 ou b3',
 }
 export const SUCESSO_MSG_PEDIDOS = {
   CRIADO: 'Pedido criado com sucesso',

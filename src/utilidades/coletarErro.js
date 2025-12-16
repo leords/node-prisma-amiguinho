@@ -410,7 +410,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo pedidos //SINCRONIZACAO
+  // Modelo pedidos
   if (error.message === ERRO_MSG_PEDIDOS.NAO_ENCONTRADO) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
@@ -445,6 +445,12 @@ function coletarErro(error) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
       mensagem: ERRO_MSG_PEDIDOS.CAMPO_AUSENTE,
+    }
+  }
+  if (error.message === ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO) {
+    return {
+      status: HTTP_STATUS_CODES.BAD_REQUEST,
+      mensagem: ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO,
     }
   }
   if (error.message === SUCESSO_MSG_PEDIDOS.CRIADO) {
