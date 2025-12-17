@@ -17,6 +17,24 @@ class BuscarFechamentoBalcaoDiaServico {
         },
       })
 
+      const totalInterno = await prismaCliente.pedidoBalcao.aggregate({
+        where: {
+          data: {
+            gte: inicio,
+            lte: fim,
+          },
+          vendedor,
+          formaPagamento: {
+            nome: {
+              notIn: ['A VISTA', 'CARTÃO', 'PIX', 'CHEQUE', 'DINHEIRO'],
+            },
+          },
+        },
+        _sum: {
+          total: true,
+        },
+      })
+
       // buscando formas de pagamentos por grupo, via ID
       const totais = await prismaCliente.pedidoBalcao.groupBy({
         by: ['formaPagamentoId'],
@@ -39,30 +57,28 @@ class BuscarFechamentoBalcaoDiaServico {
 
       // criando uma lista com as formas de pagamentos que aparecem nos pedidos agrupados acima.
       const formasPagamento = await prismaCliente.formaPagamento.findMany({
-        where: {
-          id: {
-            //Cria um array de IDs vindos do groupBy
-            in: totais.map((t) => t.formaPagamentoId),
-          },
+        select: {
+          id: true,
+          nome: true,
         },
       })
 
-      const resultado = totais.map((t) => {
-        // Encontra a forma de pagamento correspondente ao ID
+      const resultado = totais.reduce((acc, t) => {
         const forma = formasPagamento.find((f) => f.id === t.formaPagamentoId)
 
-        return {
-          formaPagamentoId: t.formaPagamentoId,
-          formaPagamento: forma?.nome ?? 'Não informado',
-          total: t._sum.total || 0,
-        }
-      })
+        const chave =
+          forma?.nome?.toLowerCase()?.replace(/\s+/g, '_') ?? 'nao_informado'
+
+        acc[chave] = t._sum.total ?? 0
+        return acc
+      }, {})
 
       // criando o retorno
 
       const resultadoFinal = {
         resultado: resultado,
         total: total._sum.total || 0,
+        interno: totalInterno._sum.total || 0,
       }
 
       return resultadoFinal
