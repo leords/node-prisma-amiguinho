@@ -153,6 +153,7 @@ model ItemPedidoBalcao {
   valorUnit  Float
   valorTotal Float
 
+
   pedido  PedidoBalcao @relation(fields: [pedidoId], references: [id])
   produto Produto        @relation("ItemPedidoBalcaoProduto", fields: [produtoId], references: [id])
 }
