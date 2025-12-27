@@ -15,6 +15,7 @@ class TopProdutosServico {
                 gte: new Date(inicio),
                 lte: new Date(fim),
               },
+              status: 'carregado',
             },
           },
 
@@ -73,6 +74,7 @@ class TopProdutosServico {
                 gte: new Date(inicio),
                 lte: new Date(fim),
               },
+              status: 'entregue',
             },
           },
 
@@ -133,6 +135,7 @@ class TopProdutosServico {
                 gte: new Date(inicio),
                 lte: new Date(fim),
               },
+              status: 'entregue',
             },
           },
 

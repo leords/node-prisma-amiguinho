@@ -1,0 +1,37 @@
+import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { TotalPorFormaPagamentoServico } from '../../servico/pedido/totalPorFormaPagamentoServico.js'
+import { coletarErro } from '../../utilidades/coletarErro.js'
+
+class TotalPorFormaPagamentoControlador {
+  async tratar(req, res) {
+    const { setor } = req.params
+    const { dataInicio, dataFim } = req.query
+
+    try {
+      if (!setor) {
+        throw new Error('Setor é obrigatório')
+      }
+      const opcoesSetor = ['delivery', 'externo', 'balcao']
+      if (!opcoesSetor.includes(setor)) {
+        throw new Error('Setor inválido')
+      }
+      if (!dataInicio && !dataFim) {
+        throw new Error('Data de início e fim são obrigatórios')
+      }
+
+      const inicio = new Date(`${dataInicio}T00:00:00-03:00`)
+      const fim = new Date(`${dataFim}T23:59:59.999-03:00`)
+
+      const servico = new TotalPorFormaPagamentoServico()
+      const resultado = await servico.executar(setor, inicio, fim)
+
+      return res.status(HTTP_STATUS_CODES.OK).json(resultado)
+    } catch (error) {
+      console.log(error)
+      const { mensagem, status } = coletarErro(error)
+      return res.status(status).json({ mensagem })
+    }
+  }
+}
+
+export { TotalPorFormaPagamentoControlador }

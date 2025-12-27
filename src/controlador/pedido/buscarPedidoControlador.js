@@ -14,8 +14,8 @@ class BuscarPedidoControlador {
       ? Number(req.query.formaPagamento)
       : undefined
     // Mantenho as datas vindos como strings, vem no formato 2025-12-14
-    const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
-    const dataFim = req.query.dataFim ? req.query.dataFim : undefined
+    const dataInicio = req.query.dataInicio
+    const dataFim = req.query.dataFim
     const usuarioId = req.query.usuarioId
       ? Number(req.query.usuarioId)
       : undefined

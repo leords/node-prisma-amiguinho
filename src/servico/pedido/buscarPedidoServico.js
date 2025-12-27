@@ -11,6 +11,9 @@ class BuscarPedidoServico {
     dataFim,
     usuarioId
   ) {
+    console.log('Data inicio: ', dataInicio)
+    console.log('Data fim: ', dataFim)
+
     const query = {}
 
     // Montando o query conforme a existencia dos valores
@@ -33,10 +36,25 @@ class BuscarPedidoServico {
       }
     }
 
+    const queryDelivery = {
+      ...query,
+      status: 'entregue',
+    }
+
+    const queryExterno = {
+      ...query,
+      status: 'entregue',
+    }
+
+    const queryBalcao = {
+      ...query,
+      status: 'carregado',
+    }
+
     try {
       if (setor === 'delivery') {
         return await prismaCliente.pedidoDelivery.findMany({
-          where: query,
+          where: queryDelivery,
           include: {
             itens: true,
             cliente: true,
@@ -47,7 +65,7 @@ class BuscarPedidoServico {
 
       if (setor === 'externo') {
         return await prismaCliente.pedidoExterno.findMany({
-          where: query,
+          where: queryExterno,
           include: {
             itens: true,
             cliente: true,
@@ -58,7 +76,7 @@ class BuscarPedidoServico {
 
       if (setor === 'balcao') {
         return await prismaCliente.pedidoBalcao.findMany({
-          where: query,
+          where: queryBalcao,
           include: {
             itens: true,
             formaPagamento: true,
@@ -70,7 +88,7 @@ class BuscarPedidoServico {
       const [pedidosDelivery, pedidosExterno, pedidosBalcao] =
         await Promise.all([
           prismaCliente.pedidoDelivery.findMany({
-            where: query,
+            where: queryDelivery,
             include: {
               itens: true,
               cliente: true,
@@ -78,7 +96,7 @@ class BuscarPedidoServico {
             },
           }),
           prismaCliente.pedidoExterno.findMany({
-            where: query,
+            where: queryExterno,
             include: {
               itens: true,
               cliente: true,
@@ -86,7 +104,7 @@ class BuscarPedidoServico {
             },
           }),
           prismaCliente.pedidoBalcao.findMany({
-            where: query,
+            where: queryBalcao,
             include: {
               itens: true,
               formaPagamento: true,

@@ -3,7 +3,6 @@ import prismaCliente from '../../prisma/index.js'
 class TicketMedioServico {
   async executar(setor, vendedor, dataInicio, dataFim) {
     try {
-      console.log('setor: ', setor)
       const query = {}
 
       if (vendedor) {
@@ -17,6 +16,7 @@ class TicketMedioServico {
       }
 
       if (setor === 'delivery') {
+        query.status = 'entregue'
         return await prismaCliente.pedidoDelivery.aggregate({
           where: query,
           _avg: {
@@ -26,6 +26,7 @@ class TicketMedioServico {
       }
 
       if (setor === 'externo') {
+        query.status = 'entregue'
         return await prismaCliente.pedidoExterno.aggregate({
           where: query,
           _avg: {
@@ -35,8 +36,7 @@ class TicketMedioServico {
       }
 
       if (setor === 'balcao') {
-        console.log('setor correto')
-
+        query.status = 'carregado'
         const [avgResultado, quantidadePedidos] = await Promise.all([
           prismaCliente.pedidoBalcao.aggregate({
             where: query,
