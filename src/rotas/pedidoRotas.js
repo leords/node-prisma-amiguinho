@@ -10,6 +10,7 @@ import { CancelarPedidoControlador } from '../controlador/pedido/cancelarPedidoC
 import { QuantidadePedidoControlador } from '../controlador/pedido/quantidadePedidoControlador.js'
 import { TotalVendasPeriodoControlador } from '../controlador/pedido/totalVendasPeriodoControlador.js'
 import { TotalPorFormaPagamentoControlador } from '../controlador/pedido/totalPorFormaPagamentoControlador.js'
+import { RelatorioMixProdutosControlador } from '../controlador/pedido/relatorioMixProdutosControlador.js'
 
 const rotas = Router()
 
@@ -71,6 +72,12 @@ rotas.get(
   '/total-por-forma-pagamento/:setor',
   //autenticadorMiddleware,
   new TotalPorFormaPagamentoControlador().tratar
+)
+
+rotas.get(
+  '/relatorio-mix-produtos',
+  //autenticadorMiddleware,
+  new RelatorioMixProdutosControlador().tratar
 )
 
 export { rotas as pedidoRotas }
