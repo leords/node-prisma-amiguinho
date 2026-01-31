@@ -1,55 +1,178 @@
 import prismaCliente from '../../prisma/index.js'
 
 class RelatorioMixProdutosServico {
-  async executar() {
+  async executar(setor, vendedor, dataInicio, dataFim) {
+
     try {
+    // setor balcao
+      if(setor === 'balcao') {
+            // 1️⃣ Busca todos os pedidos de balcão
+            // incluindo seus itens e produtos relacionados
+            const pedidos = await prismaCliente.pedidoBalcao.findMany({
+              where: {
+                vendedor: vendedor,
+                data: {
+                  gte: dataInicio,
+                  lte: dataFim,
+                },
+              },
+              include: {
+                itens: {
+                  include: {
+                    produto: true,
+                  },
+                },
+              },
+            });
 
-    // 1️⃣ Busca todos os pedidos de balcão
-    // incluindo seus itens e produtos relacionados
-    const pedidos = await prismaCliente.pedidoBalcao.findMany({
-      include: {
-        itens: {
-          include: {
-            produto: true,
-          },
-        },
-      },
-    });
-
-    const mixProdutos = {};
+            const mixProdutos = {};
 
 
-    // 2️⃣ Percorre cada pedido
-    for (const pedido of pedidos) {
-      //Produtos que saíram neste pedido
-      const produtosDoPedido = pedido.itens.map(item => item.produto);
+            // 2️⃣ Percorre cada pedido
+            for (const pedido of pedidos) {
+              //Produtos que saíram neste pedido
+              const produtosDoPedido = pedido.itens.map(item => item.produto);
 
 
-    // 3️⃣ Cria o cruzamento dos produtos
-      for (let i = 0; i < produtosDoPedido.length; i++) {
-        for (let j = 0; j < produtosDoPedido.length; j++) {
+            // 3️⃣ Cria o cruzamento dos produtos
+              for (let i = 0; i < produtosDoPedido.length; i++) {
+                for (let j = 0; j < produtosDoPedido.length; j++) {
 
-          if (i === j) continue; // Ignora o mesmo produto
+                  if (i === j) continue; // Ignora o mesmo produto
 
-          const produtoBase = produtosDoPedido[i].nome;
-          const produtoRelacionado = produtosDoPedido[j].nome;
+                  const produtoBase = produtosDoPedido[i].nome;
+                  const produtoRelacionado = produtosDoPedido[j].nome;
 
-          //Inicializa estruturas se necessário
-          if (!mixProdutos[produtoBase]) {
-            mixProdutos[produtoBase] = {};
-          }
+                  //Inicializa estruturas se necessário
+                  if (!mixProdutos[produtoBase]) {
+                    mixProdutos[produtoBase] = {};
+                  }
 
-          if (!mixProdutos[produtoBase][produtoRelacionado]) {
-            mixProdutos[produtoBase][produtoRelacionado] = 0;
-          }
+                  if (!mixProdutos[produtoBase][produtoRelacionado]) {
+                    mixProdutos[produtoBase][produtoRelacionado] = 0;
+                  }
 
-          //Incrementa ocorrência, (1 por pedido).
-          mixProdutos[produtoBase][produtoRelacionado]++;
-        }
+                  //Incrementa ocorrência, (1 por pedido).
+                  mixProdutos[produtoBase][produtoRelacionado]++;
+                }
+              }
+            }
+
+          return mixProdutos;
       }
-    }
+  // setor delivery
+      if(setor === 'delivery') {
+            // 1️⃣ Busca todos os pedidos de balcão
+          // incluindo seus itens e produtos relacionados
+          const pedidos = await prismaCliente.pedidoDelivery.findMany({
+                  where: {
+              vendedor: vendedor,
+              data: {
+                gte: dataInicio,
+                lte: dataFim,
+              },
+            },
+            include: {
+              itens: {
+                include: {
+                  produto: true,
+                },
+              },
+            },
+          });
 
-    return mixProdutos;
+          const mixProdutos = {};
+
+
+          // 2️⃣ Percorre cada pedido
+          for (const pedido of pedidos) {
+            //Produtos que saíram neste pedido
+            const produtosDoPedido = pedido.itens.map(item => item.produto);
+
+
+          // 3️⃣ Cria o cruzamento dos produtos
+            for (let i = 0; i < produtosDoPedido.length; i++) {
+              for (let j = 0; j < produtosDoPedido.length; j++) {
+
+                if (i === j) continue; // Ignora o mesmo produto
+
+                const produtoBase = produtosDoPedido[i].nome;
+                const produtoRelacionado = produtosDoPedido[j].nome;
+
+                //Inicializa estruturas se necessário
+                if (!mixProdutos[produtoBase]) {
+                  mixProdutos[produtoBase] = {};
+                }
+
+                if (!mixProdutos[produtoBase][produtoRelacionado]) {
+                  mixProdutos[produtoBase][produtoRelacionado] = 0;
+                }
+
+                //Incrementa ocorrência, (1 por pedido).
+                mixProdutos[produtoBase][produtoRelacionado]++;
+              }
+            }
+          }
+
+          return mixProdutos;
+      }
+// setor externo
+      if(setor === 'externo') {
+          // 1️⃣ Busca todos os pedidos de balcão
+          // incluindo seus itens e produtos relacionados
+          const pedidos = await prismaCliente.pedidoExterno.findMany({
+                  where: {
+              vendedor: vendedor,
+              data: {
+                gte: dataInicio,
+                lte: dataFim,
+              },
+            },
+            include: {
+              itens: {
+                include: {
+                  produto: true,
+                },
+              },
+            },
+          });
+
+          const mixProdutos = {};
+
+
+          // 2️⃣ Percorre cada pedido
+          for (const pedido of pedidos) {
+            //Produtos que saíram neste pedido
+            const produtosDoPedido = pedido.itens.map(item => item.produto);
+
+
+          // 3️⃣ Cria o cruzamento dos produtos
+            for (let i = 0; i < produtosDoPedido.length; i++) {
+              for (let j = 0; j < produtosDoPedido.length; j++) {
+
+                if (i === j) continue; // Ignora o mesmo produto
+
+                const produtoBase = produtosDoPedido[i].nome;
+                const produtoRelacionado = produtosDoPedido[j].nome;
+
+                //Inicializa estruturas se necessário
+                if (!mixProdutos[produtoBase]) {
+                  mixProdutos[produtoBase] = {};
+                }
+
+                if (!mixProdutos[produtoBase][produtoRelacionado]) {
+                  mixProdutos[produtoBase][produtoRelacionado] = 0;
+                }
+
+                //Incrementa ocorrência, (1 por pedido).
+                mixProdutos[produtoBase][produtoRelacionado]++;
+              }
+            }
+          }
+
+          return mixProdutos;
+      }
+
     } catch (error) {
       throw error
     }

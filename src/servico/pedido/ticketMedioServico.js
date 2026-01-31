@@ -1,17 +1,19 @@
 import prismaCliente from '../../prisma/index.js'
 
 class TicketMedioServico {
-  async executar(setor, vendedor, dataInicio, dataFim) {
+  async executar(setor, vendedor, inicio, fim) {
+
+
     try {
       const query = {}
 
       if (vendedor) {
         query.vendedor = vendedor
       }
-      if (dataInicio && dataFim) {
+      if (inicio && fim) {
         query.data = {
-          gte: dataInicio,
-          lte: dataFim,
+          gte: inicio,
+          lte: fim,
         }
       }
 

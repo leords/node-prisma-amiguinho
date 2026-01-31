@@ -1,7 +1,7 @@
 import prismaCliente from '../../prisma/index.js'
 
 class TotalPorFormaPagamentoServico {
-  async executar(setor, inicio, fim) {
+  async executar(setor, vendedor, inicio, fim) {
     try {
       //-----------------------
       // BALCÃO
@@ -9,6 +9,7 @@ class TotalPorFormaPagamentoServico {
       if (setor === 'balcao') {
         const total = await prismaCliente.pedidoBalcao.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -21,6 +22,7 @@ class TotalPorFormaPagamentoServico {
 
         const totalInterno = await prismaCliente.pedidoBalcao.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -40,6 +42,7 @@ class TotalPorFormaPagamentoServico {
         const totais = await prismaCliente.pedidoBalcao.groupBy({
           by: ['formaPagamentoId'],
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -91,6 +94,7 @@ class TotalPorFormaPagamentoServico {
       if (setor === 'delivery') {
         const total = await prismaCliente.pedidoDelivery.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -103,6 +107,7 @@ class TotalPorFormaPagamentoServico {
 
         const totalInterno = await prismaCliente.pedidoDelivery.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -122,6 +127,7 @@ class TotalPorFormaPagamentoServico {
         const totais = await prismaCliente.pedidoDelivery.groupBy({
           by: ['formaPagamentoId'],
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -173,6 +179,7 @@ class TotalPorFormaPagamentoServico {
       if (setor === 'externo') {
         const total = await prismaCliente.pedidoExterno.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -185,6 +192,7 @@ class TotalPorFormaPagamentoServico {
 
         const totalInterno = await prismaCliente.pedidoExterno.aggregate({
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,
@@ -204,6 +212,7 @@ class TotalPorFormaPagamentoServico {
         const totais = await prismaCliente.pedidoExterno.groupBy({
           by: ['formaPagamentoId'],
           where: {
+            vendedor: vendedor || undefined,
             data: {
               gte: inicio,
               lte: fim,

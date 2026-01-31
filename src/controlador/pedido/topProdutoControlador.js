@@ -5,7 +5,8 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class TopProdutoControlador {
   async tratar(req, res) {
     const { setor } = req.params
-    const { dataInicio, dataFim } = req.query
+    const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
+    const dataFim = req.query.dataFim ? req.query.dataFim : undefined
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
     const quantidade = req.query.quantidade
       ? Number(req.query.quantidade)
@@ -13,8 +14,6 @@ class TopProdutoControlador {
 
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
-
-      console.log('datas ', dataInicio, dataFim)
 
       if (!setor) {
         throw new Error('Setor é obrigatório')
@@ -44,8 +43,8 @@ class TopProdutoControlador {
         throw new Error('Quantidade deve ser um número')
       }
 
-      const fim = new Date(`${dataFim}T23:59:59.999-03:00`)
-      const inicio = new Date(`${dataInicio}T00:00:00-03:00`)
+      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
+      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
 
       const servico = new TopProdutosServico()
       const resultado = await servico.executar(

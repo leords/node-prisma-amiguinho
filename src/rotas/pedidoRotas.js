@@ -51,7 +51,7 @@ rotas.get(
 )
 
 rotas.patch(
-  '/cancelar-pedido/:setor',
+  '/cancelar-pedido/:setor/:id',
   //autenticadorMiddleware,
   new CancelarPedidoControlador().tratar
 )
@@ -75,7 +75,7 @@ rotas.get(
 )
 
 rotas.get(
-  '/relatorio-mix-produtos',
+  '/relatorio-mix-produtos/:setor',
   //autenticadorMiddleware,
   new RelatorioMixProdutosControlador().tratar
 )

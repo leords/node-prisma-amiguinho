@@ -1,7 +1,7 @@
 import prismaCliente from '../../prisma/index.js'
 
 class QuantidadePedidoServico {
-  async executar(setor, dataInicio, dataFim) {
+  async executar(setor, vendedor, dataInicio, dataFim) {
     try {
       // ------------------------------------
       // SETOR BALCAO
@@ -11,6 +11,7 @@ class QuantidadePedidoServico {
         const quantidadePedidos = await prismaCliente.pedidoBalcao.groupBy({
           by: ['vendedor'],
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -39,6 +40,7 @@ class QuantidadePedidoServico {
         const quantidadePedidos = await prismaCliente.pedidoDelivery.groupBy({
           by: ['vendedor'],
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -67,6 +69,7 @@ class QuantidadePedidoServico {
         const quantidadePedidos = await prismaCliente.pedidoExterno.groupBy({
           by: ['vendedor'],
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,

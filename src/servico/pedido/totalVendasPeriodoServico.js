@@ -1,7 +1,7 @@
 import prismaCliente from '../../prisma/index.js'
 
 class TotalVendasPeriodoServico {
-  async executar(setor, dataInicio, dataFim) {
+  async executar(setor, vendedor, dataInicio, dataFim) {
     try {
       // ------------------------------------
       // SETOR BALCAO
@@ -12,6 +12,7 @@ class TotalVendasPeriodoServico {
             total: true,
           },
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -21,6 +22,7 @@ class TotalVendasPeriodoServico {
 
         const quantidadePedidos = await prismaCliente.pedidoBalcao.count({
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -44,6 +46,7 @@ class TotalVendasPeriodoServico {
             total: true,
           },
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -54,6 +57,7 @@ class TotalVendasPeriodoServico {
         const quantidadePedidos = await prismaCliente.pedidoDelivery.count({
           where: {
             data: {
+              vendedor: vendedor,
               gte: dataInicio,
               lte: dataFim,
             },
@@ -76,6 +80,7 @@ class TotalVendasPeriodoServico {
             total: true,
           },
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,
@@ -85,6 +90,7 @@ class TotalVendasPeriodoServico {
 
         const quantidadePedidos = await prismaCliente.pedidoExterno.count({
           where: {
+            vendedor: vendedor,
             data: {
               gte: dataInicio,
               lte: dataFim,

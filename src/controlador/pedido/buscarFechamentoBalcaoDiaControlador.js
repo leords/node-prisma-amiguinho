@@ -25,8 +25,8 @@ class BuscarFechamentoBalcaoDiaControlador {
         throw new Error('Vendedor inválido, deve ser b1, b2 ou b3')
       }
 
-      const inicio = new Date(`${data}T00:00:00-03:00`)
-      const fim = new Date(`${data}T23:59:59.999-03:00`)
+      const inicio = data ? new Date(`${data}T00:00:00-03:00`) : undefined
+      const fim = data ? new Date(`${data}T23:59:59.999-03:00`) : undefined
 
       const servico = new BuscarFechamentoBalcaoDiaServico()
       const resultado = await servico.executar(inicio, fim, vendedor)

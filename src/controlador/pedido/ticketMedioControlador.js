@@ -5,9 +5,9 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class TicketMedioControlador {
   async tratar(req, res) {
     const setor = req.params.setor ? req.params.setor : undefined
-    const vendedor = req.params.vendedor ? req.params.vendedor : undefined
-    const dataInicio = req.params.data ? req.params.data : undefined
-    const dataFim = req.params.data ? req.params.data : undefined
+    const vendedor = req.query.vendedor ? req.query.vendedor : undefined
+    const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
+    const dataFim = req.query.dataFim ? req.query.dataFim : undefined
 
     console.log('Setor ainda no controlador: ', setor)
 
@@ -27,12 +27,17 @@ class TicketMedioControlador {
         throw new Error('Data inválida')
       }
 
+
+      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
+      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
+
+
       const servico = new TicketMedioServico()
       const resultado = await servico.executar(
         setor,
         vendedor,
-        dataInicio,
-        dataFim
+        inicio,
+        fim
       )
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)

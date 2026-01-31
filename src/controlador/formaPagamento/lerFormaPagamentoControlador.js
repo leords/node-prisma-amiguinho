@@ -21,7 +21,7 @@ class LerFormaPagamentoControlador {
         throw new Error(ERRO_MSG_FORMA.TIPO_SOLICITANTE)
       }
 
-      const servico = new LerFormaPagamentoServico()
+      const servico = new LerFormaPagamentoServico();
 
       if (solicitante === 'BALCAO') {
         const resultado = await servico.balcao(status)

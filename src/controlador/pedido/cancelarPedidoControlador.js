@@ -5,7 +5,7 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class CancelarPedidoControlador {
   async tratar(req, res) {
     const { setor } = req.params
-    const id = Number(req.body.id)
+    const id = Number(req.params.id)
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 

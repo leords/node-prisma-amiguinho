@@ -15,6 +15,9 @@ class BuscarFechamentoBalcaoDiaServico {
         _sum: {
           total: true,
         },
+        _count: {
+          id: true,
+        },
       })
 
       const totalInterno = await prismaCliente.pedidoBalcao.aggregate({
@@ -79,6 +82,7 @@ class BuscarFechamentoBalcaoDiaServico {
         resultado: resultado,
         total: total._sum.total || 0,
         interno: totalInterno._sum.total || 0,
+        quantidade: total._count.id || 0,
       }
 
       return resultadoFinal

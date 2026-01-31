@@ -5,7 +5,8 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class LinhaTemporalControlador {
   async tratar(req, res) {
     const { setor } = req.params
-    const { dataInicio, dataFim } = req.query
+    const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
+    const dataFim = req.query.dataFim ? req.query.dataFim : undefined
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
 
     try {
@@ -30,8 +31,8 @@ class LinhaTemporalControlador {
         throw new Error('Data de fim deve ser texto')
       }
 
-      const inicio = new Date(`${dataInicio}T00:00:00-03:00`)
-      const fim = new Date(`${dataFim}T23:59:59.999-03:00`)
+      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
+      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
 
       const servico = new LinhaTemporalServico()
       const resultado = await servico.executar(setor, inicio, fim, vendedor)

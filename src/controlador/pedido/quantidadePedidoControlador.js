@@ -5,7 +5,10 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class QuantidadePedidoControlador {
   async tratar(req, res) {
     const { setor } = req.params
-    const { dataInicio, dataFim } = req.query
+    const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
+    const dataFim = req.query.dataFim ? req.query.dataFim : undefined
+    const vendedor = req.query.vendedor ? req.query.vendedor : undefined
+
 
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
@@ -14,6 +17,9 @@ class QuantidadePedidoControlador {
       }
       if (!opcoesSetor.includes(setor)) {
         throw new Error('Setor inválido')
+      }
+      if (vendedor && typeof vendedor !== 'string') {
+        throw new Error('Vendedor deve ser texto')
       }
       if (!dataInicio && !dataFim) {
         throw new Error('Data de início e fim são obrigatórios')
@@ -25,11 +31,11 @@ class QuantidadePedidoControlador {
         throw new Error('Data de fim deve ser texto')
       }
 
-      const inicio = new Date(`${dataInicio}T00:00:00-03:00`)
-      const fim = new Date(`${dataFim}T23:59:59.999-03:00`)
+      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
+      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
 
       const servico = new QuantidadePedidoServico()
-      const resultado = await servico.executar(setor, inicio, fim)
+      const resultado = await servico.executar(setor, vendedor, inicio, fim)
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {

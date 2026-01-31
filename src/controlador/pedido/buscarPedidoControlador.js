@@ -56,8 +56,8 @@ class BuscarPedidoControlador {
       }
 
       // transformo elas em ISO manualmente. desta forma consigo pegar o intervalor do dia inteiro.
-      const inicio = new Date(`${dataInicio}T00:00:00-03:00`)
-      const fim = new Date(`${dataFim}T23:59:59.999-03:00`)
+      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
+      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
 
       const servico = new BuscarPedidoServico()
       const resultado = await servico.executar(
