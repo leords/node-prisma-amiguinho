@@ -11,8 +11,6 @@ class BuscarPedidoServico {
     dataFim,
     usuarioId
   ) {
-    console.log('Data inicio: ', dataInicio)
-    console.log('Data fim: ', dataFim)
 
     const query = {}
 

@@ -1,5 +1,5 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
-import { RelatorioMixProdutosServico } from '../../servico/pedido/relatorioMixProdutosServico.js'
+import { RelatorioMixProdutosServico } from '../../servico/pedido/relatorioMixProdutos/relatorioMixProdutosServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class RelatorioMixProdutosControlador {
@@ -11,7 +11,7 @@ class RelatorioMixProdutosControlador {
 
     try {
       
-      const opcoesSetor = ['delivery', 'externo', 'balcao']
+      const opcoesSetor = ['delivery', 'externo', 'balcao', 'geral']
 
       if (setor && typeof setor !== 'string' && !opcoesSetor.includes(setor)) {
         throw new Error('Setor inválido')

@@ -3,9 +3,11 @@ import prismaCliente from '../../prisma/index.js'
 class TotalVendasPeriodoServico {
   async executar(setor, vendedor, dataInicio, dataFim) {
     try {
+      
       // ------------------------------------
       // SETOR BALCAO
       // ------------------------------------
+
       if (setor === 'balcao') {
         const totalVendas = await prismaCliente.pedidoBalcao.aggregate({
           _sum: {

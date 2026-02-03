@@ -1,5 +1,5 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
-import { QuantidadePedidoServico } from '../../servico/pedido/quantidadePedidoServico.js'
+import { QuantidadePedidoServico } from '../../servico/pedido/quantidadePedido/quantidadePedidoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class QuantidadePedidoControlador {
@@ -11,7 +11,7 @@ class QuantidadePedidoControlador {
 
 
     try {
-      const opcoesSetor = ['delivery', 'externo', 'balcao']
+      const opcoesSetor = ['delivery', 'externo', 'balcao', 'geral']
       if (!setor) {
         throw new Error('Setor é obrigatório')
       }
