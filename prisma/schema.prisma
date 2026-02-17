@@ -193,3 +193,28 @@ model FormaPagamento {
 
   @@map("formaPagamentos")
 }
+
+model Fechamento {
+  id        Int      @id @default(autoincrement())
+  data      DateTime @default(now())
+  setor    String    // balcao | delivery | externo
+  vendedor String
+  status    String   @default("aberto") // aberto | fechado | cancelado
+  totalSistema Float  // total calculado pelos pedidos
+  totalInformado Float // total contado no caixa
+  diferenca Float
+  
+  movimentacoes          MovimentacaoManual[]
+}
+
+model MovimentacaoManual {
+  id            Int      @id @default(autoincrement())
+  data     DateTime @default(now())
+  fechamentoId  Int
+  tipo          String   // entrada | saida
+  descricao     String
+  valor         Float
+
+  fechamento    Fechamento @relation(fields: [fechamentoId], references: [id])
+}
+
