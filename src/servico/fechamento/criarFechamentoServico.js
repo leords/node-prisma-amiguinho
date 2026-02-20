@@ -1,13 +1,9 @@
 import prismaCliente from "../../prisma/index.js"
 
 class CriarFechamentoServico {
-    async executar(setor, vendedor, totalSistema, totalInformado, diferenca) {
+    async executar(setor, vendedor) {
         try {
-
             const data = new Date()
-
-            //const dataInicio = data ? new Date(`${data}T00:00:00-03:00`) : undefined
-            //const dataFim = data ? new Date(`${data}T23:59:59.999-03:00`) : undefined
 
             const dataInicio = new Date(data)
             dataInicio.setHours(0, 0, 0, 0)
@@ -34,10 +30,7 @@ class CriarFechamentoServico {
             return await prismaCliente.fechamento.create({
                 data: {
                     setor,
-                    vendedor,
-                    totalSistema,
-                    totalInformado,
-                    diferenca
+                    vendedor
                 }
              })
              

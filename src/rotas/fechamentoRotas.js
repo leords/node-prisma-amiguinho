@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { CriarFechamentoControlador } from "../controlador/fechamendo/criarFechamentoControlador.js";
-import { BuscarDiferencasFechamentoControlador } from "../controlador/fechamendo/buscarDiferencasFechamentoControlador.js";
-import { EditarFechamentoControlador } from "../controlador/fechamendo/editarFechamentoControlador.js";
-import { DeletarFechamentoControlador } from "../controlador/fechamendo/deletarFechamentoControlador.js";
-import { BuscarFechamentoControlador } from "../controlador/fechamendo/buscarFechamentoControlador.js";
+import { CriarFechamentoControlador } from "../controlador/fechamento/criarFechamentoControlador.js";
+import { BuscarDiferencasFechamentoControlador } from "../controlador/fechamento/buscarDiferencasFechamentoControlador.js";
+import { EditarFechamentoControlador } from "../controlador/fechamento/editarFechamentoControlador.js";
+import { DeletarFechamentoControlador } from "../controlador/fechamento/deletarFechamentoControlador.js";
+import { BuscarFechamentoControlador } from "../controlador/fechamento/buscarFechamentoControlador.js";
 
 
 const rotas = Router();

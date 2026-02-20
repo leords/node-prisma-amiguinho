@@ -200,9 +200,9 @@ model Fechamento {
   setor    String    // balcao | delivery | externo
   vendedor String
   status    String   @default("aberto") // aberto | fechado | cancelado
-  totalSistema Float  // total calculado pelos pedidos
-  totalInformado Float // total contado no caixa
-  diferenca Float
+  totalSistema Float  @default(0) // total calculado pelos pedidos
+  totalInformado Float @default(0) // total contado no caixa
+  diferenca Float @default(0)
   
   movimentacoes          MovimentacaoManual[]
 }

@@ -15,7 +15,7 @@ class BuscarFechamentoServico {
             });
 
             if(!resultado) {
-                throw new Error('Nenhum fechamento encontrado')
+                return null
             }
 
             return resultado
