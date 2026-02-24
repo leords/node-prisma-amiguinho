@@ -18,7 +18,7 @@ class DeletarMovimentacaoServico {
                 "Movimentação não encontrada",
                 HTTP_STATUS_CODES.NOT_FOUND,
                 "MOVIMENTACAO_NOT_FOUND"
-  )
+                )
             }
 
             const resultado = await prismaCliente.movimentacaoManual.delete({

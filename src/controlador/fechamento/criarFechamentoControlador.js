@@ -6,7 +6,7 @@ import { coletarErro } from "../../utilidades/coletarErro.js"
 class CriarFechamentoControlador {
     async tratar(req, res) {
         const { setor } = req.params
-        const {vendedor} = req.body
+        const { vendedor } = req.body
 
         try {
             if(!setor) {

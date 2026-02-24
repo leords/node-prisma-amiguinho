@@ -17,6 +17,7 @@ app.use(registroRotas);
 // Rotas
 app.use(rotas);
 
+// Middleware de controle de erros. obs: middleware com 4 parametros é de monitoramento de erros.
 app.use(tratarErros);
 
 // Inciiar o servidor
