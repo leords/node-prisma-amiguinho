@@ -14,18 +14,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum NivelAcesso {
+  ADMIN
+  VENDAS
+  BALCAO
+  DELIVERY
+  EXTERNO
+}
+
 model Usuario {
   id      Int     @id @default(autoincrement())
   nome    String
   email   String  @unique
   usuario String  @unique
   senha   String
-  nivelAcessoId Int
+  nivelAcessoId NivelAcesso
   status  Boolean @default(true)
   resetToken     String?  
   resetExpires   DateTime?
 
-  nivelAcesso NivelAcesso @relation(fields: [nivelAcessoId], references: [id])
   pedidosDelivery PedidoDelivery[]
   pedidosExterno  PedidoExterno[]
   pedidosBalcao   PedidoBalcao[]
@@ -33,15 +40,6 @@ model Usuario {
   @@map("usuarios")
 }
 
-model NivelAcesso {
-  id     Int    @id @default(autoincrement())
-  nome   String
-  status Boolean @default(true)
-
-  usuarios Usuario[]
-
-  @@map("niveisAcesso")
-  }
 
 model Produto {
   id            Int      @id @default(autoincrement())
@@ -199,12 +197,15 @@ model Fechamento {
   data      DateTime @default(now())
   setor    String    // balcao | delivery | externo
   vendedor String
-  status    String   @default("aberto") // aberto | fechado | cancelado
+  status    String   @default("aberto") // aberto | fechado
   totalSistema Float  @default(0) // total calculado pelos pedidos
   totalInformado Float @default(0) // total contado no caixa
   diferenca Float @default(0)
+  dia String
   
   movimentacoes          MovimentacaoManual[]
+
+  @@unique([vendedor, dia, setor])
 }
 
 model MovimentacaoManual {

@@ -10,12 +10,7 @@ class ListarUsuarioServico {
           email: true,
           usuario: true,
           status: true,
-          nivelAcesso: {
-            select: {
-              id: true,
-              nome: true,
-            },
-          },
+          nivelAcesso: true,
         },
       })
       return usuarios

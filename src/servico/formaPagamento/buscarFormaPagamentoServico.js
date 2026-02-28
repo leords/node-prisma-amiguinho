@@ -18,7 +18,7 @@ class BuscarFormaPagamentoServico {
             status: forma.Status,
           },
           create: {
-            id: forma.ID,
+            id: forma.Id,
             nome: forma.Forma,
             status: forma.Status,
           },

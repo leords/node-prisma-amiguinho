@@ -24,13 +24,16 @@ class BuscarFormaPagamentControlador {
       const servico = new BuscarFormaPagamentoServico()
       await servico.executar(dados.saida)
 
-      return res
-        .status(HTTP_STATUS_CODES.OK)
-        .json(SUCESSO_MSG_FORMA.SINCRONIZACAO)
+      console.log("dados: ", dados.saida)
+
+      return res.status(HTTP_STATUS_CODES.OK).json(SUCESSO_MSG_FORMA.SINCRONIZACAO)
     } catch (error) {
       console.log(error)
       const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+        console.log("ERRO REAL BACKEND:", error)
+        console.log("Tipo:", error.name)
+        console.log("Mensagem:", error.message)
+      return res.status(status).json(mensagem)
     }
   }
 }
