@@ -8,10 +8,10 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class BuscarPedidoControlador {
   async tratar(req, res) {
     const setor = req.query.setor ? req.query.setor : undefined
-    const vendedor = req.query.vendedor ? Number(req.query.vendedor) : undefined
-    const cliente = req.query.cliente ? Number(req.query.cliente) : undefined
-    const formaPagamentoId = req.query.formaPagamento
-      ? Number(req.query.formaPagamento)
+    const vendedor = req.query.vendedor ? req.query.vendedor : undefined
+    const cliente = req.query.cliente ? req.query.cliente : undefined
+    const formaPagamentoId = req.query.formaPagamentoId
+      ? Number(req.query.formaPagamentoId)
       : undefined
     // Mantenho as datas vindos como strings, vem no formato 2025-12-14
     const dataInicio = req.query.dataInicio
@@ -23,6 +23,8 @@ class BuscarPedidoControlador {
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       const opcoesVendedor = ['b1', 'b2', 'b3']
+
+      console.log("datas: ", dataInicio, dataFim)
 
       if (setor && typeof setor !== 'string' && !opcoesSetor.includes(setor)) {
         throw new Error(ERRO_MSG_PEDIDOS.SETOR)

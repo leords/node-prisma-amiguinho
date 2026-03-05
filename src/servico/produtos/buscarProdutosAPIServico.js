@@ -8,8 +8,6 @@ class BuscarProdutosAPIServico {
         throw new Error(ERRO_MSG_PRODUTO.NAO_ENCONTRADO)
       }
       for (const produto of produtos) {
-        console.log(produtos)
-
         await prismaCliente.produto.upsert({
           where: {
             id: produto.ID,

@@ -29,7 +29,7 @@ class CriarFechamentoControlador {
             }
 
             const servico = new CriarFechamentoServico()
-            const resultado = await servico.executar(setor, vendedor)
+            const resultado = await servico.executar(setor, vendedor )
 
             return res.status(HTTP_STATUS_CODES.CREATED).json(resultado)
         } catch (error) {

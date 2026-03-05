@@ -9,6 +9,7 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class BuscarFormaPagamentControlador {
   async tratar(req, res) {
     try {
+      console.time("BuscarFormasPagamento")
       const resposta = await fetch(
         'https://script.google.com/macros/s/AKfycbx3kBxwZz_gHH90urwxksgyfLmw5h3FBDxD4-ufxa2DkvZg83aJaelWgqVuKftq9L8p0g/exec'
       )
@@ -23,8 +24,8 @@ class BuscarFormaPagamentControlador {
 
       const servico = new BuscarFormaPagamentoServico()
       await servico.executar(dados.saida)
-
-      console.log("dados: ", dados.saida)
+      console.timeEnd("BuscarFormasPagamento")
+      console.log("Formas de pagamento atualizadas com sucesso!")
 
       return res.status(HTTP_STATUS_CODES.OK).json(SUCESSO_MSG_FORMA.SINCRONIZACAO)
     } catch (error) {

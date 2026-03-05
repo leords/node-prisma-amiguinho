@@ -11,6 +11,9 @@ class CriarFechamentoServico {
             const dataFim = new Date(data)
             dataFim.setHours(23, 59, 59, 999)
 
+            // transformando a data em string e pegando apenas a data
+            const dia = new Date().toISOString().split('T')[0]
+
 
             const existeFechamento = await prismaCliente.fechamento.findFirst({
                 where: {
@@ -30,7 +33,8 @@ class CriarFechamentoServico {
             return await prismaCliente.fechamento.create({
                 data: {
                     setor,
-                    vendedor
+                    vendedor,
+                    dia
                 }
              })
              

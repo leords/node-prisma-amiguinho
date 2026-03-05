@@ -8,7 +8,7 @@ const rotas = Router()
 
 rotas.get(
   '/buscar-produtos',
-  autenticadorMiddleware,
+  //autenticadorMiddleware,
   new BuscarProdutosAPIControlador().tratar
 )
 rotas.get(

@@ -9,6 +9,7 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class BuscarProdutosAPIControlador {
   async tratar(req, res) {
     try {
+      console.time("BuscarProdutos")
       const resposta = await fetch(
         'https://script.google.com/macros/s/AKfycby0sRecjBmrq-Odpt4K2lSIS18NX-569Lf7Axh9fVxZoIRMu3DxTnDDoOUFLpS9RIOXag/exec'
       )
@@ -23,6 +24,8 @@ class BuscarProdutosAPIControlador {
 
       const servico = new BuscarProdutosAPIServico()
       await servico.executar(dados.saida)
+      console.timeEnd("BuscarProdutos")
+      console.log("Produtos atualizados com sucesso!")
 
       return res
         .status(HTTP_STATUS_CODES.OK)
