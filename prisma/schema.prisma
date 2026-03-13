@@ -26,6 +26,7 @@ model Usuario {
   id      Int     @id @default(autoincrement())
   nome    String
   email   String  @unique
+  whatsapp String?
   usuario String  @unique
   senha   String
   nivelAcessoId NivelAcesso

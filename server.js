@@ -4,6 +4,7 @@ import { rotas } from "./src/rotas/rotas.js";
 import { registroRotas } from "./src/middleware/registroRotasMiddleware.js";
 import { tratarErros } from "./src/middleware/tratarError.js";
 import { CriarUsuarioAdminServico } from "./src/servico/usuario/criarUsuarioAdminServico.js";
+import { iniciarJobs } from "./src/jobs/index.js";
 const app = express();
 
 // Libera requisições de origens diferentes
@@ -27,4 +28,9 @@ const servico = new CriarUsuarioAdminServico()
 await servico.executar();
 
 // Inciiar o servidor
-app.listen(4000, () => console.log("Servidor iniciado na porta 4000"));
+app.listen(4000, () => {
+    console.log("Servidor iniciado na porta 4000")
+    iniciarJobs()
+});
+
+

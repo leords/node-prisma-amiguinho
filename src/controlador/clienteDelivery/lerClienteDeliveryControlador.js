@@ -36,7 +36,7 @@ class LerClienteDeliveryControlador {
       const servico = new LerClienteDeliveryServico()
       const resultado = await servico.executar(filtros)
 
-      return res.status(HTTP_STATUS_CODES.OK).json({ resultado })
+      return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       const { status, mensagem } = coletarErro(error)
       return res.status(status).json({ mensagem })

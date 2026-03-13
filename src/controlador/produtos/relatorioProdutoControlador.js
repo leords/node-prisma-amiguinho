@@ -20,25 +20,15 @@ class RelatorioProdutoControlador {
             if(!setor) {
                 throw new Error('Setor é obrigatório')
             }
-            if(!vendedor) {
-                throw new Error('Vendedor é obrigatório')
-            }
-            if(typeof vendedor !== 'string') {
+            if(vendedor && typeof vendedor !== 'string') {
                 throw new Error('Vendedor deve ser texto')
             }
-            if(!produtoId) {
-                throw new Error('Produto é obrigatório')
-            }
-            if(isNaN(produtoId)) {
+
+            if(produtoId && isNaN(produtoId)) {
                 throw new Error('Produto deve um número')
             }
-            if (!dataInicio && !dataFim) {
-                throw new Error('Data de início e fim são obrigatórios')
-            }
-            if (dataInicio && typeof dataInicio !== 'string') {
-                throw new Error('Data de início deve ser texto')
-            }
-            if (dataFim && typeof dataFim !== 'string') {
+
+            if (typeof dataInicio !== 'string' && typeof dataFim !== 'string') {
                 throw new Error('Data de fim deve ser texto')
             }
 
