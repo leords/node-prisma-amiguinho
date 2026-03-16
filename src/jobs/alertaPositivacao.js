@@ -17,12 +17,12 @@ export async function executarAlertaPositivacao() {
   const quatorzeDiasAtras = new Date(hoje); quatorzeDiasAtras.setDate(hoje.getDate() - 14);
 
   try {
-    // ── 1. Busca todos os produtos ────────────────────────────────
+    // 1. Busca todos os produtos
     const produtos = await prisma.produto.findMany({
       select: { id: true, nome: true },
     });
 
-    // ── 2. Total de pedidos por período ──────────────────────────
+    // 2. Total de pedidos por período
     const [totalPedidosSemanaAtual, totalPedidosSemanaAnterior] = await Promise.all([
       prisma.pedidoBalcao.count({ where: { data: { gte: seteDiasAtras, lte: hoje } } }),
       prisma.pedidoBalcao.count({ where: { data: { gte: quatorzeDiasAtras, lte: seteDiasAtras } } }),
@@ -33,7 +33,7 @@ export async function executarAlertaPositivacao() {
       return;
     }
 
-    // ── 3. Calcula positivação por produto ────────────────────────
+    // 3. Calcula positivação por produto
     const alertas = [];
 
     for (const produto of produtos) {
@@ -75,7 +75,7 @@ export async function executarAlertaPositivacao() {
       return;
     }
 
-    // ── 4. Gera análise com Groq ──────────────────────────────────
+    // 4. Gera análise com Groq
     const prompt = `
         Você é um assistente de gestão de uma distribuidora de bebidas.
         Os produtos abaixo tiveram queda significativa de positivação (% de pedidos que incluíram o produto)
@@ -90,7 +90,7 @@ export async function executarAlertaPositivacao() {
 
     const analise = await gerarTextoGroq(prompt);
 
-    // ── 5. Busca admins ───────────────────────────────────────────
+    // 5. Busca admins
     const admins = await prisma.usuario.findMany({
       where: { nivelAcessoId: "ADMIN", status: true },
       select: { nome: true, email: true, whatsapp: true },
@@ -101,7 +101,7 @@ export async function executarAlertaPositivacao() {
       return;
     }
 
-    // ── 6. Envia ──────────────────────────────────────────────────
+    // 6. Envia
     const assunto = `⚠️ Alerta de positivação — ${alertas.length} produto(s) em queda`;
 
     const tabelaHtml = alertas.map((a) => `
