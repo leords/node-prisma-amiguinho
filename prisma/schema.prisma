@@ -95,6 +95,7 @@ model ClienteExterno {
 model PedidoDelivery {
   id               Int      @id @default(autoincrement())
   uuid             String   @unique @default(uuid())
+  tipo             String   @default("delivery")
   clienteId        Int
   formaPagamentoId Int
   vendedor         String?
@@ -112,6 +113,7 @@ model PedidoDelivery {
 model PedidoExterno {
   id               Int      @id @default(autoincrement())
   uuid             String   @unique @default(uuid())
+  tipo             String   @default("externo")
   clienteId        Int
   formaPagamentoId Int
   vendedor         String? // vai pegar o vendedor cadastrado no cliente!
@@ -129,6 +131,7 @@ model PedidoExterno {
 model PedidoBalcao {
   id               Int      @id @default(autoincrement())
   uuid             String   @unique @default(uuid())
+  tipo             String   @default("balcao")
   cliente          String?
   formaPagamentoId Int
   vendedor         String?

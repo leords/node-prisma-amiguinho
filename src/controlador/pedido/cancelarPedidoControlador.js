@@ -5,7 +5,7 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class CancelarPedidoControlador {
   async tratar(req, res) {
     const { setor } = req.params
-    const id = Number(req.params.id)
+    const uuid = req.params.id
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 
@@ -18,16 +18,16 @@ class CancelarPedidoControlador {
         )
       }
 
-      if (!id) {
+      if (!uuid) {
         throw new Error('ID é obrigatório')
       }
 
-      if (isNaN(id)) {
+      if (typeof uuid !== 'string') {
         throw new Error('ID deve ser um número')
       }
 
       const servico = new CancelarPedidoServico()
-      const resultado = await servico.executar(id, setor)
+      const resultado = await servico.executar(uuid, setor)
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {

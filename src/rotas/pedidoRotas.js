@@ -11,6 +11,7 @@ import { QuantidadePedidoControlador } from '../controlador/pedido/quantidadePed
 import { TotalVendasPeriodoControlador } from '../controlador/pedido/totalVendasPeriodoControlador.js'
 import { TotalPorFormaPagamentoControlador } from '../controlador/pedido/totalPorFormaPagamentoControlador.js'
 import { RelatorioMixProdutosControlador } from '../controlador/pedido/relatorioMixProdutosControlador.js'
+import { EditarPedidoControlador } from '../controlador/pedido/editarPedidoControlador.js'
 
 const rotas = Router()
 
@@ -78,6 +79,12 @@ rotas.get(
   '/relatorio-mix-produtos/:setor',
   //autenticadorMiddleware,
   new RelatorioMixProdutosControlador().tratar
+)
+
+rotas.put(
+  '/editar-pedido/:setor/:uuid',
+  //autenticadorMiddleware,
+  new EditarPedidoControlador().tratar
 )
 
 export { rotas as pedidoRotas }

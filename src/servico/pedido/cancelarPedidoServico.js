@@ -1,12 +1,12 @@
 import prismaCliente from '../../prisma/index.js'
 
 class CancelarPedidoServico {
-  async executar(id, setor) {
+  async executar(uuid, setor) {
     try {
       if (setor === 'delivery') {
         const validarPedido = await prismaCliente.pedidoDelivery.findUnique({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           select: {
             status: true,
@@ -22,7 +22,7 @@ class CancelarPedidoServico {
 
         await prismaCliente.pedidoDelivery.update({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           data: {
             status: 'cancelado',
@@ -37,7 +37,7 @@ class CancelarPedidoServico {
       if (setor === 'externo') {
         const validarPedido = await prismaCliente.pedidoExterno.findUnique({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           select: {
             status: true,
@@ -53,7 +53,7 @@ class CancelarPedidoServico {
 
         await prismaCliente.pedidoExterno.update({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           data: {
             status: 'cancelado',
@@ -68,7 +68,7 @@ class CancelarPedidoServico {
       if (setor === 'balcao') {
         const validarPedido = await prismaCliente.pedidoBalcao.findUnique({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           select: {
             status: true,
@@ -84,7 +84,7 @@ class CancelarPedidoServico {
 
         await prismaCliente.pedidoBalcao.update({
           where: {
-            id: Number(id),
+            uuid: uuid,
           },
           data: {
             status: 'cancelado',
