@@ -78,7 +78,7 @@ class CancelarPedidoServico {
         if (!validarPedido) {
           throw new Error('Pedido não encontrado')
         }
-        if (validarPedido === 'cancelado') {
+        if (validarPedido.status === 'cancelado') {
           throw new Error('Este pedido já está cancelado')
         }
 

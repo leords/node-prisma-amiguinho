@@ -19,6 +19,8 @@ class BuscarPedidoControlador {
     const usuarioId = req.query.usuarioId
       ? Number(req.query.usuarioId)
       : undefined
+      const status = req.query.status ? req.query.status : undefined
+
 
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
@@ -47,6 +49,10 @@ class BuscarPedidoControlador {
         throw new Error('ID de usuário inválido')
       }
 
+      if(status && typeof status !== 'string') {
+        throw new Error('Status inválido')
+      }
+
       // valido a tipagem das datas.
       if (
         dataInicio &&
@@ -57,7 +63,7 @@ class BuscarPedidoControlador {
         throw new Error('Data inválida')
       }
 
-      // transformo elas em ISO manualmente. desta forma consigo pegar o intervalor do dia inteiro.
+      // transformo elas em ISO manualmente. desta forma consigo pegar o intervalo do dia inteiro.
       const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
       const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
 
@@ -69,7 +75,8 @@ class BuscarPedidoControlador {
         formaPagamentoId,
         inicio,
         fim,
-        usuarioId
+        usuarioId,
+        status
       )
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)

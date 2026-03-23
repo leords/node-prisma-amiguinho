@@ -9,7 +9,8 @@ class BuscarPedidoServico {
     formaPagamentoId,
     dataInicio,
     dataFim,
-    usuarioId
+    usuarioId,
+    status
   ) {
 
     const query = {}
@@ -36,17 +37,17 @@ class BuscarPedidoServico {
 
     const queryDelivery = {
       ...query,
-      status: 'entregue',
+      status: status ? status : 'entregue',
     }
 
     const queryExterno = {
       ...query,
-      status: 'entregue',
+      status: status ? status : 'entregue',
     }
 
     const queryBalcao = {
       ...query,
-      status: 'carregado',
+      status: status ? status : 'carregado',
     }
 
     try {
@@ -111,6 +112,7 @@ class BuscarPedidoServico {
         ])
 
       return [...pedidosDelivery, ...pedidosExterno, ...pedidosBalcao]
+
     } catch (error) {
       console.log(error)
       throw error

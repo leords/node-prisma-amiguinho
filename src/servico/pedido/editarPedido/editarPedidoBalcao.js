@@ -28,7 +28,7 @@ class EditarPedidoBalcao {
             });
             if(!validarStatusPedido) {
                 throw new AppError(
-                    "Pedido não encontrado.",
+                    "Pedido balcão não encontrado.",
                     HTTP_STATUS_CODES.NOT_FOUND,
                     "EDITAR_PEDIDO_NOT_FOUND"
                 )
@@ -37,7 +37,7 @@ class EditarPedidoBalcao {
             // validando o status do pedido
             if(validarStatusPedido.status !== 'carregado') {
                 throw new AppError(
-                    `Pedido com o status ${validarStatusPedido.status} não permite alteração`,
+                    `Pedido do Balcão com o status ${validarStatusPedido.status} não permite alteração`,
                     HTTP_STATUS_CODES.NOT_FOUND,
                     "EDITAR_PEDIDO_NOT_FOUND"
                 )
