@@ -9,7 +9,6 @@ class EditarPedidoControlador {
         const formaPagamentoId = req.query.formaPagamentoId ? Number(req.query.formaPagamentoId) : undefined
         const dados = req.body
 
-
         if(!setor) {
             throw new Error('Setor é obrigatório')
         }
@@ -28,9 +27,9 @@ class EditarPedidoControlador {
         }
 
         const servico = new EditarPedidoServico()
-        const resultado = await servico.executar(setor, uuid, formaPagamentoId, dados);
+        await servico.executar(setor, uuid, formaPagamentoId, dados);
         return res.status(HTTP_STATUS_CODES.OK).json({
-            resultado: resultado,
+            sucesso: true,
             mensagem: 'Pedido editado com sucesso'
         })
 

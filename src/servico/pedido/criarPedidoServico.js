@@ -9,6 +9,7 @@ class CriarPedidoServico {
         return acc + item.quantidade * item.valorUnit
       }, 0)
 
+
       if (setor === 'delivery') {
         return await prismaCliente.pedidoDelivery.create({
           data: {

@@ -6,6 +6,10 @@ class EditarPedidoBalcao {
     async executar(uuid, formaPagamentoId, dados) {
         try {
 
+            console.log('dados: ', dados)
+            console.log('formaPagamentoId: ', formaPagamentoId)
+            console.log('uuid: ', uuid)
+
             // validando a existencia de forma de pagamento
             const validarFormaPagamento = await prismaCliente.formaPagamento.findFirst({
                 where: {
@@ -19,6 +23,9 @@ class EditarPedidoBalcao {
                     "EDITAR_PEDIDO_NOT_FOUND"
                 )
             }
+            
+             console.log('formaPagamentoId: ', validarFormaPagamento)
+
 
             // buscando o pedido
             const validarStatusPedido = await prismaCliente.pedidoBalcao.findFirst({
@@ -34,6 +41,9 @@ class EditarPedidoBalcao {
                 )
             }
 
+            console.log('validarStatusPedido: ', validarStatusPedido)
+
+
             // validando o status do pedido
             if(validarStatusPedido.status !== 'carregado') {
                 throw new AppError(
@@ -43,10 +53,12 @@ class EditarPedidoBalcao {
                 )
             }
 
+            console.log('dados', dados)
+
             // Alterando dados e forma de pagamento se dados existir
-            if(dados && dados.dados && dados.dados.length > 0) {
+            if(dados && dados.length > 0) {
                 // calculando total de cada item
-                const itensFormatados = dados.dados.map(item => {
+                const itensFormatados = dados.map(item => {
                     const valorTotal = item.quantidade * item.valorUnit
 
                     // retornando o objeto apenas alterando o valorTotal
