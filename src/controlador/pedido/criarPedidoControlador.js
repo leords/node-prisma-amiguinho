@@ -7,7 +7,7 @@ import {
 } from '../../config/httpStatusCodes.js'
 
 class CriarPedidoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       const { setor } = req.body
       const {
@@ -23,8 +23,12 @@ class CriarPedidoControlador {
       // Validando o setor
       // ---------------------
 
+      console.log('setor: ', setor)
+      console.log(typeof setor)
+
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
+        console.log('erro no setor')
         throw new Error(ERRO_MSG_PEDIDOS.SETOR)
       }
       // validando apenas se o setor for balcao.
@@ -106,8 +110,7 @@ class CriarPedidoControlador {
       })
     } catch (error) {
       console.log('ERRO AO CRIAR PEDIDO:', error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

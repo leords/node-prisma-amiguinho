@@ -22,6 +22,12 @@ enum NivelAcesso {
   EXTERNO
 }
 
+enum TipoMovimentacaoEstoque {
+  ENTRADA
+  SAIDA
+  AJUSTE
+}
+
 model Usuario {
   id      Int     @id @default(autoincrement())
   nome    String
@@ -37,6 +43,10 @@ model Usuario {
   pedidosDelivery PedidoDelivery[]
   pedidosExterno  PedidoExterno[]
   pedidosBalcao   PedidoBalcao[]
+  NotaEntradaEstoque OrdemCompra[]
+  estoque Estoque[]
+
+
 
   @@map("usuarios")
 }
@@ -53,7 +63,7 @@ model Produto {
   peso          Decimal? @default(0.0)
   lucro         Float?   @default(0.0)
   margem        Float?   @default(0.0)
-  quantidade    Int      @default(0)
+  quantidade    Float      @default(0.0)
   precoUndVenda Decimal    @default(0.0)
 
   estoque Int @default(0)
@@ -62,8 +72,14 @@ model Produto {
   itensPedidoExterno  ItemPedidoExterno[]  @relation("ItemPedidoExternoProduto")
   itensPedidoBalcao  ItemPedidoBalcao[]  @relation("ItemPedidoBalcaoProduto")
 
+  itemEstoque Estoque[] @relation("ItemEstoque")
+  itemNotaEstoque ItemOrdemCompra[] @relation("ItemOrdemCompra")
+
+
   @@map("produtos")
 }
+
+
 
 model ClienteDelivery {
   id         Int     @id
@@ -222,4 +238,59 @@ model MovimentacaoManual {
 
   fechamento    Fechamento @relation(fields: [fechamentoId], references: [id])
 }
+
+model Estoque {
+  id Int @id @default(autoincrement())
+  produtoId Int 
+  tipo TipoMovimentacaoEstoque
+  quantidade Float 
+  data DateTime @default(now())
+  atualizado DateTime @default(now()) 
+
+  origem String?
+  origemId Int? 
+
+  usuarioId Int
+
+  produto Produto @relation("ItemEstoque", fields: [produtoId], references: [id])
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
+
+}
+
+model ItemOrdemCompra {
+  id         Int   @id @default(autoincrement())
+  notaEntradaId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+
+  notaEntrada  OrdemCompra @relation(fields: [notaEntradaId], references: [id])
+  produto Produto       @relation("ItemOrdemCompra", fields: [produtoId], references: [id])
+	@@map("ItemOrdemCompra")
+}
+
+ 
+model OrdemCompra {
+  id Int @id @default(autoincrement())
+  data DateTime @default(now())
+  usuarioId Int
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
+  fornecedorId Int
+  fornecedor Fornecedor? @relation(fields: [fornecedorId], references: [id])
+  itens ItemOrdemCompra[]
+  status String @default("Realizada")
+	@@map("OrdemCompra")
+}
+
+
+model Fornecedor {
+  id Int @id @default(autoincrement())
+  nome String
+  cnpj String @unique
+  status String @default("ATIVO")
+
+  notasEntrada OrdemCompra[]
+}
+
 

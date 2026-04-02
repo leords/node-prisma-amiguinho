@@ -1,5 +1,6 @@
 import { ERRO_MSG_PEDIDOS } from '../../config/httpStatusCodes.js'
 import prismaCliente from '../../prisma/index.js'
+import { SaidaEstoqueServico } from '../estoque/saida/saidaEstoqueServico.js'
 
 class CriarPedidoServico {
   async executar(setor, dados) {
@@ -11,90 +12,111 @@ class CriarPedidoServico {
 
 
       if (setor === 'delivery') {
-        return await prismaCliente.pedidoDelivery.create({
-          data: {
-            clienteId: dados.clienteId,
-            formaPagamentoId: dados.formaPagamentoId,
-            usuarioId: dados.usuarioId,
-            total,
+        await prismaCliente.$transaction(async (prisma) => { 
+          const pedido = await prisma.pedidoDelivery.create({
+            data: {
+              clienteId: dados.clienteId,
+              formaPagamentoId: dados.formaPagamentoId,
+              usuarioId: dados.usuarioId,
+              total,
 
-            itens: {
-              createMany: {
-                data: dados.itens.map((item) => ({
-                  produtoId: item.produtoId,
-                  quantidade: item.quantidade,
-                  valorUnit: item.valorUnit,
-                  valorTotal: item.valorUnit * item.quantidade,
-                })),
+              itens: {
+                createMany: {
+                  data: dados.itens.map((item) => ({
+                    produtoId: item.produtoId,
+                    quantidade: item.quantidade,
+                    valorUnit: item.valorUnit,
+                    valorTotal: item.valorUnit * item.quantidade,
+                  })),
+                },
               },
             },
-          },
-          include: {
-            itens: true,
-            cliente: true,
-            formaPagamento: true,
-          },
-        })
+            include: {
+              itens: true,
+              cliente: true,
+              formaPagamento: true,
+            },
+          })
+          
+          const estoqueServico = new SaidaEstoqueServico()
+          // está sendo passado o transaction(prisma) por parametro.
+          return await estoqueServico.executar(pedido.id, setor, prisma)
+         })
       }
 
       if (setor === 'externo') {
-        return await prismaCliente.pedidoExterno.create({
-          data: {
-            clienteId: dados.clienteId,
-            formaPagamentoId: dados.formaPagamentoId,
-            usuarioId: dados.usuarioId,
-            total,
+        await prismaCliente.$transaction(async (prisma) => {
+          const pedido = await prisma.pedidoExterno.create({
+            data: {
+              clienteId: dados.clienteId,
+              formaPagamentoId: dados.formaPagamentoId,
+              usuarioId: dados.usuarioId,
+              total,
 
-            itens: {
-              createMany: {
-                data: dados.itens.map((item) => ({
-                  produtoId: item.produtoId,
-                  quantidade: item.quantidade,
-                  valorUnit: item.valorUnit,
-                  valorTotal: item.valorUnit * item.quantidade,
-                })),
+              itens: {
+                createMany: {
+                  data: dados.itens.map((item) => ({
+                    produtoId: item.produtoId,
+                    quantidade: item.quantidade,
+                    valorUnit: item.valorUnit,
+                    valorTotal: item.valorUnit * item.quantidade,
+                  })),
+                },
               },
             },
-          },
-          include: {
-            itens: true,
-            cliente: true,
-            formaPagamento: true,
-          },
+            include: {
+              itens: true,
+              cliente: true,
+              formaPagamento: true,
+            },
+          })
+
+          const estoqueServico = new SaidaEstoqueServico()
+          // está sendo passado o transaction(prisma) por parametro.
+          return await estoqueServico.executar(pedido.id, setor, prisma)
         })
       }
 
       if (setor === 'balcao') {
-        return await prismaCliente.pedidoBalcao.create({
-          data: {
-            cliente: dados.cliente || null,
-            formaPagamentoId: Number(dados.formaPagamentoId),
-            vendedor: dados.vendedor,
-            nomeUsuario: dados.nomeUsuario,
-            usuarioId: Number(dados.usuarioId),
-            total,
 
-            itens: {
-              createMany: {
-                data: dados.itens.map((item) => ({
-                  produtoId: item.produtoId,
-                  quantidade: item.quantidade,
-                  valorUnit: item.valorUnit,
-                  valorTotal: item.valorUnit * item.quantidade,
-                })),
+        await prismaCliente.$transaction(async (prisma) => {
+          const pedido = await prisma.pedidoBalcao.create({
+            data: {
+              cliente: dados.cliente || null,
+              formaPagamentoId: Number(dados.formaPagamentoId),
+              vendedor: dados.vendedor,
+              nomeUsuario: dados.nomeUsuario,
+              usuarioId: Number(dados.usuarioId),
+              total,
+
+              itens: {
+                createMany: {
+                  data: dados.itens.map((item) => ({
+                    produtoId: item.produtoId,
+                    quantidade: item.quantidade,
+                    valorUnit: item.valorUnit,
+                    valorTotal: item.valorUnit * item.quantidade,
+                  })),
+                },
               },
             },
-          },
-          include: {
-            itens: true,
-            formaPagamento: true,
-          },
+            include: {
+              itens: true,
+              formaPagamento: true,
+            },
+          })
+
+          const estoqueServico = new SaidaEstoqueServico()
+          // está sendo passado o transaction(prisma) por parametro.
+          return await estoqueServico.executar(pedido.id, setor, prisma)
         })
       }
 
-      throw new Error(ERRO_MSG_PEDIDOS.SETOR)
+      else {
+        throw new Error(ERRO_MSG_PEDIDOS.SETOR)
+      }
     } catch (error) {
-      console.log('ERRO AO CRIAR PEDIDO:', error)
+      console.log( error)
       throw error
     }
   }

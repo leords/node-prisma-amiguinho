@@ -15,7 +15,7 @@ class TopProdutosServico {
                 gte: new Date(inicio),
                 lte: new Date(fim),
               },
-              status: 'carregado',
+              status: 'finalizado',
             },
           },
 

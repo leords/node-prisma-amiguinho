@@ -6,10 +6,6 @@ class EditarPedidoBalcao {
     async executar(uuid, formaPagamentoId, dados) {
         try {
 
-            console.log('dados: ', dados)
-            console.log('formaPagamentoId: ', formaPagamentoId)
-            console.log('uuid: ', uuid)
-
             // validando a existencia de forma de pagamento
             const validarFormaPagamento = await prismaCliente.formaPagamento.findFirst({
                 where: {
@@ -24,9 +20,6 @@ class EditarPedidoBalcao {
                 )
             }
             
-             console.log('formaPagamentoId: ', validarFormaPagamento)
-
-
             // buscando o pedido
             const validarStatusPedido = await prismaCliente.pedidoBalcao.findFirst({
                 where: {
@@ -41,8 +34,6 @@ class EditarPedidoBalcao {
                 )
             }
 
-            console.log('validarStatusPedido: ', validarStatusPedido)
-
 
             // validando o status do pedido
             if(validarStatusPedido.status !== 'carregado') {
@@ -52,8 +43,6 @@ class EditarPedidoBalcao {
                     "EDITAR_PEDIDO_NOT_FOUND"
                 )
             }
-
-            console.log('dados', dados)
 
             // Alterando dados e forma de pagamento se dados existir
             if(dados && dados.length > 0) {
@@ -103,8 +92,6 @@ class EditarPedidoBalcao {
                 }
             })
             
-
-
         } catch (error) {
             console.log(error)
             throw error

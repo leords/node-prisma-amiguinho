@@ -1,4 +1,5 @@
 import { ERRO_MSG_CLIENTE_DELIVERY } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 
 class LerClienteDeliveryServico {
@@ -23,7 +24,11 @@ class LerClienteDeliveryServico {
       })
 
       if (!clientes) {
-        throw new Error(ERRO_MSG_CLIENTE_DELIVERY.NAO_ENCONTRADO)
+        throw new AppError(
+          "Cliente não encontrado",
+          HTTP_STATUS_CODES.NOT_FOUND,
+          "CLIENTE_NOT_FOUND"
+        )
       }
 
       return clientes

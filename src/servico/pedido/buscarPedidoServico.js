@@ -47,7 +47,7 @@ class BuscarPedidoServico {
 
     const queryBalcao = {
       ...query,
-      status: status ? status : 'carregado',
+      status: status ? status : 'finalizado',
     }
 
     try {

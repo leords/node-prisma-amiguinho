@@ -5,9 +5,10 @@ import {
 import { BuscarClienteDeliveryServico } from '../../servico/clienteDelivery/buscarClienteDeliveryServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 
 class BuscarCLienteDeliveryControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       // DEPOIS USAR .ENV PARA A URL DO GOOGLE SHEET
       const resposta = await fetch(
@@ -25,11 +26,19 @@ class BuscarCLienteDeliveryControlador {
       const dados = await resposta.json()
 
       if (!resposta.ok) {
-        throw new Error(`Erro na coleta clientes delivery: ${resposta.status}`)
+        throw new AppError(
+          `Erro na coleta clientes delivery: ${resposta.status}`,
+          HTTP_STATUS_CODES.NOT_FOUND,
+          "SINCRONIZACAO_NOT_FOUND"
+        )
       }
 
       if (!dados || !dados.saida) {
-        throw new Error(ERRO_MSG_CLIENTE_DELIVERY.ERRO_SINCRONIZACAO)
+        throw new AppError(
+          "Erro ao sincronizar clientes delivery",
+          HTTP_STATUS_CODES.NOT_FOUND,
+          "SINCRONIZACAO_NOT_FOUND"
+        )
       }
 
       const servico = new BuscarClienteDeliveryServico()
@@ -40,8 +49,7 @@ class BuscarCLienteDeliveryControlador {
       })
     } catch (error) {
       console.log(error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

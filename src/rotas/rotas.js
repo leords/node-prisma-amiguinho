@@ -8,6 +8,9 @@ import { usuarioRotas } from './usuarioRotas.js'
 import { fechamentoRotas } from './fechamentoRotas.js'
 import { movimentacaoRotas } from './movimentacaoRotas.js'
 import { onlineRotas } from './online.js'
+import { estoque } from './estoqueRotas.js'
+import { fornecedorRotas } from './fornecedorRotas.js'
+
 
 const rotas = Router()
 
@@ -20,6 +23,9 @@ rotas.use(usuarioRotas)
 rotas.use(fechamentoRotas)
 rotas.use(movimentacaoRotas)
 rotas.use(onlineRotas)
+rotas.use(estoque)
+rotas.use(fornecedorRotas)
+
 
 
 
