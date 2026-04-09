@@ -280,6 +280,7 @@ model OrdemCompra {
   fornecedor Fornecedor? @relation(fields: [fornecedorId], references: [id])
   itens ItemOrdemCompra[]
   status String @default("Realizada")
+  total Float
 	@@map("OrdemCompra")
 }
 

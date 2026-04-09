@@ -116,7 +116,7 @@ class CriarPedidoServico {
         throw new Error(ERRO_MSG_PEDIDOS.SETOR)
       }
     } catch (error) {
-      console.log( error)
+      console.log(error)
       throw error
     }
   }
