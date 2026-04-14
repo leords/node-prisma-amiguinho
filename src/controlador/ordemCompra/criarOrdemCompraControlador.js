@@ -1,6 +1,6 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { AppError } from "../../error/appError.js"
-import { CriarOrdemCompraServico } from "../../servico/ordemCompra/CriarOrdemCompraServico.js"
+import { CriarOrdemCompraServico } from "../../servico/ordemCompra/criarOrdemCompraServico.js"
 
 
 class CriarOrdemCompraControlador { 

@@ -39,8 +39,7 @@ class ListarOrdemCompraControlador {
             }
 
             const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada' ]
-
-            if(status && opcaoStatus.includes(status)) {
+            if(status && !opcaoStatus.includes(status)) {
                     throw new AppError (
                     "Status precisa ser uma das opções: Realizada, Cancelada ou Finalizada",
                     HTTP_STATUS_CODES.BAD_REQUEST,

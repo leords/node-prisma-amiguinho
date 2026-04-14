@@ -1,3 +1,5 @@
+import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import prismaCliente from "../../prisma/index.js"
 
 class CriarOrdemCompraServico {
@@ -37,6 +39,14 @@ class CriarOrdemCompraServico {
                 itens: true
             }
         })
+
+        if(!pedido) {
+            throw new AppError(
+                "Não foi possivel criar a ordem de compra",
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "ERRO_CRIAR_ORDEM_COMPRA"
+            )
+        }
 
         return pedido
 

@@ -3,8 +3,11 @@ import prismaCliente from "../../prisma/index.js"
 import { AppError } from "../../error/appError.js"
 
 class ListarFornecedorServico {
-    async executar() {
+    async executar(status) {
         const fornecedores = await prismaCliente.fornecedor.findMany({
+            where: {
+                status: status
+            },
             orderBy: {
                 nome: 'asc'
             }
@@ -22,5 +25,4 @@ class ListarFornecedorServico {
     }
 }
 
-export { ListarFornecedorServico
-}
+export { ListarFornecedorServico }

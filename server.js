@@ -13,7 +13,7 @@ app.use(cors());
 // permitir JSON
 app.use(express.json());
 
-// Middleware de registro de rotas
+// Middleware de registro de rotas = log.
 app.use(registroRotas);
 
 // Rotas
