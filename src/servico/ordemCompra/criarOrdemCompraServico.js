@@ -19,14 +19,12 @@ class CriarOrdemCompraServico {
                 fornecedorId,
                 total, 
                 itens: {
-                    createMany: {
-                        data: itens.map((item) => ({
-                            produtoId: item.produtoId,
-                            valorUnit: item.valorUnit,
-                            quantidade: item.quantidade,
-                            valorTotal: item.valorUnit * item.quantidade
-                        }))
-                    } 
+                    create: itens.map((item) => ({
+                        produtoId: item.produtoId,
+                        valorUnit: item.valorUnit,
+                        quantidade: item.quantidade,
+                        valorTotal: item.valorUnit * item.quantidade
+                    })) 
                 }
             },
             include: {

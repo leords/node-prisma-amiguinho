@@ -6,7 +6,7 @@ import { EntradaEstoqueServico } from "../estoque/entrada/entradaEstoqueServico.
 
 class EditarOrdemCompraServico {
     async executar(id, status, usuarioId) {
-        //opções de status: 'Realizada', 'Cancelada', 'Finalizada'
+        //opções de status: 'Realizada', 'Cancelada', 'Finalizada', 'Em andamento'
 
         try {
             // Buscar ordem
@@ -35,6 +35,33 @@ class EditarOrdemCompraServico {
                 )
             }
 
+            // Não permite que uma ordem Em andamento sejá cancelada? 
+            if(status === 'Cancelada' && validaOrdem.status === 'Em andamento') {
+                throw new AppError(
+                    "Não é possivel cancelar uma ordem em andamento, Reabra primeiro.",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "FINALIZAR_INVALIDO"
+                )
+            }
+
+            // Não permite que uma ordem finalizada seja cancelada
+            if(status === 'Cancelada' && validaOrdem.status === 'Finalizada') {
+                throw new AppError(
+                    "Não é possível cancelar uma ordem finalizada. Reabra primeiro.",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "CANCELAMENTO_INVALIDO"
+                )
+            }
+
+            // Não permite que uma ordem finalizada seja cancelada
+            if(status === 'Em andamento' && validaOrdem.status === 'Finalizada') {
+                throw new AppError(
+                    "Não é possível colocar em andamento uma ordem já finalizada. Reabra primeiro.",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "EM_ANDAMENTO_INVALIDO"
+                )
+            }
+
             // Finaliza a ordem e dá entrada no estoque!
             if(status === 'Finalizada' && validaOrdem.status !== 'Cancelada') {
 
@@ -50,23 +77,21 @@ class EditarOrdemCompraServico {
                     })
 
                     const servico = new EntradaEstoqueServico()
-                    const resultado = await servico.executar(validaOrdem, prisma) // passar o transaction aqui!!!
+                    await servico.executar(validaOrdem, prisma) // passar o transaction aqui!!!
 
-                    return {
-                        mensagem: 'Ordem finalizada e entrada no estoque realizada com sucesso',
-                        resultado: resultado
-                    }
+                    // valida à ação
+                    const ordemAtualizada = await prisma.ordemCompra.findUnique({
+                        where: { id },
+                        include: {
+                        itens: true,
+                        fornecedor: true,
+                        usuario: { select: { nome: true } }
+                        }
+                    })
+
+                    return ordemAtualizada
 
                 }) 
-            }
-
-            // Não permite que uma ordem finalizada seja cancelada
-            if(status === 'Cancelada' && validaOrdem.status === 'Finalizada') {
-                throw new AppError(
-                    "Não é possível cancelar uma ordem finalizada. Reabra primeiro.",
-                    HTTP_STATUS_CODES.BAD_REQUEST,
-                    "CANCELAMENTO_INVALIDO"
-                )
             }
 
             // Alterando a ordem para Realizada, assim revertendo o estoque.
@@ -110,9 +135,19 @@ class EditarOrdemCompraServico {
                         });
                     }
 
-                    return {
-                        mensagem: `Ordem ${status} e alterado o estoque com sucesso`
-                    }
+                    // Retorno para a chamada do front
+                    const ordemAtualizada = await prisma.ordemCompra.findUnique({
+                        where: { 
+                            id: validaOrdem.id
+                        },
+                        include: {
+                        itens: true,
+                        fornecedor: true,
+                        usuario: { select: { nome: true } }
+                        }
+                    })
+
+                    return ordemAtualizada
                 })
 
             }
@@ -127,9 +162,20 @@ class EditarOrdemCompraServico {
                 }
             })
 
-            return {
-                mensagem: `Status da ordem de compra atualizado para * ${status} * com sucesso`
-            }
+            // Retorno para a chamada do front
+            const ordemAtualizada = await prisma.ordemCompra.findUnique({
+                where: { 
+                    id: validaOrdem.id
+                    },
+                include: {
+                itens: true,
+                fornecedor: true,
+                usuario: { select: { nome: true } }
+                }
+            })
+
+            return ordemAtualizada
+
 
         } catch (error) {
             throw error
