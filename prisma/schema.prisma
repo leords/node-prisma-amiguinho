@@ -288,7 +288,9 @@ model OrdemCompra {
 model Fornecedor {
   id Int @id @default(autoincrement())
   nome String
+  vendedor String?
   cnpj String @unique
+  telefone String?
   status String @default("ATIVO")
 
   notasEntrada OrdemCompra[]

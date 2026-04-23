@@ -15,6 +15,8 @@ class ListarOrdemCompraControlador {
         const fornecedorId = req.query.fornecedorId ? Number(req.query.fornecedorId) : undefined
         const status = req.query.status ? req.query.status : undefined 
 
+        console.log(fornecedorId)
+
         try {
             if(id && isNaN(id)) {
                 throw new AppError (
@@ -30,7 +32,7 @@ class ListarOrdemCompraControlador {
                     "USUARIO_ID_BAD_REQUEST"
                 )
             }
-            if(fornecedorId && isNaN(usuariofornecedorIdId)) {
+            if(fornecedorId && isNaN(fornecedorId)) {
                 throw new AppError (
                     "fornecedorId precisa ser número",
                     HTTP_STATUS_CODES.BAD_REQUEST,
@@ -38,10 +40,10 @@ class ListarOrdemCompraControlador {
                 )
             }
 
-            const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada' ]
+            const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada', 'Pendente' ]
             if(status && !opcaoStatus.includes(status)) {
                     throw new AppError (
-                    "Status precisa ser uma das opções: Realizada, Cancelada ou Finalizada",
+                    "Status precisa ser uma das opções: Realizada, Cancelada, Finalizada, Pendente",
                     HTTP_STATUS_CODES.BAD_REQUEST,
                     "STATUS_BAD_REQUEST"
                 )

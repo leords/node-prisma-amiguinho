@@ -6,7 +6,7 @@ import { EntradaEstoqueServico } from "../estoque/entrada/entradaEstoqueServico.
 
 class EditarOrdemCompraServico {
     async executar(id, status, usuarioId) {
-        //opções de status: 'Realizada', 'Cancelada', 'Finalizada', 'Em andamento'
+        //opções de status: 'Realizada', 'Cancelada', 'Finalizada', 'Pendente'
 
         try {
             // Buscar ordem
@@ -35,8 +35,8 @@ class EditarOrdemCompraServico {
                 )
             }
 
-            // Não permite que uma ordem Em andamento sejá cancelada? 
-            if(status === 'Cancelada' && validaOrdem.status === 'Em andamento') {
+            // Não permite que uma ordem Em Pendente sejá cancelada? 
+            if(status === 'Cancelada' && validaOrdem.status === 'Pendente') {
                 throw new AppError(
                     "Não é possivel cancelar uma ordem em andamento, Reabra primeiro.",
                     HTTP_STATUS_CODES.BAD_REQUEST,
@@ -54,7 +54,7 @@ class EditarOrdemCompraServico {
             }
 
             // Não permite que uma ordem finalizada seja cancelada
-            if(status === 'Em andamento' && validaOrdem.status === 'Finalizada') {
+            if(status === 'Pendente' && validaOrdem.status === 'Finalizada') {
                 throw new AppError(
                     "Não é possível colocar em andamento uma ordem já finalizada. Reabra primeiro.",
                     HTTP_STATUS_CODES.BAD_REQUEST,
@@ -163,7 +163,7 @@ class EditarOrdemCompraServico {
             })
 
             // Retorno para a chamada do front
-            const ordemAtualizada = await prisma.ordemCompra.findUnique({
+            const ordemAtualizada = await prismaCliente.ordemCompra.findUnique({
                 where: { 
                     id: validaOrdem.id
                     },

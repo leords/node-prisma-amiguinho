@@ -27,12 +27,12 @@ class EditarOrdemCompraControlador {
                 )
             }
             
-            const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada', 'Em andamento' ]
+            const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada', 'Pendente' ]
             console.log('Dados: ', status)
 
             if(!opcaoStatus.includes(status)) {
                     throw new AppError (
-                    "Status precisa ser uma das opções: Realizada, Cancelada, Finalizada ou Em andamento",
+                    "Status precisa ser uma das opções: Realizada, Cancelada, Finalizada ou Pendente",
                     HTTP_STATUS_CODES.BAD_REQUEST,
                     "STATUS_BAD_REQUEST"
                 )

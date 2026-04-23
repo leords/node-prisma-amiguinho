@@ -6,9 +6,6 @@ class BuscarEstoqueServico {
         const produtos = await prismaCliente.produto.findMany({
             where: {
                 produtoId: produtoId,
-                estoque: {
-                    gt: 0
-                },
                 
             },
             select: {
@@ -17,7 +14,7 @@ class BuscarEstoqueServico {
                 estoque: true
             },
             orderBy: {
-                nome: 'asc'
+                estoque: 'desc'
             }
         });
 

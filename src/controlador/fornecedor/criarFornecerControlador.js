@@ -6,10 +6,11 @@ import { validarCNPJ } from "../../utilidades/validarCNPJ.js"
 class CriarFornecedorControlador {
     async tratar(req, res, next) {
         
-        console.log('entrei')
 
         const nome = req.body.nome
         const cnpj = req.body.cnpj
+        const telefone = req.body.telefone
+        const vendedor = req.body.vendedor
 
         try {
             if(!nome) {
@@ -40,6 +41,39 @@ class CriarFornecedorControlador {
                     "CNPJ_BAD_REQUEST"
                 )
             }
+            if(!telefone) {
+                throw new AppError(
+                    "Telefone é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "TELEFONE_NOT_FOUND"
+                )
+            }
+
+            // valildando a existencia apenas de números na variável
+            const apenasNumeros = (valor) => /^\d+$/.test(valor)
+            if(!apenasNumeros(telefone)) {
+                throw new AppError(
+                    "Telefone deve conter apenas números",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "TELEFONE_BAD_REQUEST"
+                )
+            }
+
+            
+            if(!vendedor) {
+                throw new AppError(
+                    "Vendedor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "TELEFONE_BAD_REQUEST"
+                )
+            }
+            if( typeof vendedor !== "string") {
+                throw new AppError(
+                    "Vendedor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_NOT_FOUND"
+                )
+            }
 
             // validando CNPJ pela função especifica.
             const CNPJvalido = validarCNPJ(cnpj);
@@ -54,7 +88,7 @@ class CriarFornecedorControlador {
 
 
             const servico = new CriarFornecedorServico()
-            const resultado = await servico.executar(nome, cnpj)
+            const resultado = await servico.executar(nome, cnpj, telefone, vendedor)
 
             return res.status(HTTP_STATUS_CODES.OK).json(resultado)
 

@@ -64,6 +64,9 @@ class ListarOrdemCompraServico {
                             nome: true
                         }
                     }
+                },
+                orderBy: {
+                    data: "desc" 
                 }
             })
 
