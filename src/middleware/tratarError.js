@@ -1,8 +1,11 @@
+import { AppError } from "../error/AppError.js"
 import { HTTP_STATUS_CODES } from "../config/httpStatusCodes.js"
 
+// middleware de erro
 function tratarErros(error, req, res, next) {
 
-  if (error.statusCode) {
+  // Erros vindo do appError - 400, 401, 404, 409
+  if (error instanceof AppError) {
     return res.status(error.statusCode).json({
       sucesso: false,
       erro: {
@@ -14,11 +17,12 @@ function tratarErros(error, req, res, next) {
 
   console.error("ERRO INTERNO:", error)
 
+  // Erros de bug - 500
   return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
     sucesso: false,
     erro: {
-        message: "Erro interno do servidor",
-        code: "INTERNAL_SERVER_ERROR"
+      mensagem: "Erro interno do servidor",
+      codigo: "INTERNAL_SERVER_ERROR"
     }
   })
 }

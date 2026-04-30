@@ -30,8 +30,8 @@ class EditarOrdemCompraServico {
             if(validaOrdem.status === status) {
                 throw new AppError(
                     `O status já está como: ${status}`,
-                    HTTP_STATUS_CODES.NOT_FOUND,
-                    "ALTERACAO_STATUS_NOT_FOUND"
+                    HTTP_STATUS_CODES.CONFLICT,
+                    "STATUS_CONFLICT"
                 )
             }
 
