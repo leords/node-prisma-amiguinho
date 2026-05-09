@@ -31,7 +31,7 @@ export const ERRO_MSG_USUARIO = {
   TIPO_USUARIO: 'Usuário deve ser do tipo texto',
   TIPO_SENHA: 'Senha deve ser do tipo texto',
   TIPO_NIVEL_ACESSO: 'Nivel de acesso deve ser do tipo número',
-  OPCAO_NIVEL_ACESSO: 'Apenas entre as opções 1 à 5.',
+  OPCAO_NIVEL_ACESSO: 'Apenas entre as opções "ADMIN", "VENDAS", "BALCAO", "DELIVERY", "EXTERNO", "USUARIO"',
   VALIDAR_SENHA: 'Senha deve ter 6 digitos',
   USUARIO_JA_EXISTE: 'Este usuário já existe',
   //

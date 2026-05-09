@@ -4,9 +4,10 @@ import {
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
+import { AppError } from '../../error/appError.js'
 
 class LerClienteExternoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       const id = req.query.id ? Number(req.query.id) : undefined
       const nome = req.query.nome ? req.query.nome : undefined
@@ -20,28 +21,60 @@ class LerClienteExternoControlador {
       const frequencia = req.query.frequencia ? req.query.frequencia : undefined
 
       if (id && isNaN(id)) {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_ID)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_ID,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "ID_BAD_REQUEST"
+        )
       }
       if (nome && typeof nome !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_NOME)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_NOME,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "NOME_BAD_REQUEST"
+        )        
       }
       if (cnpj && typeof cnpj !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_CNPJ)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_CNPJ,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "CNPJ_BAD_REQUEST"
+        )  
       }
       if (cidade && typeof cidade !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_CIDADE)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_CIDADE,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "CIDADE_BAD_REQUEST"
+        )        
       }
       if (endereco && typeof endereco !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_ENDERECO)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_ENDERECO,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "ENDERECO_BAD_REQUEST"
+        )        
       }
       if (vendedor && typeof vendedor !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_VENDEDOR)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_VENDEDOR,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "VENDEDOR_BAD_REQUEST"
+        )
       }
       if (atendimento && typeof atendimento !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_ATENDIMENTO)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_ATENDIMENTO,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "ATENDIMENTO_BAD_REQUEST"
+        )
       }
       if (frequencia && typeof frequencia !== 'string') {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.TIPO_FREQUENCIA)
+        throw new AppError(
+            ERRO_MSG_CLIENTE_EXTERNO.TIPO_FREQUENCIA,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "FREQUENCIA_BAD_REQUEST"
+        )
       }
 
       const filtros = {
@@ -60,8 +93,7 @@ class LerClienteExternoControlador {
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json(mensagem)
+      next()
     }
   }
 }

@@ -1,17 +1,26 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { DeletarFechamentoServico } from "../../servico/fechamento/deletarFechamentoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
 
 class DeletarFechamentoControlador {
-    async tratar(req, res) {
+    async tratar(req, res, next) {
         const id = Number(req.params.id)
 
         try {
             if(!id) {
-                throw new Error('Id é obrigatório')
+                throw new AppError(
+                    "Id é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "ID_BAD_REQUEST"
+                )
             }
             if(isNaN(id)) {
-                throw new Error('Id deve ser um número')
+                throw new AppError(
+                    "Id deve ser um número",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "ID_BAD_REQUEST"
+                )
             }
 
             const servico = new DeletarFechamentoServico()
@@ -20,8 +29,7 @@ class DeletarFechamentoControlador {
             return res.status(HTTP_STATUS_CODES.OK).json(resultado)
         } catch (error) {
             console.log(error)
-            const { mensagem, status } = coletarErro(error)
-            return res.status(status).json({ mensagem })
+            next(error)
         }
     }
 }

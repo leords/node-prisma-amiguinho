@@ -1,29 +1,44 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { CancelarPedidoServico } from '../../servico/pedido/cancelarPedidoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class CancelarPedidoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     const { setor } = req.params
     const uuid = req.params.id
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 
       if (!setor) {
-        throw new Error('Setor é obrigatório')
+        throw new AppError(
+          "Setor é obrigatório",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
       if (!opcoesSetor.includes(setor)) {
-        throw new Error(
-          'Setor inválido, opções válidas: delivery, externo e balcao'
+        throw new AppError(
+          "Setor inválido, opções válidas: delivery, externo e balcao",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
         )
       }
 
       if (!uuid) {
-        throw new Error('ID é obrigatório')
+        throw new AppError(
+          "ID é obrigatório",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "ID_NOT_FOUND"
+        )
       }
 
       if (typeof uuid !== 'string') {
-        throw new Error('ID deve ser um número')
+        throw new AppError(
+          "ID deve ser um número",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "ID_NOT_FOUND"
+        )
       }
 
       const servico = new CancelarPedidoServico()
@@ -32,8 +47,7 @@ class CancelarPedidoControlador {
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       console.log(error)
-      const { mensagem, status } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

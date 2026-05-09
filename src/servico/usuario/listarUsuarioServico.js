@@ -11,6 +11,7 @@ class ListarUsuarioServico {
           usuario: true,
           status: true,
           nivelAcesso: true,
+          whatsapp: true
         },
       })
       return usuarios

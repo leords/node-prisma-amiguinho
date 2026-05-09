@@ -7,7 +7,7 @@ import { ResetarSenhaServico } from '../../servico/usuario/resetarSenhaServico.j
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class ResetarSenhaControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       const { token, novaSenha } = req.body
 
@@ -25,10 +25,7 @@ class ResetarSenhaControlador {
         .json({ mensagem: SUCESSO_MSG_USUARIO.SENHA_REDEFINIDA })
     } catch (error) {
       console.error('EsqueciSenhaController.resetarSenha =>', error)
-
-      const { status, mensagem } = coletarErro(error)
-
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

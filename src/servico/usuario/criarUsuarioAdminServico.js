@@ -15,7 +15,7 @@ class CriarUsuarioAdminServico {
                     email: 'dev.leorodrigues@gmail.com',
                     usuario: 'admin',
                     senha: senhaCriptografada,
-                    nivelAcessoId: 'ADMIN',
+                    nivelAcesso: 'ADMIN',
                 }
             })
             console.log("✔ Admin verificado com sucesso.")

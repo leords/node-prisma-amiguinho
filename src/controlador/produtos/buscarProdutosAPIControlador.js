@@ -3,11 +3,12 @@ import {
   HTTP_STATUS_CODES,
   SUCESSO_MSG_PRODUTO,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { BuscarProdutosAPIServico } from '../../servico/produtos/buscarProdutosAPIServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class BuscarProdutosAPIControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       console.time("BuscarProdutos")
       const resposta = await fetch(
@@ -16,10 +17,18 @@ class BuscarProdutosAPIControlador {
       const dados = await resposta.json()
 
       if (!resposta.ok) {
-        throw new Error(`Erro na coleta de produtos: ${resposta.status}`)
+        throw new AppError(
+          `Erro na coleta de produtos: ${resposta.status}`,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
       if (!dados || !dados.saida) {
-        throw new Error(ERRO_MSG_PRODUTO.SINCRONIZACAO)
+        throw new AppError(
+          ERRO_MSG_PRODUTO.SINCRONIZACAO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
 
       const servico = new BuscarProdutosAPIServico()
@@ -32,8 +41,7 @@ class BuscarProdutosAPIControlador {
         .json(SUCESSO_MSG_PRODUTO.SINCRONIZACAO)
     } catch (error) {
       console.log(error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json(mensagem)
+      next(error)
     }
   }
 }

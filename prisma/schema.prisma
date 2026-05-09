@@ -20,6 +20,7 @@ enum NivelAcesso {
   BALCAO
   DELIVERY
   EXTERNO
+  USUARIO
 }
 
 enum TipoMovimentacaoEstoque {
@@ -35,7 +36,7 @@ model Usuario {
   whatsapp String?
   usuario String  @unique
   senha   String
-  nivelAcessoId NivelAcesso
+  nivelAcesso NivelAcesso @default(USUARIO)
   status  Boolean @default(true)
   resetToken     String?  
   resetExpires   DateTime?

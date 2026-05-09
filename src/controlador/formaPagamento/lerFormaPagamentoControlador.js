@@ -2,11 +2,12 @@ import {
   ERRO_MSG_FORMA,
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { LerFormaPagamentoServico } from '../../servico/formaPagamento/lerFormaPagamentoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class LerFormaPagamentoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     const { status, solicitante } = req.query
 
     const StatusPossiveis = ['ATIVO', 'INATIVO']
@@ -16,9 +17,19 @@ class LerFormaPagamentoControlador {
     try {
       if (!status || !StatusPossiveis.includes(status)) {
         throw new Error(ERRO_MSG_FORMA.TIPO_STATUS)
+
+        throw new AppError(
+          ERRO_MSG_FORMA.TIPO_STATUS,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "STATUS_BAD_REQUEST"
+        )
       }
       if (!solicitante || !possivelSolicitante.includes(solicitante)) {
-        throw new Error(ERRO_MSG_FORMA.TIPO_SOLICITANTE)
+        throw new AppError(
+          ERRO_MSG_FORMA.TIPO_SOLICITANTE,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SOLICITANTE_BAD_REQUEST"
+        )
       }
 
       const servico = new LerFormaPagamentoServico();
@@ -33,8 +44,7 @@ class LerFormaPagamentoControlador {
       }
     } catch (error) {
       console.log(error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

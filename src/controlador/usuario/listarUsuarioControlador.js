@@ -3,15 +3,15 @@ import { ListarUsuarioServico } from '../../servico/usuario/ListarUsuarioServico
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class ListarUsuarioControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       const servico = new ListarUsuarioServico()
       const resultado = await servico.executar()
 
       return res.status(HTTP_STATUS_CODES.OK).json({ resultado })
     } catch (error) {
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      console.log(error)
+      next(error)
     }
   }
 }

@@ -1,9 +1,10 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { BuscarFechamentoServico } from "../../servico/fechamento/buscarFechamentoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
 
 class BuscarFechamentoControlador { 
-    async tratar(req, res) {
+    async tratar(req, res, next) {
 
         const { setor } = req.params
         const vendedor = req.query.vendedor ? req.query.vendedor : undefined
@@ -11,22 +12,42 @@ class BuscarFechamentoControlador {
 
         try {
             if(vendedor && typeof vendedor !== 'string') {
-                throw new Error('Vendedor deve ser texto')
+                throw new AppError(
+                    "Vendedor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_BAD_REQUEST"
+                ) 
             }
             
             if(!setor) {
-                throw new Error('Setor é obrigatório')
+                throw new AppError(
+                    "Setor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
             if(typeof setor !== 'string') {
-                throw new Error('Setor deve ser texto')
+                throw new AppError(
+                    "Setor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
             const opcoesSetor = ['delivery', 'externo', 'balcao']
             if(!opcoesSetor.includes(setor)) {
-                throw new Error('Setor inválido')
+                throw new AppError(
+                    "Setor inválido",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
             
             if(data && typeof data !== 'string') {
-                throw new Error('Data deve ser texto')
+                throw new AppError(
+                    "Data deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DATA_BAD_REQUEST"
+                )
             }
 
             const dataInicio = data ? new Date(`${data}T00:00:00-03:00`) : undefined
@@ -39,8 +60,7 @@ class BuscarFechamentoControlador {
 
         } catch (error) {
             console.log(error)
-            const { mensagem, status } = coletarErro(error)
-            return res.status(status).json({ mensagem })
+            next(error)
         }   
     }
 }

@@ -1,4 +1,5 @@
 import { ERRO_MSG_USUARIO } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 import bcrypt from 'bcryptjs'
 
@@ -14,11 +15,19 @@ class ResetarSenhaServico {
       })
 
       if (!usuario) {
-        throw new Error(ERRO_MSG_USUARIO.TOKEN_INVALIDO)
+        throw new AppError(
+          ERRO_MSG_USUARIO.TOKEN_INVALIDO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "USUARIO_NOT_FOUND"
+        )
       }
 
       if (usuario.resetExpires < new Date()) {
-        throw new Error(ERRO_MSG_USUARIO.TOKEN_EXPIRADO)
+        throw new AppError(
+          ERRO_MSG_USUARIO.TOKEN_EXPIRADO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "USUARIO_NOT_FOUND"
+        )
       }
 
       // Gera hash da nova senha

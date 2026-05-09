@@ -2,11 +2,12 @@ import {
   ERRO_MSG_PRODUTO,
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { LerProdutosservico } from '../../servico/produtos/lerProdutosService.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class LerProdutosControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     const id = req.query.id ? Number(req.query.id) : undefined
     const nome = req.query.nome ? req.query.nome : undefined
     const fornecedor = req.query.fornecedor ? req.query.fornecedor : undefined
@@ -14,16 +15,32 @@ class LerProdutosControlador {
 
     try {
       if (id && isNaN(id)) {
-        throw new Error(ERRO_MSG_PRODUTO.TIPO_ID)
+        throw new AppError(
+          ERRO_MSG_PRODUTO.TIPO_ID,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
       if (nome && typeof nome !== 'string') {
-        throw new Error(ERRO_MSG_PRODUTO.TIPO_NOME)
+        throw new AppError(
+          ERRO_MSG_PRODUTO.TIPO_NOME,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
       if (fornecedor && typeof fornecedor !== 'string') {
-        throw new Error(ERRO_MSG_PRODUTO.TIPO_FORNECEDOR)
+        throw new AppError(
+          ERRO_MSG_PRODUTO.TIPO_FORNECEDOR,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
       if (segmento && typeof segmento !== 'string') {
-        throw new Error(ERRO_MSG_PRODUTO.TIPO_SEGMENTO)
+        throw new AppError(
+          ERRO_MSG_PRODUTO.TIPO_SEGMENTO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
 
       const filtros = {
@@ -39,9 +56,7 @@ class LerProdutosControlador {
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       console.error(error)
-      const { status, mensagem } = coletarErro(error)
-
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

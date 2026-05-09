@@ -1,4 +1,5 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { QuantidadePedidoServico } from '../../servico/pedido/quantidadePedido/quantidadePedidoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
@@ -13,22 +14,46 @@ class QuantidadePedidoControlador {
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao', 'geral']
       if (!setor) {
-        throw new Error('Setor é obrigatório')
+        throw new AppError(
+          'Setor é obrigatório',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
       if (!opcoesSetor.includes(setor)) {
-        throw new Error('Setor inválido')
+                throw new AppError(
+          'Setor inválido',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
       if (vendedor && typeof vendedor !== 'string') {
-        throw new Error('Vendedor deve ser texto')
+        throw new AppError(
+          'Vendedor deve ser texto',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
       if (!dataInicio && !dataFim) {
-        throw new Error('Data de início e fim são obrigatórios')
+        throw new AppError(
+          'Data de início e fim são obrigatórios',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
       if (dataInicio && typeof dataInicio !== 'string') {
-        throw new Error('Data de início deve ser texto')
+        throw new AppError(
+          'Data de início deve ser texto',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
       if (dataFim && typeof dataFim !== 'string') {
-        throw new Error('Data de fim deve ser texto')
+        throw new AppError(
+          'Data de fim deve ser texto',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_INICIO_FIM_NOT_FOUND"
+        )
       }
 
       const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
@@ -40,8 +65,7 @@ class QuantidadePedidoControlador {
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       console.log(error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json(mensagem)
+      next(error)
     }
   }
 }

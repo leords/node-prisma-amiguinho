@@ -2,11 +2,12 @@ import {
   ERRO_MSG_PEDIDOS,
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { BuscarPedidoServico } from '../../servico/pedido/buscarPedidoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class BuscarPedidoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     const setor = req.query.setor ? req.query.setor : undefined
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
     const cliente = req.query.cliente ? req.query.cliente : undefined
@@ -29,28 +30,56 @@ class BuscarPedidoControlador {
       console.log("datas: ", dataInicio, dataFim)
 
       if (setor && typeof setor !== 'string' && !opcoesSetor.includes(setor)) {
-        throw new Error(ERRO_MSG_PEDIDOS.SETOR)
+        throw new AppError(
+          ERRO_MSG_PEDIDOS.SETOR,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "VENDEDOR_NOT_FOUND"
+        )
       }
       if (vendedor && typeof vendedor !== 'string') {
-        throw new Error('Vendedor inválido')
+        throw new AppError(
+          "Vendedor inválido",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "VENDEDOR_NOT_FOUND"
+        )
       }
       if (setor === 'balcao' && vendedor) {
         if (!opcoesVendedor.includes(vendedor)) {
-          throw new Error(ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO)
+          throw new AppError(
+          ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
         }
       }
       if (cliente && typeof cliente !== 'string') {
-        throw new Error('Cliente inválido')
+        throw new AppError(
+          "Cliente inválido",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "CLIENTE_NOT_FOUND"
+        )
       }
       if (formaPagamentoId && isNaN(formaPagamentoId)) {
-        throw new Error('Forma de pagamento inválida')
+        throw new AppError(
+          "Forma de pagamento inválida",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "FORMA_PAGAMENTO_NOT_FOUND"
+        )
       }
       if (usuarioId && isNaN(usuarioId)) {
-        throw new Error('ID de usuário inválido')
+        throw new AppError(
+          "ID de usuário inválido",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "USUARIO_NOT_FOUND"
+        )
       }
 
       if(status && typeof status !== 'string') {
-        throw new Error('Status inválido')
+        throw new AppError(
+          "Status inválido",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "STATUS_NOT_FOUND"
+        )
       }
 
       // valido a tipagem das datas.
@@ -60,7 +89,11 @@ class BuscarPedidoControlador {
         dataFim &&
         typeof dataFim !== 'string'
       ) {
-        throw new Error('Data inválida')
+        throw new AppError(
+          "Data inválida",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_NOT_FOUND"
+        )
       }
 
       // transformo elas em ISO manualmente. desta forma consigo pegar o intervalo do dia inteiro.
@@ -82,8 +115,7 @@ class BuscarPedidoControlador {
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       console.log(error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

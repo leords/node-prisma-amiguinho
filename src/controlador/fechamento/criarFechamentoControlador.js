@@ -1,31 +1,52 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { CriarFechamentoServico } from "../../servico/fechamento/criarFechamentoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
 
 
 class CriarFechamentoControlador {
-    async tratar(req, res) {
+    async tratar(req, res, next) {
         const { setor } = req.params
         const { vendedor } = req.body
 
         try {
             if(!setor) {
-                throw new Error('Setor é obrigatório')
+                throw new AppError(
+                    "Setor Setor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
 
             if(typeof setor !== 'string') {
-                throw new Error('Setor deve ser texto')
+                throw new AppError(
+                    "Setor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
             const opcoesSetor = ['delivery', 'externo', 'balcao']
             if(!opcoesSetor.includes(setor)) {
-                throw new Error('Setor inválido')
+                throw new AppError(
+                    "Setor inválido",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                )
             }
 
             if(!vendedor) { 
-                throw new Error('Vendedor é obrigatório')
+                throw new AppError(
+                    "Vendedor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_BAD_REQUEST"
+                )
             }
             if(typeof vendedor !== 'string') {
-                throw new Error('Vendedor deve ser texto')
+                throw new AppError(
+                    "Vendedor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_BAD_REQUEST"
+                )
             }
 
             const servico = new CriarFechamentoServico()
@@ -34,8 +55,7 @@ class CriarFechamentoControlador {
             return res.status(HTTP_STATUS_CODES.CREATED).json(resultado)
         } catch (error) {
             console.log(error)
-            const { mensagem, status } = coletarErro(error)
-            return res.status(status).json({ mensagem })
+            next(error)
         }
     }
 }

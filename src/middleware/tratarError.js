@@ -5,7 +5,8 @@ import { HTTP_STATUS_CODES } from "../config/httpStatusCodes.js"
 function tratarErros(error, req, res, next) {
 
   // Erros vindo do appError - 400, 401, 404, 409
-  if (error instanceof AppError) {
+  // error.statusCode && error.code só existem no AppError
+  if (error.statusCode && error.code) {
     return res.status(error.statusCode).json({
       sucesso: false,
       erro: {

@@ -1,4 +1,5 @@
 import { ERRO_MSG_USUARIO } from '../config/httpStatusCodes.js'
+import { AppError } from '../error/appError.js'
 import prismaCliente from '../prisma/index.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -7,9 +8,14 @@ class AutenticadorServico {
   async login(usuario, senha) {
     // validando se os campos estão preenchidos
     if (!usuario || !senha) {
-      throw new Error(ERRO_MSG_USUARIO.CAMPO_AUSENTE)
+      throw new AppError(
+        ERRO_MSG_USUARIO.CAMPO_AUSENTE,
+        401,
+        "USUARIO_INVALIDO"
+      )
     }
-    // buscando o usuário no banco
+    
+    // Buscando o usuário no banco
     const acessante = await prismaCliente.usuario.findUnique({
       where: {
         usuario: usuario,
@@ -17,18 +23,28 @@ class AutenticadorServico {
     })
     // validando a existencia do usuário e se o mesmo é ativo
     if (!acessante || !acessante.status) {
-      throw new Error(ERRO_MSG_USUARIO.USUARIO_INVALIDO)
+      throw new AppError(
+        ERRO_MSG_USUARIO.USUARIO_INVALIDO,
+        401,
+        "USUARIO_INVALIDO"
+      )
     }
-    // validando se a senha é correta
+
+    // Validando se a senha é correta
     const senhaValida = await bcrypt.compare(senha, acessante.senha)
     if (!senhaValida) {
-      throw new Error(ERRO_MSG_USUARIO.DADOS_LOGIN_INCORRETOS)
+      throw new AppError(
+        ERRO_MSG_USUARIO.DADOS_LOGIN_INCORRETOS,
+        401,
+        "DADOS_LOGIN_INCORRETOS"
+      )
     }
-    // criando o token e assinando
+    // Criando o token e assinando
     const token = jwt.sign(
       {
         id: acessante.id,
         usuario: acessante.nome,
+        nivelAcesso: acessante.nivelAcesso
       },
       process.env.JWT_SECRETA,
       { expiresIn: '8h' }
@@ -40,7 +56,7 @@ class AutenticadorServico {
         id: acessante.id,
         nome: acessante.nome,
         usuario: acessante.usuario,
-        nivelAcesso: acessante.nivelAcessoId,
+        nivelAcesso: acessante.nivelAcesso,
       },
     }
   }

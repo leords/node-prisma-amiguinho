@@ -1,10 +1,11 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { BuscarDiferencasFechamentoService } from "../../servico/fechamento/buscarDiferencasFechamentoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
+import { AppError } from '../../error/appError.js'
 
 
 class BuscarDiferencasFechamentoControlador {
-    async tratar(req, res) {
+    async tratar(req, res, next) {
 
         const { setor } = req.params
         const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
@@ -15,24 +16,48 @@ class BuscarDiferencasFechamentoControlador {
 
         try {
             if(dataInicio && typeof dataInicio === 'string') {
-                throw new Error('Data de início deve ser um texto')
+                throw new AppError(
+                    "Data de início deve ser um texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DATA_INICIO_BAD_REQUEST"
+                )
             }
             if(dataFim && typeof dataFim === 'string') {
-                throw new Error('Data de fim deve ser um texto')
+                throw new AppError(
+                    "Data de fim deve ser um texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DATA_FIM_BAD_REQUEST"
+                )
             }
             if(vendedor && typeof vendedor !== 'string') {
-                throw new Error("Vendedor deve ser texto")
+                throw new AppError(
+                    "ndedor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_BAD_REQUEST"
+                ) 
             }
 
             if(!setor) {
-                throw new Error('Setor é obrigatório')
+                throw new AppError(
+                    "Setor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                ) 
             }
             if(typeof setor !== 'string') {
-                throw new Error('Setor deve ser texto')
+                throw new AppError(
+                    "Setor deve ser texto",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                ) 
             }
             const opcoesSetor = ['delivery', 'externo', 'balcao']
             if(!opcoesSetor.includes(setor)) {
-                throw new Error('Setor inválido')
+                throw new AppError(
+                    "Setor inválido",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_BAD_REQUEST"
+                ) 
             }
 
             const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
@@ -45,8 +70,7 @@ class BuscarDiferencasFechamentoControlador {
             
         } catch (error) {
             console.log(error)
-            const { mensagem, status } = coletarErro(error)
-            return res.status(status).json({ mensagem })
+            next(error)
         }
     }
 }

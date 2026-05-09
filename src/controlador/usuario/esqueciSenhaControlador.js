@@ -7,7 +7,7 @@ import { EsqueciSenhaServico } from '../../servico/usuario/esqueciSenhaServico.j
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class EsqueciSenhaControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     try {
       const { email } = req.body
 
@@ -25,9 +25,8 @@ class EsqueciSenhaControlador {
         mensagem: SUCESSO_MSG_USUARIO.VALIDAR_ENVIO_EMAIL,
       })
     } catch (error) {
-      console.error('EsqueciSenhaController.esqueciSenha =>', error)
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      console.log(error)
+      next(error)
     }
   }
 }

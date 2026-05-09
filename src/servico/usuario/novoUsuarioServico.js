@@ -3,7 +3,10 @@ import { ERRO_MSG_USUARIO } from '../../config/httpStatusCodes.js'
 import prismaCliente from '../../prisma/index.js'
 
 class NovoUsuarioServico {
-  async executar(nome, email, usuario, senha, nivelAcessoId) {
+  async executar(nome, email, usuario, senha, whatsapp, nivelAcesso) {
+
+    console.log('Dados: ', nome, email, usuario, senha, whatsapp, nivelAcesso)
+    
     try {
       // Valida a existencia de usuário, sendo que usúario é unico!
       const buscarUsuario = await prismaCliente.usuario.findUnique({
@@ -23,7 +26,8 @@ class NovoUsuarioServico {
           email,
           usuario,
           senha: senhaCriptografada,
-          nivelAcessoId,
+          whatsapp,
+          nivelAcesso
         },
       })
 

@@ -1,10 +1,11 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { RelatorioProdutoServico } from "../../servico/produtos/relatorioProduto/relatorioProdutoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
 
 
 class RelatorioProdutoControlador {
-    async tratar(req, res) {
+    async tratar(req, res, next) {
 
         const setor = req.params.setor
         const produtoId = req.params.produtoId ? Number(req.params.produtoId): undefined
@@ -15,21 +16,42 @@ class RelatorioProdutoControlador {
         try {
             const opcaoSetores = ['balcao', 'delivery', 'externo', 'geral']
             if (!opcaoSetores.includes(setor)) {
-                throw new Error('Setor inválido')
+                throw new AppError(
+                    'Setor inválido',
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_NOT_FOUND"
+                )
             }
             if(!setor) {
-                throw new Error('Setor é obrigatório')
+
+                throw new AppError(
+                    'Setor é obrigatório',
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "SETOR_NOT_FOUND"
+                )
             }
             if(vendedor && typeof vendedor !== 'string') {
-                throw new Error('Vendedor deve ser texto')
+                throw new AppError(
+                    'Vendedor deve ser texto',
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "VENDEDOR_NOT_FOUND"
+                )
             }
 
             if(produtoId && isNaN(produtoId)) {
-                throw new Error('Produto deve um número')
+                throw new AppError(
+                    'Produto deve um número',
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "PRODUTO_NOT_FOUND"
+                )
             }
 
             if (typeof dataInicio !== 'string' && typeof dataFim !== 'string') {
-                throw new Error('Data de fim deve ser texto')
+                throw new AppError(
+                    'Data de fim deve ser texto',
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DATA_INICIO_NOT_FOUND"
+                )
             }
 
             const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
@@ -41,8 +63,7 @@ class RelatorioProdutoControlador {
             return res.status(HTTP_STATUS_CODES.OK).json(resultado);
         } catch (error) {
             console.log(error)
-            const { status, mensagem } = coletarErro(error)
-            return res.status(status).json(mensagem)
+            next(error)
         }
     }
 }

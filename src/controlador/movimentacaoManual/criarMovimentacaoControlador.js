@@ -1,40 +1,73 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { CriarMovimentacaoServico } from "../../servico/movimentacaoManual/criarMovimentacaoServico.js"
 import { coletarErro } from "../../utilidades/coletarErro.js"
 
 class CriarMovimentacaoControlador {
-    async tratar(req, res) {
+    async tratar(req, res, next) {
         const { fechamentoId, tipo, descricao, valor } = req.body
 
         try {
 
             if(!fechamentoId) {
-                throw new Error('Fechamento ID é obrigatório')
+                throw new AppError(
+                    "Fechamento ID é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "FECHAMENTO_ID_NOT_FOUND"
+                )
             }
             if(isNaN(fechamentoId)) {
-                throw new Error('Fechamento ID deve ser um número')
+                throw new AppError(
+                    "Fechamento ID deve ser um número",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "FECHAMENTO_ID_NOT_FOUND"
+                )
             }
 
             if(!tipo) {
-                throw new Error('Tipo é obrigatório')
+                throw new AppError(
+                    "Tipo é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "TIPO_NOT_FOUND"
+                )
             }
             const opcoesTipo = ['entrada', 'saida']
             if(!opcoesTipo.includes(tipo)) {
-                throw new Error('Tipo deve ser entrada ou saida')
+                throw new AppError(
+                    "Tipo deve ser entrada ou saida",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "TIPO_NOT_FOUND"
+                )
             }
 
             if(!descricao) {
-                throw new Error('Descrição é obrigatória')
+                throw new AppError(
+                    "Descrição é obrigatória",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DESCRICAO_NOT_FOUND"
+                )
             }
             if(typeof descricao !== 'string') {
-                throw new Error('Descrição deve ser uma string')
+                throw new AppError(
+                    "Descrição deve ser uma string",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "DESCRICAO_NOT_FOUND"
+                )
             }
 
             if(!valor) {
-                throw new Error('Valor é obrigatório')
+                throw new AppError(
+                    "Valor é obrigatório",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "FECHAMENTO_ID_NOT_FOUND"
+                )
             }
             if(isNaN(valor)) {
-                throw new Error('Valor deve ser um número')
+                throw new AppError(
+                    "'Valor deve ser um número",
+                    HTTP_STATUS_CODES.BAD_REQUEST,
+                    "FECHAMENTO_ID_NOT_FOUND"
+                )
             }
 
             const resultado = new CriarMovimentacaoServico();
@@ -44,8 +77,7 @@ class CriarMovimentacaoControlador {
 
         } catch (error) {
             console.log(error)
-            const { status, mensagem } = coletarErro(error)
-            return res.status(status).json({ mensagem })
+            next(error)
         }
     }
 }

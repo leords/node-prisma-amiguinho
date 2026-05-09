@@ -1,9 +1,10 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { TotalPorFormaPagamentoServico } from '../../servico/pedido/totalPorFormaPagamentoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class TotalPorFormaPagamentoControlador {
-  async tratar(req, res) {
+  async tratar(req, res, next) {
     const { setor } = req.params
     const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
     const dataFim = req.query.dataFim ? req.query.dataFim : undefined
@@ -12,17 +13,36 @@ class TotalPorFormaPagamentoControlador {
 
     try {
       if (!setor) {
-        throw new Error('Setor é obrigatório')
+        throw new AppError(
+          'Setor é obrigatório',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
+
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
-        throw new Error('Setor inválido')
+        throw new AppError(
+          'Setor inválido',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "SETOR_NOT_FOUND"
+        )
       }
+
       if (!dataInicio && !dataFim) {
-        throw new Error('Data de início e fim são obrigatórios')
+        throw new AppError(
+          'Data de início e fim são obrigatórios',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "DATA_NOT_FOUND"
+        )
       }
+
       if(vendedor && typeof vendedor !== 'string') {
-        throw new Error('Vendedor deve ser texto') 
+        throw new AppError(
+          'Vendedor deve ser texto',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "VENDEDOR_NOT_FOUND"
+        )
       }
 
       const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
@@ -34,8 +54,7 @@ class TotalPorFormaPagamentoControlador {
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)
     } catch (error) {
       console.log(error)
-      const { mensagem, status } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

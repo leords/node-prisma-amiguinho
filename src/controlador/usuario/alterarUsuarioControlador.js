@@ -2,28 +2,66 @@ import {
   ERRO_MSG_USUARIO,
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { AlterarUsuarioServico } from '../../servico/usuario/alterarUsuarioServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class AlterarUsuarioControlador {
-  async tratar(req, res) {
-    const { id } = req.body
+  async tratar(req, res, next) {
+
+    const { id } = Number(req.params.id)
+    const { status } = req.query.status ? req.query.status : undefined
+    const { nivelAcesso } = req.query.nivelAcesso ? req.query.nivelAcesso : undefined
 
     try {
-      if (!id) {
-        throw new Error(ERRO_MSG_USUARIO.ID_VAZIO)
-      }
-      if (isNaN(id)) {
-        throw new Error(ERRO_MSG_USUARIO.TIPO_ID)
+      if(id) {
+        throw new AppError(
+          ERRO_MSG_USUARIO.ID_VAZIO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "ID_NOT_FOUND"
+        )
       }
 
-      const servico = new AlterarUsuarioServico(id)
-      const resultado = await servico.executar(id)
+      if(isNaN(id)) {
+        throw new AppError(
+          ERRO_MSG_USUARIO.TIPO_ID,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "ID_NOT_FOUND"
+        )
+      }
+
+      if(status && typeof status !== 'string') {
+          throw new AppError(
+          "Status deve ser do tipo texto",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "STATUS_NOT_FOUND"
+          )
+      }
+
+      if(nivelAcesso && typeof nivelAcesso !== 'string') {
+        throw new AppError(
+          "Nivel de acesso deve ser do tipo texto",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "NIVEL_ACESSO_NOT_FOUND"
+        )
+      }
+
+      const opcoesNivelAcesso = ['ADMIN', 'VENDAS', 'BALCAO', 'DELIVERY', 'EXTERNO', 'USUARIO']
+
+      if(!opcoesNivelAcesso.includes(nivelAcesso)) {
+        throw new AppError (
+          "Nivel de acesso deve estar dentro dessas opções: | ADMIN | VENDAS | BALCAO | DELIVERY | EXTERNO | USUARIO |",
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "NIVEL_ACESSO_NOT_FOUND"
+        )
+      }
+
+      const servico = new AlterarUsuarioServico()
+      const resultado = await servico.executar(id, status, nivelAcesso)
 
       return res.status(HTTP_STATUS_CODES.OK).json({ resultado })
     } catch (error) {
-      const { status, mensagem } = coletarErro(error)
-      return res.status(status).json({ mensagem })
+      next(error)
     }
   }
 }

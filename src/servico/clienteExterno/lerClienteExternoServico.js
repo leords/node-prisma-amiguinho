@@ -1,4 +1,5 @@
-import { ERRO_MSG_CLIENTE_EXTERNO } from '../../config/httpStatusCodes.js'
+import { ERRO_MSG_CLIENTE_EXTERNO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 
 class LerClienteExternoServico {
@@ -35,7 +36,11 @@ class LerClienteExternoServico {
       })
 
       if (!clientes) {
-        throw new Error(ERRO_MSG_CLIENTE_EXTERNO.NAO_ENCONTRADO)
+        throw new AppError(
+          ERRO_MSG_CLIENTE_EXTERNO.NAO_ENCONTRADO,
+          HTTP_STATUS_CODES.NOT_FOUND,
+          "CLIENTES_NOT_FOUND"
+        )
       }
 
       return clientes

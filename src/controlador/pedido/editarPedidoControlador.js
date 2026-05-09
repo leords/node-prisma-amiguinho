@@ -1,4 +1,5 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 import { EditarPedidoServico } from "../../servico/pedido/editarPedido/editarPedidoServico.js"
 
 class EditarPedidoControlador {
@@ -10,20 +11,43 @@ class EditarPedidoControlador {
         const dados = req.body
 
         if(!setor) {
-            throw new Error('Setor é obrigatório')
+            throw new AppError(
+                'Setor é obrigatório',
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "SETOR_NOT_FOUND"
+            )
         }
+
         const opcaoSetor = ['delivery', 'externo', 'balcao']
         if (!opcaoSetor.includes(setor)) {
-            throw new Error('Setor inválido')
+            throw new AppError(
+                'Setor inválido',
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "SETOR_NOT_FOUND"
+            )
         }
+        
         if(uuid && typeof uuid !== 'string') {
-            throw new Error('UUID é obrigatório')
+            throw new AppError(
+                'UUID é obrigatório',
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "UUID_NOT_FOUND"
+            )
         }
+        
         if(formaPagamentoId && isNaN(formaPagamentoId)) {
-            throw new Error('Forma de pagamento precisa ser um número')
+            throw new AppError(
+                'Forma de pagamento precisa ser um número',
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "FORMA_PAGAMENTO_NOT_FOUND"
+            )
         }
         if(dados && typeof dados.length === 0) {
-            throw new Error('Dados é obrigatório')
+            throw new AppError(
+                'Dados é obrigatório',
+                HTTP_STATUS_CODES.BAD_REQUEST,
+                "DADOS_NOT_FOUND"
+            )
         }
 
         const servico = new EditarPedidoServico()

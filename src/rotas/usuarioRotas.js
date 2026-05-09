@@ -15,13 +15,13 @@ rotas.post('/login', new LoginUsuario().tratar)
 rotas.post(
   '/novo-usuario',
   autenticadorMiddleware,
-  nivelAcessoMiddleware([1]),
+  nivelAcessoMiddleware(['ADMIN']),
   new NovoUsuarioControlador().tratar
 )
 rotas.get(
   '/listar-usuario',
   autenticadorMiddleware,
-  nivelAcessoMiddleware([1, 3]),
+  nivelAcessoMiddleware(['ADMIN']),
   new ListarUsuarioControlador().tratar
 )
 rotas.patch(

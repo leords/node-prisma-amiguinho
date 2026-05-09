@@ -7,7 +7,12 @@ const nivelAcessoMiddleware = (nivel) => {
   return (req, res, next) => {
     const usuario = req.user
 
-    const nivelUsuario = Number(usuario?.nivelAcesso)
+    const nivelUsuario = usuario?.nivelAcesso
+
+    console.log('coleta de nivel :', nivelUsuario)
+
+    console.log('nivel de acesso: ', nivel)
+    console.log('usuario: ', usuario)
 
     // Valida se o nivel do usuário logado é o mesmo que o da rota
     if (!usuario || !nivel.includes(nivelUsuario)) {
