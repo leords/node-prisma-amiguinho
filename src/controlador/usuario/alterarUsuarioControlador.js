@@ -9,12 +9,15 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class AlterarUsuarioControlador {
   async tratar(req, res, next) {
 
-    const { id } = Number(req.params.id)
-    const { status } = req.query.status ? req.query.status : undefined
-    const { nivelAcesso } = req.query.nivelAcesso ? req.query.nivelAcesso : undefined
+
+    const id = Number(req.params.id)
+    const { status, nivelAcesso } = req.body
+
+    const statusValidado = status === 'ATIVO'
+
 
     try {
-      if(id) {
+      if(!id) {
         throw new AppError(
           ERRO_MSG_USUARIO.ID_VAZIO,
           HTTP_STATUS_CODES.BAD_REQUEST,
@@ -30,7 +33,7 @@ class AlterarUsuarioControlador {
         )
       }
 
-      if(status && typeof status !== 'string') {
+      if(statusValidado && typeof statusValidado !== 'boolean') {
           throw new AppError(
           "Status deve ser do tipo texto",
           HTTP_STATUS_CODES.BAD_REQUEST,
@@ -48,7 +51,7 @@ class AlterarUsuarioControlador {
 
       const opcoesNivelAcesso = ['ADMIN', 'VENDAS', 'BALCAO', 'DELIVERY', 'EXTERNO', 'USUARIO']
 
-      if(!opcoesNivelAcesso.includes(nivelAcesso)) {
+      if(nivelAcesso && !opcoesNivelAcesso.includes(nivelAcesso)) {
         throw new AppError (
           "Nivel de acesso deve estar dentro dessas opções: | ADMIN | VENDAS | BALCAO | DELIVERY | EXTERNO | USUARIO |",
           HTTP_STATUS_CODES.BAD_REQUEST,
@@ -57,10 +60,11 @@ class AlterarUsuarioControlador {
       }
 
       const servico = new AlterarUsuarioServico()
-      const resultado = await servico.executar(id, status, nivelAcesso)
+      const resultado = await servico.executar(id, statusValidado, nivelAcesso)
 
       return res.status(HTTP_STATUS_CODES.OK).json({ resultado })
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }

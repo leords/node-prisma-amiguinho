@@ -38,7 +38,7 @@ model Usuario {
   senha   String
   nivelAcesso NivelAcesso @default(USUARIO)
   status  Boolean @default(true)
-  resetToken     String?  
+  resetToken     String?
   resetExpires   DateTime?
 
   pedidosDelivery PedidoDelivery[]

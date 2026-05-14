@@ -2,23 +2,26 @@ import { Router } from "express";
 import { CriarOrdemCompraControlador } from "../controlador/ordemCompra/CriarOrdemCompraControlador.js";
 import { ListarOrdemCompraControlador } from "../controlador/ordemCompra/listarOrdemCompraControlador.js";
 import { EditarOrdemCompraControlador } from "../controlador/ordemCompra/editarOrdemCompraControlador.js";
+import { autenticadorMiddleware } from "../middleware/autenticadorMiddleware.js";
+import { nivelAcessoMiddleware } from '../middleware/nivelAcessoMiddleware.js'
 
 
 
 const rotas = Router();
 
 rotas.post('/criar-ordem', 
-     //autenticadorMiddleware, 
+     autenticadorMiddleware, 
      new CriarOrdemCompraControlador().tratar
     )
 
 rotas.get('/buscar-ordem',
-     //autenticadorMiddleware,
+     autenticadorMiddleware,
     new ListarOrdemCompraControlador().tratar
 )
 
 rotas.patch('/editar-ordem/:id',
-    //autenticadorMiddleware,
+    autenticadorMiddleware,
+    nivelAcessoMiddleware(['ADMIN']),
     new EditarOrdemCompraControlador().tratar
 )
 

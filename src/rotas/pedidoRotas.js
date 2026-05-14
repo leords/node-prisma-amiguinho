@@ -17,73 +17,73 @@ const rotas = Router()
 
 rotas.post(
   '/novo-pedido/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new CriarPedidoControlador().tratar
 )
 
 rotas.get(
   '/buscar-pedidos',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new BuscarPedidoControlador().tratar
 )
 
 rotas.get(
   '/buscar-fechamento-balcao-dia',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new BuscarFechamentoBalcaoDiaControlador().tratar
 )
 
 rotas.get(
   '/ticket-medio/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new TicketMedioControlador().tratar
 )
 
 rotas.get(
   '/top-produtos/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new TopProdutoControlador().tratar
 )
 
 rotas.get(
   '/intervalo-temporal/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new LinhaTemporalControlador().tratar
 )
 
 rotas.patch(
   '/cancelar-pedido/:setor/:id',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new CancelarPedidoControlador().tratar
 )
 
 rotas.get(
   '/quantidade-pedidos/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new QuantidadePedidoControlador().tratar
 )
 
 rotas.get(
   '/total-vendas-periodo/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new TotalVendasPeriodoControlador().tratar
 )
 
 rotas.get(
   '/total-por-forma-pagamento/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new TotalPorFormaPagamentoControlador().tratar
 )
 
 rotas.get(
   '/relatorio-mix-produtos/:setor',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new RelatorioMixProdutosControlador().tratar
 )
 
 rotas.put(
   '/editar-pedido/:setor/:uuid',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new EditarPedidoControlador().tratar
 )
 

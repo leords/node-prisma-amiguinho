@@ -3,12 +3,13 @@ import { BuscarProdutosAPIControlador } from '../controlador/produtos/buscarProd
 import { LerProdutosControlador } from '../controlador/produtos/lerProdutosControlador.js'
 import { autenticadorMiddleware } from '../middleware/autenticadorMiddleware.js'
 import { RelatorioProdutoControlador } from '../controlador/produtos/relatorioProdutoControlador.js'
+import { RelatorioSTPControlador } from '../controlador/produtos/relatorioSaidaTotalProdutosControlador.js'
 
 const rotas = Router()
 
 rotas.get(
   '/buscar-produtos',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new BuscarProdutosAPIControlador().tratar
 )
 rotas.get(
@@ -19,8 +20,14 @@ rotas.get(
 
 rotas.get(
   '/relatorio-produto/:setor/:produtoId',
-  //autenticadorMiddleware,
+  autenticadorMiddleware,
   new RelatorioProdutoControlador().tratar
+)
+
+rotas.get(
+  '/relatorio-stp/:setor',
+  //autenticadorMiddleware,
+  new RelatorioSTPControlador().tratar
 )
 
 export { rotas as produtosRotas }

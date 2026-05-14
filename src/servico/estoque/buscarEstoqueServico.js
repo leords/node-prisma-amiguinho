@@ -26,9 +26,6 @@ class BuscarEstoqueServico {
             )
         }
 
-        console.log(produtos)
-
-
         return produtos
     }
 }

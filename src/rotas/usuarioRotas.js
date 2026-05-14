@@ -25,9 +25,9 @@ rotas.get(
   new ListarUsuarioControlador().tratar
 )
 rotas.patch(
-  '/alterar-usuario',
+  '/alterar-usuario/:id',
   autenticadorMiddleware,
-  nivelAcessoMiddleware([1]),
+  nivelAcessoMiddleware(['ADMIN']),
   new AlterarUsuarioControlador().tratar
 )
 rotas.post(

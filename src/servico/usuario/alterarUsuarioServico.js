@@ -3,7 +3,7 @@ import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 
 class AlterarUsuarioServico {
-  async executar(id, status, nivelAcesso) {
+  async executar(id, statusValidado, nivelAcesso) {
     try {
 
       const usuario = await prismaCliente.usuario.findUnique({
@@ -18,8 +18,8 @@ class AlterarUsuarioServico {
         )
       }
 
-      const statusFormatado = String(status).toUpperCase() === 'ATIVO'
-      const nivelAcessoFormatado = String(nivelAcesso).toUpperCase()
+
+      const nivelAcessoUpperCase = nivelAcesso ? String(nivelAcesso).toUpperCase() : undefined
 
 
       const alterarUsuario = await prismaCliente.usuario.update({
@@ -27,8 +27,8 @@ class AlterarUsuarioServico {
           id: id,
         },
         data: {
-          status: statusFormatado,
-          nivelAcesso: nivelAcessoFormatado
+          status: statusValidado ? statusValidado : undefined,
+          nivelAcesso: nivelAcessoUpperCase
         },
       })
 

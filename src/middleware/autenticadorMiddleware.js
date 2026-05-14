@@ -22,14 +22,16 @@ function autenticadorMiddleware(req, res, next) {
     const decodificado = jwt.verify(token, process.env.JWT_SECRETA)
     req.user = decodificado // ← Aqui injeta o usuário no req
 
-    // Se for válido, chama o next e a requisição continua
+    // Se for válido, chama o next e a requisição continua.
     next()
+
   } catch (error) {
     console.error('Erro na verificação do token:', error)
+
     // Se o token for inválido, expirado ou mal formado, retorna erro 401
     return res
-      .status(HTTP_STATUS_CODES.UNAUTHORIZED) // ← CORRIGIDO: deveria ser 401, não 404
-      .json({ message: ERRO_MSG_AUTENTICADOR.TOKEN_INVALIDO })
+      .status(HTTP_STATUS_CODES.UNAUTHORIZED) //401
+      .json({ message: ERRO_MSG_AUTENTICADOR.TOKEN_INVALIDO }) // Token inválido
   }
 }
 

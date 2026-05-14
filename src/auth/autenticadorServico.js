@@ -21,7 +21,8 @@ class AutenticadorServico {
         usuario: usuario,
       },
     })
-    // validando a existencia do usuário e se o mesmo é ativo
+
+    // Validando a existencia do usuário e se o mesmo é ativo
     if (!acessante || !acessante.status) {
       throw new AppError(
         ERRO_MSG_USUARIO.USUARIO_INVALIDO,
@@ -39,6 +40,7 @@ class AutenticadorServico {
         "DADOS_LOGIN_INCORRETOS"
       )
     }
+
     // Criando o token e assinando
     const token = jwt.sign(
       {
@@ -47,9 +49,10 @@ class AutenticadorServico {
         nivelAcesso: acessante.nivelAcesso
       },
       process.env.JWT_SECRETA,
-      { expiresIn: '8h' }
+      { expiresIn: '10h' }
     )
-    // retornando ao front o token e o objeto
+
+    // Retornando ao front o token e o objeto
     return {
       token,
       usuario: {

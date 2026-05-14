@@ -12,8 +12,8 @@ rotas.post(
 )
 rotas.get(
   '/ler-clientes-externo',
-  //autenticadorMiddleware,
-  //nivelAcessoMiddleware([1, 2]),
+  autenticadorMiddleware,
+  nivelAcessoMiddleware(['ADMIN']),
   new LerClienteExternoControlador().tratar
 )
 
