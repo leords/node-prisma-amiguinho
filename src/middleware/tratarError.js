@@ -1,4 +1,4 @@
-import { AppError } from "../error/AppError.js"
+import { AppError } from "../error/appError.js"
 import { HTTP_STATUS_CODES } from "../config/httpStatusCodes.js"
 
 // middleware de erro
