@@ -22,8 +22,8 @@ app.use(rotas);
 // Middleware de controle de erros. obs: middleware com 4 parametros é de monitoramento de erros.
 app.use(tratarErros);
 
-console.log("DATABASE_URL:", process.env.DATABASE_URL)
-console.log("DB HOST:", process.env.DATABASE_URL?.split("@")[1])
+//console.log("DATABASE_URL:", process.env.DATABASE_URL)
+//console.log("DB HOST:", process.env.DATABASE_URL?.split("@")[1])
 
 // Chamar a função de criar o usuario admin já ao executar o sistema.
 const servico = new CriarUsuarioAdminServico()
