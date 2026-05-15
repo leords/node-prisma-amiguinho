@@ -1,6 +1,6 @@
 import prismaCliente from '../../prisma/index.js'
 
-class ListarUsuarioServico {
+class listarUsuarioServico {
   async executar() {
     try {
       const usuarios = await prismaCliente.usuario.findMany({
@@ -21,4 +21,4 @@ class ListarUsuarioServico {
   }
 }
 
-export { ListarUsuarioServico }
+export { listarUsuarioServico }
