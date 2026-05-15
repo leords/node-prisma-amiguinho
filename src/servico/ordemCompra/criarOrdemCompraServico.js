@@ -2,7 +2,7 @@ import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { AppError } from "../../error/appError.js"
 import prismaCliente from "../../prisma/index.js"
 
-class CriarOrdemCompraServico {
+class criarOrdemCompraServico {
     async executar(usuarioId, fornecedorId, itens) {
     
     try {
@@ -55,4 +55,4 @@ class CriarOrdemCompraServico {
     } 
 }
 
-export { CriarOrdemCompraServico }
+export { criarOrdemCompraServico }

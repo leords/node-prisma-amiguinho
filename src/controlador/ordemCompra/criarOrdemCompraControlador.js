@@ -1,6 +1,6 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { AppError } from "../../error/appError.js"
-import { CriarOrdemCompraServico } from "../../servico/ordemCompra/criarOrdemCompraServico.js"
+import { criarOrdemCompraServico } from "../../servico/ordemCompra/criarOrdemCompraServico.js"
 
 
 class criarOrdemCompraControlador { 
@@ -76,7 +76,7 @@ class criarOrdemCompraControlador {
                 }
             })
 
-            const servico = new CriarOrdemCompraServico();
+            const servico = new criarOrdemCompraServico();
             const resultado = await servico.executar(usuarioId, fornecedorId, itensValidados);
 
             return res.status(HTTP_STATUS_CODES.OK).json(resultado)

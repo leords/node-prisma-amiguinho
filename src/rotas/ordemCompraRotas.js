@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { criarOrdemCompraControlador } from "../controlador/ordemCompra/CriarOrdemCompraControlador.js";
+import { criarOrdemCompraControlador } from "../controlador/ordemCompra/criarOrdemCompraControlador.js";
 import { ListarOrdemCompraControlador } from "../controlador/ordemCompra/listarOrdemCompraControlador.js";
 import { EditarOrdemCompraControlador } from "../controlador/ordemCompra/editarOrdemCompraControlador.js";
 import { autenticadorMiddleware } from "../middleware/autenticadorMiddleware.js";
