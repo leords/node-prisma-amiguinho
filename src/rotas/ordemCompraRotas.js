@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CriarOrdemCompraControlador } from "../controlador/ordemCompra/CriarOrdemCompraControlador.js";
+import { criarOrdemCompraControlador } from "../controlador/ordemCompra/CriarOrdemCompraControlador.js";
 import { ListarOrdemCompraControlador } from "../controlador/ordemCompra/listarOrdemCompraControlador.js";
 import { EditarOrdemCompraControlador } from "../controlador/ordemCompra/editarOrdemCompraControlador.js";
 import { autenticadorMiddleware } from "../middleware/autenticadorMiddleware.js";
@@ -9,13 +9,13 @@ import { nivelAcessoMiddleware } from '../middleware/nivelAcessoMiddleware.js'
 
 const rotas = Router();
 
-rotas.post('/criar-ordem', 
-     autenticadorMiddleware, 
-     new CriarOrdemCompraControlador().tratar
-    )
+rotas.post('/criar-ordem',
+    autenticadorMiddleware,
+    new criarOrdemCompraControlador().tratar
+)
 
 rotas.get('/buscar-ordem',
-     autenticadorMiddleware,
+    autenticadorMiddleware,
     new ListarOrdemCompraControlador().tratar
 )
 

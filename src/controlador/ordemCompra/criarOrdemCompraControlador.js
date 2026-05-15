@@ -3,7 +3,7 @@ import { AppError } from "../../error/appError.js"
 import { CriarOrdemCompraServico } from "../../servico/ordemCompra/criarOrdemCompraServico.js"
 
 
-class CriarOrdemCompraControlador { 
+class criarOrdemCompraControlador { 
     async tratar(req, res, next) {
 
         const { 
@@ -89,4 +89,4 @@ class CriarOrdemCompraControlador {
     }
 }
 
-export { CriarOrdemCompraControlador }
+export { criarOrdemCompraControlador }
