@@ -13,6 +13,7 @@ class AjusteEstoqueServico {
                     id: produtoId
                 }
             })
+            
             if(!produto) {
                 throw new AppError(
                     "Produto não encontrado",
@@ -29,12 +30,13 @@ class AjusteEstoqueServico {
                 )
             }
 
-            // validando usuario
+            // validando usuário
             const usuario = await prisma.usuario.findUnique({
                 where: {
                     id: usuarioId
                 }
             })
+
             if(!usuario) {
                 throw new AppError(
                     "Cliente não encontrado",
@@ -61,7 +63,7 @@ class AjusteEstoqueServico {
                 where: {
                     id: produtoId
                 },
-                data: { 
+                data: {
                     estoque: operacao
                 }
             })

@@ -46,7 +46,7 @@ class SaidaEstoqueBalcao {
                 }
 
                 // tranformando UND em caixa
-                const quantidadeTransformada = -item.quantidade / produto.quantidade
+                const quantidadeTransformada = item.quantidade / produto.quantidade
 
                 // Criando a movimentação
                 await prisma.estoque.create({
@@ -55,7 +55,7 @@ class SaidaEstoqueBalcao {
                             connect: { id: item.produtoId }
                         },
                         tipo: "SAIDA",
-                        quantidade: quantidadeTransformada,
+                        quantidade: -quantidadeTransformada,
                         origem: pedido.tipo, /// passando o setor de vendas
                         origemId: pedido.id,
                         usuario: {
@@ -69,7 +69,7 @@ class SaidaEstoqueBalcao {
                 where: { id: item.produtoId },
                     data: {
                         estoque: {
-                        decrement: Math.abs(quantidadeTransformada)
+                        decrement: quantidadeTransformada
                         }
                     }
                 });
@@ -78,8 +78,8 @@ class SaidaEstoqueBalcao {
     
             // Atualiza status
             return await prisma.pedidoBalcao.update({
-            where: { id: pedidoId },
-            data: { status: "finalizado" }
+                where: { id: pedidoId },
+                data: { status: "finalizado" }
             })
 
     }

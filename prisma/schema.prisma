@@ -67,7 +67,7 @@ model Produto {
   quantidade    Float      @default(0.0)
   precoUndVenda Decimal    @default(0.0)
 
-  estoque Int @default(0)
+  estoque Float @default(0)
 
   itensPedidoDelivery ItemPedidoDelivery[] @relation("ItemPedidoDeliveryProduto")
   itensPedidoExterno  ItemPedidoExterno[]  @relation("ItemPedidoExternoProduto")
