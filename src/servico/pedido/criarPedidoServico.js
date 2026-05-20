@@ -12,6 +12,10 @@ class CriarPedidoServico {
 
 
       if (setor === 'delivery') {
+
+        // Força uma conexão com o bancoantes do transaction.
+        await prismaCliente.$queryRaw`SELECT 1`;
+
         await prismaCliente.$transaction(async (prisma) => { 
           const pedido = await prisma.pedidoDelivery.create({
             data: {
@@ -38,13 +42,21 @@ class CriarPedidoServico {
             },
           })
           
-          const estoqueServico = new SaidaEstoqueServico()
-          // está sendo passado o transaction(prisma) por parametro.
-          return await estoqueServico.executar(pedido.id, setor, prisma)
-         })
+        const estoqueServico = new SaidaEstoqueServico()
+        // está sendo passado o transaction(prisma) por parametro.
+        return await estoqueServico.executar(pedido.id, setor, prisma)
+        },
+        {
+          timeout: 20000
+        }
+      )
       }
 
       if (setor === 'externo') {
+
+        // Força uma conexão com o bancoantes do transaction.
+        await prismaCliente.$queryRaw`SELECT 1`;
+
         await prismaCliente.$transaction(async (prisma) => {
           const pedido = await prisma.pedidoExterno.create({
             data: {
@@ -69,15 +81,23 @@ class CriarPedidoServico {
               cliente: true,
               formaPagamento: true,
             },
-          })
+          }
+        )
 
-          const estoqueServico = new SaidaEstoqueServico()
-          // está sendo passado o transaction(prisma) por parametro.
-          return await estoqueServico.executar(pedido.id, setor, prisma)
-        })
+        const estoqueServico = new SaidaEstoqueServico()
+        // está sendo passado o transaction(prisma) por parametro.
+        return await estoqueServico.executar(pedido.id, setor, prisma)
+        },
+        {
+          timeout: 20000
+        }
+      )
       }
 
       if (setor === 'balcao') {
+
+        // Força uma conexão com o bancoantes do transaction.
+        await prismaCliente.$queryRaw`SELECT 1`;
 
         await prismaCliente.$transaction(async (prisma) => {
           const pedido = await prisma.pedidoBalcao.create({
@@ -106,10 +126,15 @@ class CriarPedidoServico {
             },
           })
 
-          const estoqueServico = new SaidaEstoqueServico()
-          // está sendo passado o transaction(prisma) por parametro.
-          return await estoqueServico.executar(pedido.id, setor, prisma)
-        })
+        const estoqueServico = new SaidaEstoqueServico()
+        // está sendo passado o transaction(prisma) por parametro.
+        return await estoqueServico.executar(pedido.id, setor, prisma)
+        },
+        {
+          timeout: 20000
+        }
+      )
+
       }
 
       else {
