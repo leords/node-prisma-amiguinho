@@ -1,6 +1,4 @@
 import nodemailer from 'nodemailer'
-import { AppError } from '../../../src/error/appError.js'
-import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes'
 
 class EnviarEmail {
   constructor() {
@@ -13,7 +11,7 @@ class EnviarEmail {
       secure: process.env.MAIL_SECURE === 'true', // true = SSL
       auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS, 
+        pass: process.env.MAIL_PASS,
       },
     })
   }
@@ -37,11 +35,8 @@ class EnviarEmail {
       console.log('E-mail enviado para:', to)
     } catch (err) {
       console.error(err)
-      throw new AppError(
-        'Falha ao enviar o email',
-        HTTP_STATUS_CODES.BAD_REQUEST,
-        "EMAIL_BAD_REQUEST"
-      )
+      throw new Error('FALHA_ENVIO_EMAIL')
+      
     }
   }
 }
