@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import { AppError } from '../../error/appError'
+import { AppError } from '../../../src/error/appError.js'
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes'
 
 class EnviarEmail {
@@ -13,7 +13,7 @@ class EnviarEmail {
       secure: process.env.MAIL_SECURE === 'true', // true = SSL
       auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        pass: process.env.MAIL_PASS, 
       },
     })
   }
