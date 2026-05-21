@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs'
-import { ERRO_MSG_USUARIO } from '../../config/httpStatusCodes.js'
+import { ERRO_MSG_USUARIO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import prismaCliente from '../../prisma/index.js'
+import { AppError } from '../../error/appError.js'
 
 class NovoUsuarioServico {
   async executar(nome, email, usuario, senha, whatsapp, nivelAcesso) {
@@ -14,8 +15,29 @@ class NovoUsuarioServico {
           usuario: usuario,
         },
       })
+
       if (buscarUsuario) {
         throw new Error(ERRO_MSG_USUARIO.USUARIO_JA_EXISTE)
+
+        throw new AppError(
+          ERRO_MSG_USUARIO.USUARIO_JA_EXISTE,
+          HTTP_STATUS_CODES.CONFLICT,
+          "USUARIO_NOT_AVAILABLE"
+        )
+      }
+
+      const validarEmail = await prismaCliente.usuario.findUnique({
+        where: {
+          email: email
+        }
+      })
+
+      if(validarEmail) {
+        throw new AppError(
+          "Este email já está cadastrado",
+          HTTP_STATUS_CODES.CONFLICT,
+          "EMAIL_NOT_AVAILABLE"
+        )
       }
 
       const senhaCriptografada = await bcrypt.hash(senha, 8)

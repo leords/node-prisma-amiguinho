@@ -32,12 +32,10 @@ rotas.patch(
 )
 rotas.post(
   '/esqueci-senha',
-  autenticadorMiddleware,
   new EsqueciSenhaControlador().tratar
 )
 rotas.post(
   '/resetar-senha',
-  autenticadorMiddleware,
   new ResetarSenhaControlador().tratar
 )
 
