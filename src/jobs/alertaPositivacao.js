@@ -1,7 +1,6 @@
 // src/jobs/alertaPositivacao.js
 import { PrismaClient } from "@prisma/client";
 import { gerarTextoGroq } from "../utilidades/groq.js";
-import { enviarEmail }    from "../utilidades/email.js";
 import { enviarWhatsApp } from "../utilidades/whatsapp.js";
 import { EnviarEmailServico } from "../servico/email/enviarEmailServico.js";
 
