@@ -1,14 +1,22 @@
 import crypto from 'crypto'
 import prismaCliente from '../../prisma/index.js'
 import emailServico from '../email/emailServico.js'
+import { AppError } from '../../error/appError.js'
+import { ERRO_MSG_USUARIO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 
 class EsqueciSenhaServico {
   async executar(email) {
+    console.log('entrou no serviço')
     try {
       const usuario = await prismaCliente.usuario.findUnique({
         where: { email },
       })
       if (!usuario) {
+        throw new AppError(
+          'Não temos usuários cadastrado com este e-mail',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "USUARIO_NOT_FOUND"
+        )
         return
       }
 
