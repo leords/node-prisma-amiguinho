@@ -37,7 +37,6 @@ class EnviarEmail {
       console.log('E-mail enviado para:', to)
     } catch (err) {
       console.error(err)
-      throw new Error('FALHA_ENVIO_EMAIL')
       throw new AppError(
         'Falha ao enviar o email',
         HTTP_STATUS_CODES.BAD_REQUEST,
