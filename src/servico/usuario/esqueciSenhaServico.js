@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import prismaCliente from '../../prisma/index.js'
-import emailServico from '../email/emailServico.js'
 import { AppError } from '../../error/appError.js'
 import { ERRO_MSG_USUARIO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import { EnviarEmailServico } from '../email/enviarEmailServico.js'
@@ -46,7 +45,7 @@ class EsqueciSenhaServico {
           `
       const assunto = 'Redefinição de senha'
 
-      
+
       // Envia o e-mail (classe separada na pasta utils)
       const emailServico = new EnviarEmailServico()
       await emailServico.enviarNovoEmail(email, assunto, html)
