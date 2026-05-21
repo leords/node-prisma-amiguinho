@@ -3,6 +3,7 @@ import {
   HTTP_STATUS_CODES,
   SUCESSO_MSG_USUARIO,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { EsqueciSenhaServico } from '../../servico/usuario/esqueciSenhaServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
@@ -11,11 +12,14 @@ class EsqueciSenhaControlador {
     try {
       const { email } = req.body
 
-      // Checagem simples de entrada
+
       if (!email) {
-        return res
-          .status(HTTP_STATUS_CODES.BAD_REQUEST)
-          .json({ mensagem: ERRO_MSG_USUARIO.EMAIL_OBRIGADOTORIO })
+
+        throw new AppError(
+          ERRO_MSG_USUARIO.EMAIL_OBRIGADOTORIO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "EMAIL_BAD_REQUEST"
+        )
       }
 
       const servico = new EsqueciSenhaServico()
