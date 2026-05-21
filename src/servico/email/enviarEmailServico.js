@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
-import { AppError } from '../../error/appError'
-import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes'
+import { AppError } from '../../error/appError.js'
+import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 
 class EnviarEmailServico {
   async enviarNovoEmail (to, subject, html) {
