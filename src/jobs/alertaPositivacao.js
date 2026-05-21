@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { gerarTextoGroq } from "../utilidades/groq.js";
 import { enviarEmail }    from "../utilidades/email.js";
 import { enviarWhatsApp } from "../utilidades/whatsapp.js";
+import { EnviarEmailServico } from "../servico/email/enviarEmailServico.js";
 
 const prisma = new PrismaClient();
 
@@ -140,7 +141,10 @@ export async function executarAlertaPositivacao() {
 
     for (const admin of admins) {
       if (admin.email) {
-        await enviarEmail({ para: admin.email, assunto, html: htmlEmail });
+        //await enviarEmail({ para: admin.email, assunto, html: htmlEmail });
+
+        const emailServico = new EnviarEmailServico()
+        await emailServico.enviarNovoEmail(admin.email, assunto, htmlEmail)
       }
       if (admin.whatsapp) {
         const msgWpp = `${assunto}\n\n${alertas.map((a) => `• ${a.produto}: ${a.positAnterior}% → ${a.positAtual}% (▼${a.queda}pp)`).join("\n")}\n\n${analise}`;

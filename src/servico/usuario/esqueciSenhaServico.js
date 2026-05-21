@@ -3,6 +3,7 @@ import prismaCliente from '../../prisma/index.js'
 import emailServico from '../email/emailServico.js'
 import { AppError } from '../../error/appError.js'
 import { ERRO_MSG_USUARIO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import { EnviarEmailServico } from '../email/enviarEmailServico.js'
 
 class EsqueciSenhaServico {
   async executar(email) {
@@ -35,19 +36,21 @@ class EsqueciSenhaServico {
         },
       })
 
+      const html = `
+            <h2>Redefinição de senha</h2>
+            <p>Você solicitou a redefinição da sua senha.</p>
+            <p>Estamos te enviando o token para validar a troca da senha</p>
+            <p>TOKEN: ${token}</p>
+            <br />
+            <p>Este token expira em 15 minutos.</p>
+          `
+      const assunto = 'Redefinição de senha'
+
+      
       // Envia o e-mail (classe separada na pasta utils)
-      await emailServico.enviar({
-        to: usuario.email,
-        subject: 'Redefinição de senha',
-        html: `
-          <h2>Redefinição de senha</h2>
-          <p>Você solicitou a redefinição da sua senha.</p>
-          <p>Estamos te enviando o token para validar a troca da senha</p>
-          <p>TOKEN: ${token}</p>
-          <br />
-          <p>Este token expira em 15 minutos.</p>
-        `,
-      })
+      const emailServico = new EnviarEmailServico()
+      await emailServico.enviarNovoEmail(email, assunto, html)
+
     } catch (error) {
       console.error('Erro no gerarTokenEEnviarEmail =>', error)
       throw error

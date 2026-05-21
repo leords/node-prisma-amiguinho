@@ -22,8 +22,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
-    "nodemailer": "^7.0.10",
     "prisma": "^6.19.0",
+    "resend": "^6.12.3",
     "rotating-file-stream": "^3.2.7"
   }
 }
