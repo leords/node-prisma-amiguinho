@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer'
+import { AppError } from '../../error/appError'
+import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes'
 
 class EnviarEmail {
   constructor() {
@@ -34,8 +36,13 @@ class EnviarEmail {
 
       console.log('E-mail enviado para:', to)
     } catch (err) {
-      console.error('Erro ao enviar e-mail =>', err)
+      console.error(err)
       throw new Error('FALHA_ENVIO_EMAIL')
+      throw new AppError(
+        'Falha ao enviar o email',
+        HTTP_STATUS_CODES.BAD_REQUEST,
+        "EMAIL_BAD_REQUEST"
+      )
     }
   }
 }
