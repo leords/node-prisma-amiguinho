@@ -27,7 +27,10 @@ class ResetarSenhaControlador {
       const servico = new ResetarSenhaServico()
       const retorno = await servico.executar(token, novaSenha)
 
-      return retorno
+      return res.status(HTTP_STATUS_CODES.OK).json({
+        mensagem: 'Senha alterada com sucesso',
+      })
+
     } catch (error) {
       console.error(error)
       next(error)
