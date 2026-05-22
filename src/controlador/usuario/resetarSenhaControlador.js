@@ -3,6 +3,7 @@ import {
   HTTP_STATUS_CODES,
   SUCESSO_MSG_USUARIO,
 } from '../../config/httpStatusCodes.js'
+import { AppError } from '../../error/appError.js'
 import { ResetarSenhaServico } from '../../servico/usuario/resetarSenhaServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
@@ -15,11 +16,14 @@ class ResetarSenhaControlador {
       console.log('Debug NOVA SENHA: ', novaSenha)
 
       if (!token || !novaSenha) {
-        return res
-          .status(HTTP_STATUS_CODES.BAD_REQUEST)
-          .json({ message: ERRO_MSG_USUARIO.TOKEN_SENHA_OBRIGATORIOS })
-      }
+        throw new AppError(
+          ERRO_MSG_USUARIO.TOKEN_INVALIDO,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          "USUARIO_NOT_FOUND"
+        )
 
+      }
+      
       const servico = new ResetarSenhaServico()
       const retorno = await servico.executar(token, novaSenha)
 

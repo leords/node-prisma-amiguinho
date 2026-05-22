@@ -1,4 +1,4 @@
-import { ERRO_MSG_USUARIO } from '../../config/httpStatusCodes.js'
+import { ERRO_MSG_USUARIO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 import bcrypt from 'bcryptjs'
@@ -13,6 +13,8 @@ class ResetarSenhaServico {
           resetExpires: { gte: new Date() }, // token ainda válido
         },
       })
+
+      console.log('Token: ', token, 'Nova senha: ', novaSenha)
 
       if (!usuario) {
         throw new AppError(
