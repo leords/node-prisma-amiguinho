@@ -45,7 +45,9 @@ class ResetarSenhaServico {
         },
       })
 
+      console.log('debug final')
       return true
+      
     } catch (error) {
       console.error(error)
       throw error

@@ -19,11 +19,11 @@ class ResetarSenhaControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.TOKEN_INVALIDO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "USUARIO_NOT_FOUND"
+          "TOKEN_NOT_FOUND"
         )
 
       }
-      
+
       const servico = new ResetarSenhaServico()
       const retorno = await servico.executar(token, novaSenha)
 
