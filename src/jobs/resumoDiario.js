@@ -1,8 +1,8 @@
 // src/jobs/resumoDiario.js
 import { PrismaClient } from "@prisma/client";
 import { gerarTextoGroq } from "../utilidades/groq.js";
-import { enviarEmail }    from "../utilidades/email.js";
 import { enviarWhatsApp } from "../utilidades/whatsapp.js";
+import { EnviarEmailServico } from "../servico/email/enviarEmailServico.js";
 
 const prisma = new PrismaClient();
 
@@ -125,7 +125,10 @@ export async function executarResumoDiario() {
     // enviando email e wpps para todos os usuarios que são ADMIN
     for (const admin of admins) {
       if (admin.email) {
-        await enviarEmail({ para: admin.email, assunto, html: htmlEmail });
+        //await enviarEmail({ para: admin.email, assunto, html: htmlEmail });
+
+        const emailServico = new EnviarEmailServico()
+        await emailServico.enviarNovoEmail(admin.email, assunto, htmlEmail)
       }
       if (admin.whatsapp) {
         await enviarWhatsApp(admin.whatsapp, `${assunto}\n\n${resumo}`);
