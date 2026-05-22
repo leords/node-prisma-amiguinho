@@ -45,7 +45,7 @@ class ResetarSenhaServico {
 
       return true
     } catch (error) {
-      console.error('Erro no resetarSenhaComToken =>', error)
+      console.error(error)
       throw error
     }
   }

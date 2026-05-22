@@ -11,6 +11,9 @@ class ResetarSenhaControlador {
     try {
       const { token, novaSenha } = req.body
 
+      console.log('Debug TOKEN: ', token)
+      console.log('Debug NOVA SENHA: ', novaSenha)
+
       if (!token || !novaSenha) {
         return res
           .status(HTTP_STATUS_CODES.BAD_REQUEST)
@@ -18,13 +21,11 @@ class ResetarSenhaControlador {
       }
 
       const servico = new ResetarSenhaServico()
-      await servico.executar(token, novaSenha)
+      const retorno = await servico.executar(token, novaSenha)
 
-      return res
-        .status(HTTP_STATUS_CODES.OK)
-        .json({ mensagem: SUCESSO_MSG_USUARIO.SENHA_REDEFINIDA })
+      return retorno
     } catch (error) {
-      console.error('EsqueciSenhaController.resetarSenha =>', error)
+      console.error(error)
       next(error)
     }
   }
