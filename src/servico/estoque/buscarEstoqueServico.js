@@ -11,7 +11,8 @@ class BuscarEstoqueServico {
             select: {
                 id: true,
                 nome: true,
-                estoque: true
+                estoque: true,
+                quantidade: true
             },
             orderBy: {
                 estoque: 'desc'
