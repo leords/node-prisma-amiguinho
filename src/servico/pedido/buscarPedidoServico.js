@@ -22,8 +22,18 @@ class BuscarPedidoServico {
     if (cliente) {
       query.cliente = cliente
     }
-    // Desta forma possibilito buscar por um array e também por uma unica palavra
+    
     if (formaPagamentoId) {
+
+    // Valida se é um array ","
+    // Caso sim faz um split pela "," 
+    // Mapeia como Number, 
+    // Caso nao for, apenas tranforma em Number
+      formaPagamentoId = formaPagamentoId.includes(",")
+        ? formaPagamentoId.split(",").map(Number)
+        : Number(formaPagamentoId);
+
+      // Desta forma possibilito buscar por um array e também por uma unica palavra
       query.formaPagamentoId = Array.isArray(formaPagamentoId)
         ? { in: formaPagamentoId }
         : formaPagamentoId
