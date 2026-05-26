@@ -26,15 +26,18 @@ class BuscarPedidoServico {
     if (formaPagamentoId) {
       console.log('Debug: ', formaPagamentoId)
 
-    // Valida se é um array ","
-    // Caso sim faz um split pela "," 
-    // Mapeia como Number, 
-    // Caso nao for, apenas tranforma em Number
-      formaPagamentoId = formaPagamentoId.includes(",")
-        ? formaPagamentoId.split(",").map(Number)
-        : Number(formaPagamentoId);
+    // Se vier como string:
+    // "5" -> 5
+    // "5,6,7" -> [5,6,7]
+    if (typeof formaPagamentoId === "string") {
+        formaPagamentoId = formaPagamentoId.includes(",")
+          ? formaPagamentoId.split(",").map(Number)
+          : Number(formaPagamentoId);
+      }
 
-      // Desta forma possibilito buscar por um array e também por uma unica palavra
+     // Permite buscar:
+    // formaPagamentoId: 5
+    // formaPagamentoId: [5,6,7]
       query.formaPagamentoId = Array.isArray(formaPagamentoId)
         ? { in: formaPagamentoId }
         : formaPagamentoId
