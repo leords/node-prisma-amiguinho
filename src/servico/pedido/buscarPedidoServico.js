@@ -24,6 +24,7 @@ class BuscarPedidoServico {
     }
     
     if (formaPagamentoId) {
+      console.log('Debug: ', formaPagamentoId)
 
     // Valida se é um array ","
     // Caso sim faz um split pela "," 
