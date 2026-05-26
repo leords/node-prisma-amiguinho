@@ -22,8 +22,11 @@ class BuscarPedidoServico {
     if (cliente) {
       query.cliente = cliente
     }
+    // Desta forma possibilito buscar por um array e também por uma unica palavra
     if (formaPagamentoId) {
-      query.formaPagamentoId = formaPagamentoId
+      query.formaPagamentoId = Array.isArray(formaPagamentoId)
+        ? { in: formaPagamentoId }
+        : formaPagamentoId
     }
     if (usuarioId) {
       query.usuarioId = usuarioId
