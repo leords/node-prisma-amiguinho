@@ -23,7 +23,7 @@ class BuscarPedidoServico {
       query.cliente = cliente
     }
     
-    if (formaPagamentoId) {
+    if (formaPagamentoId && (!Array.isArray(formaPagamentoId) || formaPagamentoId.length > 0)) {
       console.log('Debug: ', formaPagamentoId)
 
     // Se vier como string:
