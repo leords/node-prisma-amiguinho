@@ -12,6 +12,7 @@ import { TotalVendasPeriodoControlador } from '../controlador/pedido/totalVendas
 import { TotalPorFormaPagamentoControlador } from '../controlador/pedido/totalPorFormaPagamentoControlador.js'
 import { RelatorioMixProdutosControlador } from '../controlador/pedido/relatorioMixProdutosControlador.js'
 import { EditarPedidoControlador } from '../controlador/pedido/editarPedidoControlador.js'
+import { buscarValesInternoControlador } from '../controlador/pedido/buscarValeInternoControlador.js'
 
 const rotas = Router()
 
@@ -25,6 +26,12 @@ rotas.get(
   '/buscar-pedidos',
   autenticadorMiddleware,
   new BuscarPedidoControlador().tratar
+)
+
+rotas.get(
+  '/buscar-vale-interno',
+  autenticadorMiddleware,
+  new buscarValesInternoControlador().tratar
 )
 
 rotas.get(

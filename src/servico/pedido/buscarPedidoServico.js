@@ -23,25 +23,10 @@ class BuscarPedidoServico {
       query.cliente = cliente
     }
     
-    if (formaPagamentoId && (!Array.isArray(formaPagamentoId) || formaPagamentoId.length > 0)) {
-      console.log('Debug: ', formaPagamentoId)
-
-    // Se vier como string:
-    // "5" -> 5
-    // "5,6,7" -> [5,6,7]
-    if (typeof formaPagamentoId === "string") {
-        formaPagamentoId = formaPagamentoId.includes(",")
-          ? formaPagamentoId.split(",").map(Number)
-          : Number(formaPagamentoId);
-      }
-
-     // Permite buscar:
-    // formaPagamentoId: 5
-    // formaPagamentoId: [5,6,7]
-      query.formaPagamentoId = Array.isArray(formaPagamentoId)
-        ? { in: formaPagamentoId }
-        : formaPagamentoId
+    if (formaPagamentoId ) {
+      query.formaPagamentoId = formaPagamentoId
     }
+
     if (usuarioId) {
       query.usuarioId = usuarioId
     }
