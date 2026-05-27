@@ -4,7 +4,7 @@ class bsucarValeInternoServico {
   async executar(
     vendedor,
     cliente,
-    formaPagamentoId,
+    formaPagamento,
     dataInicio,
     dataFim,
     usuarioId,

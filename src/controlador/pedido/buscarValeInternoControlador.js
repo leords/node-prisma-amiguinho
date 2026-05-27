@@ -10,7 +10,7 @@ class buscarValesInternoControlador {
   
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
     const cliente = req.query.cliente ? req.query.cliente : undefined
-    const formaPagamentoId = req.query.formaPagamentoId
+    const formaPagamento = req.query.formaPagamentoId
       ? Number(req.query.formaPagamentoId)
       : undefined
     // Mantenho as datas vindos como strings, vem no formato 2025-12-14
@@ -40,7 +40,7 @@ class buscarValesInternoControlador {
           "CLIENTE_NOT_FOUND"
         )
       }
-      if (formaPagamentoId && isNaN(formaPagamentoId)) {
+      if (formaPagamento && isNaN(formaPagamento)) {
         throw new AppError(
           "Forma de pagamento inválida",
           HTTP_STATUS_CODES.BAD_REQUEST,
@@ -85,7 +85,7 @@ class buscarValesInternoControlador {
       const resultado = await servico.executar(
         vendedor,
         cliente,
-        formaPagamentoId,
+        formaPagamento,
         inicio,
         fim,
         usuarioId,
