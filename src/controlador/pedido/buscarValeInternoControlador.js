@@ -3,9 +3,9 @@ import {
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
 import { AppError } from '../../error/appError.js'
-import { bsucarValeInternoServico } from '../../servico/pedido/buscarValeInternoServico.js'
+import { buscarValeInternoServico } from '../../servico/pedido/buscarValeInternoServico.js'
 
-class buscarValesInternoControlador {
+class buscarValeInternoControlador {
   async tratar(req, res, next) {
   
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
@@ -38,6 +38,7 @@ class buscarValesInternoControlador {
           "CLIENTE_NOT_FOUND"
         )
       }
+
       if (formaPagamento && typeof formaPagamento !== 'string') {
         throw new AppError(
           "Forma de pagamento inválida",
@@ -45,6 +46,7 @@ class buscarValesInternoControlador {
           "FORMA_PAGAMENTO_NOT_FOUND"
         )
       }
+
       if (usuarioId && isNaN(usuarioId)) {
         throw new AppError(
           "ID de usuário inválido",
@@ -79,7 +81,7 @@ class buscarValesInternoControlador {
       const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
       const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
 
-      const servico = new bsucarValeInternoServico()
+      const servico = new buscarValeInternoServico()
       const resultado = await servico.executar(
         vendedor,
         cliente,
@@ -98,4 +100,4 @@ class buscarValesInternoControlador {
   }
 }
 
-export { buscarValesInternoControlador }
+export { buscarValeInternoControlador }

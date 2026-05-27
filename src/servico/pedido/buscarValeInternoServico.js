@@ -1,6 +1,6 @@
 import prismaCliente from '../../prisma/index.js'
 
-class bsucarValeInternoServico {
+class buscarValeInternoServico {
   async executar(
     vendedor,
     cliente,
@@ -17,7 +17,9 @@ class bsucarValeInternoServico {
             vendedor,
             cliente,
             formaPagamento: {
-              nome: {
+              nome: formaPagamento
+              ? formaPagamento 
+              : {
                 notIn: ["A VISTA", "PIX", "CARTÃO", "CHEQUE", "ORÇAMENTO"]
               }
             },
@@ -41,4 +43,4 @@ class bsucarValeInternoServico {
   }
 }
 
-export { bsucarValeInternoServico }
+export { buscarValeInternoServico }
