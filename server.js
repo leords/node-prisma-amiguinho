@@ -5,7 +5,7 @@ import { registroRotas } from "./src/middleware/registroRotasMiddleware.js";
 import { tratarErros } from "./src/middleware/tratarError.js";
 import { CriarUsuarioAdminServico } from "./src/servico/usuario/criarUsuarioAdminServico.js";
 import { iniciarJobs } from "./src/jobs/index.js";
-dotenv.config();
+//dotenv.config();
 const app = express();
 
 // Libera requisições de origens diferentes
