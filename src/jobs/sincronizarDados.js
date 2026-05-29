@@ -6,10 +6,10 @@ export async function sincronizarProdutos() {
 
     const resposta = await fetch(process.env.PRODUTOS)
     const dados = await resposta.json()
-    const protudos = dados.saida
+    const produtos = dados.saida
     const servico = new BuscarProdutosAPIServico();
-    await servico.executar(protudos)
-    console.log(`[SYNC] ${protudos.length} produtos sincronizados`)
+    await servico.executar(produtos)
+    console.log(`[SYNC] ${produtos.length} produtos sincronizados`)
 }
 
 export async function sincronizarClientesDelivery() {
@@ -24,7 +24,7 @@ export async function sincronizarClientesDelivery() {
             action: 'delivery',
           }),
         })
-        
+
     const dados = await resposta.json()
     const clientes = dados.saida
     const servico = new BuscarClienteDeliveryServico();
