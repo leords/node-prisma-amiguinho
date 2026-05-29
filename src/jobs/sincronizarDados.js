@@ -5,8 +5,8 @@ import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarCli
 export async function sincronizarProdutos() {
 
     const resposta = await fetch(process.env.PRODUTOS)
-    const dados = resposta.json()
-    const protudos = dados.data
+    const dados = await resposta.json()
+    const protudos = dados.saida
     const servico = new BuscarProdutosAPIServico();
     await servico.executar(protudos)
     console.log(`[SYNC] ${protudos.length} produtos sincronizados`)
@@ -15,8 +15,8 @@ export async function sincronizarProdutos() {
 export async function sincronizarClientesDelivery() {
 
     const resposta = await fetch(process.env.CLIENTES_DELIVERY)
-    const dados = resposta.json()
-    const clientes = dados.data
+    const dados = await resposta.json()
+    const clientes = dados.saida
     const servico = new BuscarClienteDeliveryServico();
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes delivery sincronizados`)
@@ -25,9 +25,9 @@ export async function sincronizarClientesDelivery() {
 export async function sincronizarClientesExternos() {
 
     const resposta = await fetch(process.env.CLIENTES_EXTERNO)
-    const dados = resposta.json()
+    const dados = await resposta.json()
     console.log("[DEBUG] Clientes externos:", JSON.stringify(dados).slice(0, 300));
-    const clientes = dados.data
+    const clientes = dados.saida
     const servico = new BuscarClienteExternoServico();
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes externos sincronizados`)
