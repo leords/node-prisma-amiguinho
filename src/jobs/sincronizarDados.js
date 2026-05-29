@@ -14,7 +14,17 @@ export async function sincronizarProdutos() {
 
 export async function sincronizarClientesDelivery() {
 
-    const resposta = await fetch(process.env.CLIENTES_DELIVERY)
+    const resposta = await fetch(process.env.CLIENTES_DELIVERY,         
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'delivery',
+          }),
+        })
+        
     const dados = await resposta.json()
     const clientes = dados.saida
     const servico = new BuscarClienteDeliveryServico();
@@ -24,9 +34,18 @@ export async function sincronizarClientesDelivery() {
 
 export async function sincronizarClientesExternos() {
 
-    const resposta = await fetch(process.env.CLIENTES_EXTERNO)
+    const resposta = await fetch(process.env.CLIENTES_EXTERNO,         
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'externa',
+          }),
+        })
+
     const dados = await resposta.json()
-    console.log("[DEBUG] Clientes externos:", JSON.stringify(dados).slice(0, 300));
     const clientes = dados.saida
     const servico = new BuscarClienteExternoServico();
     await servico.executar(clientes)
