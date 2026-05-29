@@ -26,6 +26,7 @@ export async function sincronizarClientesExternos() {
 
     const resposta = await fetch(process.env.CLIENTES_EXTERNO)
     const dados = resposta.json()
+    console.log("[DEBUG] Clientes externos:", JSON.stringify(dados).slice(0, 300));
     const clientes = dados.data
     const servico = new BuscarClienteExternoServico();
     await servico.executar(clientes)
