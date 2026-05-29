@@ -17,28 +17,27 @@ app.use(express.json());
 // Middleware de registro de rotas = log.
 app.use(registroRotas);
 
+// Desabilita cache em todas as rotas pq o Railway tem um proxy reverso na frente que faz cache automaticamente de respostas GET
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  next();
+});
+
 // Rotas
 app.use(rotas);
 
 // Middleware de controle de erros. obs: middleware com 4 parametros é de monitoramento de erros.
 app.use(tratarErros);
 
-//console.log("DATABASE_URL:", process.env.DATABASE_URL)
-//console.log("DB HOST:", process.env.DATABASE_URL?.split("@")[1])
 
 // Chamar a função de criar o usuario admin já ao executar o sistema.
 const servico = new CriarUsuarioAdminServico()
 await servico.executar();
 
-// Inciiar o servidor
-// app.listen(4000, () => {
-//     console.log("Servidor iniciado na porta 4000")
-//     iniciarJobs()
-// });
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {
-    console.log("Servidor iniciado na porta 4000")
+    console.log(`Servidor iniciado na porta ${port}`)
     iniciarJobs()
 });
 
