@@ -12,7 +12,7 @@ class BuscarCLienteDeliveryControlador {
     try {
       // DEPOIS USAR .ENV PARA A URL DO GOOGLE SHEET
       const resposta = await fetch(
-        'https://script.google.com/macros/s/AKfycbyCzg47M3MRq6xFYxkeacXHhtW6JKdVGijiMbIXgcbGeHWkt_xI26_SYsXejmANQO04/exec',
+        process.env.CLIENTES_DELIVERY,
         {
           method: 'POST',
           headers: {

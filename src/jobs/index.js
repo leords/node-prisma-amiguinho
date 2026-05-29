@@ -14,7 +14,21 @@ import { executarSugestaoVendedor } from "./sugestaoVendedor.js";
 export function iniciarJobs() {
   console.log("[JOBS] Registrando jobs...");
 
-  
+  // Sincronização automatica a cada 1 hora
+  cron.schedule("0 * * * *", async () => {
+    console.log("[CRON] Sincronizando dados do Sheets...");
+    await sincronizarProdutos();
+    await sincronizarClientesDelivery();
+    await sincronizarClientesExternos();
+  }, { timezone: "America/Sao_Paulo" });
+
+  // Sincronização inicial ao subir o servidor sem aguardar as 1hr
+  sincronizarProdutos();
+  sincronizarClientesDelivery();
+  sincronizarClientesExternos();
+
+  console.log("  → Sincronização Sheets:  a cada 1 hora");
+}
 
   // Resumo diário — todo dia às 18:00
   cron.schedule("0 18 * * *", async () => {
@@ -39,4 +53,3 @@ export function iniciarJobs() {
   console.log("  → Resumo diário:         18:00 todos os dias");
   console.log("  → Alerta positivação:    19:00 todos os dias");
   console.log("  → Sugestão vendedores:   07:30 seg a sáb");
-}
