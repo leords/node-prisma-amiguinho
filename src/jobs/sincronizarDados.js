@@ -1,8 +1,6 @@
-import axios from "axios"
-
-import { BuscarProdutosAPIServico } from "../servico/produtos/buscarProdutosAPIServico";
-import { BuscarClienteDeliveryServico } from "../servico/clienteDelivery/buscarClienteDeliveryServico";
-import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarClienteExternoServico";
+import { BuscarProdutosAPIServico } from "../servico/produtos/buscarProdutosAPIServico.js";
+import { BuscarClienteDeliveryServico } from "../servico/clienteDelivery/buscarClienteDeliveryServico.js";
+import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarClienteExternoServico.js";
 
 export async function sincronizarProdutos() {
 
