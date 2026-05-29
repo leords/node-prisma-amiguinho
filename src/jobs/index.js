@@ -3,6 +3,7 @@ import cron from "node-cron";
 import { executarResumoDiario } from "./resumoDiario.js";
 import { executarAlertaPositivacao } from "./alertaPositivacao.js";
 import { executarSugestaoVendedor } from "./sugestaoVendedor.js";
+import { sincronizarClientesDelivery, sincronizarClientesExternos, sincronizarProdutos } from "./sincronizarDados.js";
 
 
 // --- TESTE DIRETO ---
