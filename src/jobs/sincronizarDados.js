@@ -4,7 +4,7 @@ import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarCli
 
 export async function sincronizarProdutos() {
 
-    const resposta = await fetch.get(process.env.PRODUTOS)
+    const resposta = await fetch(process.env.PRODUTOS)
     const dados = resposta.json()
     const protudos = dados.data
     const servico = new BuscarProdutosAPIServico();
@@ -14,7 +14,7 @@ export async function sincronizarProdutos() {
 
 export async function sincronizarClientesDelivery() {
 
-    const resposta = await fetch.get(process.env.CLIENTES_DELIVERY)
+    const resposta = await fetch(process.env.CLIENTES_DELIVERY)
     const dados = resposta.json()
     const clientes = dados.data
     const servico = new BuscarClienteDeliveryServico();
@@ -24,7 +24,7 @@ export async function sincronizarClientesDelivery() {
 
 export async function sincronizarClientesExternos() {
 
-    const resposta = await fetch.get(process.env.CLIENTES_EXTERNO)
+    const resposta = await fetch(process.env.CLIENTES_EXTERNO)
     const dados = resposta.json()
     const clientes = dados.data
     const servico = new BuscarClienteExternoServico();
