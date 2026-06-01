@@ -8,7 +8,7 @@ class EnviarEmailServico {
 
     try {
       await resend.emails.send({
-        from: 'Sistema <onboarding@resend.dev>',
+        from: 'Sistema <noreply@amigaodistribuidora.com.br>',
         to: to,
         subject: subject,
         html: html,

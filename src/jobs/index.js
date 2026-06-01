@@ -3,7 +3,7 @@ import cron from "node-cron";
 import { executarResumoDiario } from "./resumoDiario.js";
 import { executarAlertaPositivacao } from "./alertaPositivacao.js";
 import { executarSugestaoVendedor } from "./sugestaoVendedor.js";
-import { sincronizarClientesDelivery, sincronizarClientesExternos, sincronizarProdutos } from "./sincronizarDados.js";
+import { sincronizarClientesDelivery, sincronizarClientesExternos, sincronizarProdutos, sincronizarFormasPagamento} from "./sincronizarDados.js";
 
 
 // --- TESTE DIRETO ---
@@ -21,12 +21,14 @@ export function iniciarJobs() {
     await sincronizarProdutos();
     await sincronizarClientesDelivery();
     await sincronizarClientesExternos();
+    await sincronizarFormasPagamento();
   }, { timezone: "America/Sao_Paulo" });
 
   // Sincronização inicial ao subir o servidor sem aguardar as 1hr
   sincronizarProdutos();
   sincronizarClientesDelivery();
   sincronizarClientesExternos();
+  sincronizarFormasPagamento();
 
   console.log("  → Sincronização Sheets:  a cada 1 hora");
 }

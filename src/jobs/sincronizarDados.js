@@ -1,6 +1,7 @@
 import { BuscarProdutosAPIServico } from "../servico/produtos/buscarProdutosAPIServico.js";
 import { BuscarClienteDeliveryServico } from "../servico/clienteDelivery/buscarClienteDeliveryServico.js";
 import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarClienteExternoServico.js";
+import { BuscarFormaPagamentoServico } from "../servico/formaPagamento/buscarFormaPagamentoServico.js";
 
 export async function sincronizarProdutos() {
 
@@ -50,4 +51,15 @@ export async function sincronizarClientesExternos() {
     const servico = new BuscarClienteExternoServico();
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes externos sincronizados`)
+}
+
+export async function sincronizarFormasPagamento() {
+
+    const resposta = await fetch(process.env.FORMAS_PAGAMENTO)
+    const dados = await resposta.json()
+    const formas = dados.saida
+    const servico = new BuscarFormaPagamentoServico()
+    await servico.executar(formas)
+    console.log(`[SYNC] ${formas.length} formas de pagamento sincronizados`)
+
 }

@@ -11,9 +11,7 @@ class BuscarFormaPagamentControlador {
   async tratar(req, res, next) {
     try {
       console.time("BuscarFormasPagamento")
-      const resposta = await fetch(
-        'https://script.google.com/macros/s/AKfycbx3kBxwZz_gHH90urwxksgyfLmw5h3FBDxD4-ufxa2DkvZg83aJaelWgqVuKftq9L8p0g/exec'
-      )
+      const resposta = await fetch(process.env.FORMAS_PAGAMENTO)
       const dados = await resposta.json()
 
       if (!resposta.ok) {
