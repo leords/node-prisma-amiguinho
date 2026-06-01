@@ -2,6 +2,10 @@ import prismaCliente from "../../prisma/index.js"
 
 class BuscarFechamentoServico {
     async executar(vendedor, setor, dataInicio, dataFim) {
+
+        // transformando a data em string e pegando apenas a data
+        const dia = new Date().toISOString().split('T')[0]
+
         try {
             const resultado = await prismaCliente.fechamento.findFirst({  
                 where: {
@@ -25,5 +29,6 @@ class BuscarFechamentoServico {
         }
     }
 }
+
 
 export { BuscarFechamentoServico }

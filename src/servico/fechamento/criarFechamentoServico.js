@@ -1,47 +1,35 @@
 import prismaCliente from "../../prisma/index.js"
 
 class CriarFechamentoServico {
-    async executar(setor, vendedor) {
+
+    async executar(vendedor, setor) {
+
+        // transformando a data em string e pegando apenas a data
+        const dia = new Date().toISOString().split('T')[0]
+
         try {
-            const data = new Date()
-
-            const dataInicio = new Date(data)
-            dataInicio.setHours(0, 0, 0, 0)
-
-            const dataFim = new Date(data)
-            dataFim.setHours(23, 59, 59, 999)
-
-            // transformando a data em string e pegando apenas a data
-            const dia = new Date().toISOString().split('T')[0]
-
-
-            const existeFechamento = await prismaCliente.fechamento.findFirst({
+            const resultado = await prismaCliente.fechamento.upsert({
                 where: {
-                    setor,
+                    vendedor_dia_setor: {
+                        vendedor,
+                        dia,
+                        setor
+                    },
+                },
+                update: {},
+                create: {
                     vendedor,
-                    data: {
-                        gte: dataInicio,
-                        lte: dataFim
-                    }
+                    dia,
+                    setor
                 }
             })
 
-            if(existeFechamento) {
-                throw new Error(`Já existe um fechamento em aberto para o dia de hoje, referente a este vendedor e setor`);
-            }
-
-            return await prismaCliente.fechamento.create({
-                data: {
-                    setor,
-                    vendedor,
-                    dia
-                }
-             })
-             
-        } catch (error) {
+            return resultado
+        }
+        catch (error) {
             console.log(error)
             throw error
-        }
+        } 
     }
 }
 
