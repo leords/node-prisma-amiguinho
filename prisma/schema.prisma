@@ -215,8 +215,8 @@ model FormaPagamento {
 model Fechamento {
   id        Int      @id @default(autoincrement())
   data      DateTime @default(now())
-  setor    String    // balcao | delivery | externo
-  vendedor String
+  setor     String    // balcao | delivery | externo
+  vendedor  String
   status    String   @default("aberto") // aberto | fechado
   totalSistema Float  @default(0) // total calculado pelos pedidos
   totalInformado Float @default(0) // total contado no caixa

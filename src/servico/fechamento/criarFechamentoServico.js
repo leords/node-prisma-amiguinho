@@ -2,7 +2,7 @@ import prismaCliente from "../../prisma/index.js"
 
 class CriarFechamentoServico {
 
-    async executar(vendedor, setor) {
+    async executar(setor, vendedor) {
 
         // transformando a data em string e pegando apenas a data
         const dia = new Date().toISOString().split('T')[0]
@@ -18,9 +18,9 @@ class CriarFechamentoServico {
                 },
                 update: {},
                 create: {
+                    setor,
                     vendedor,
                     dia,
-                    setor
                 }
             })
 
