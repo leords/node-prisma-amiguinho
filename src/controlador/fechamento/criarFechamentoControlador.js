@@ -12,7 +12,7 @@ class CriarFechamentoControlador {
         try {
             if(!setor) {
                 throw new AppError(
-                    "Setor Setor é obrigatório",
+                    "Setor é obrigatório",
                     HTTP_STATUS_CODES.BAD_REQUEST,
                     "SETOR_BAD_REQUEST"
                 )

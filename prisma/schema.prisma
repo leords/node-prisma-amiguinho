@@ -296,4 +296,9 @@ model Fornecedor {
   notasEntrada OrdemCompra[]
 }
 
+model Caixa {
+  id Int @default(autoincrement())
+  valor Float @default(0)
+}
+
 

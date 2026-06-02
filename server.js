@@ -5,6 +5,8 @@ import { registroRotas } from "./src/middleware/registroRotasMiddleware.js";
 import { tratarErros } from "./src/middleware/tratarError.js";
 import { CriarUsuarioAdminServico } from "./src/servico/usuario/criarUsuarioAdminServico.js";
 import { iniciarJobs } from "./src/jobs/index.js";
+import { alterarCaixaServico } from "./src/servico/caixa/alterarCaixaServico.js";
+
 //dotenv.config();
 const app = express();
 
@@ -33,6 +35,10 @@ app.use(tratarErros);
 // Chamar a função de criar o usuario admin já ao executar o sistema.
 const servico = new CriarUsuarioAdminServico()
 await servico.executar();
+
+// Chamar função para criar inicio de caixa = R$ 200,00
+const servicoCaixa = new alterarCaixaServico()
+await servicoCaixa.executar();
 
 
 const port = process.env.PORT || 4000
