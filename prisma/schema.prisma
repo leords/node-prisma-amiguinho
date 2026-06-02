@@ -297,7 +297,7 @@ model Fornecedor {
 }
 
 model Caixa {
-  id Int @default(autoincrement())
+  id Int @id @default(autoincrement())
   valor Float @default(0)
 }
 
