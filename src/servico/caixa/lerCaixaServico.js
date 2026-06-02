@@ -1,4 +1,4 @@
-import prismaCliente from "../../prisma"
+import prismaCliente from "../../prisma/index.js"
 
 class lerCaixaServico {
     async executar() {

@@ -1,13 +1,12 @@
-import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes"
-import { AppError } from "../../error/appError"
-import { lerCaixaServico } from "../../servico/caixa/lerCaixaServico"
+import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
+import { lerCaixaServico } from "../../servico/caixa/lerCaixaServico.js"
 
 
 class lerCaixaControlador {
     async tratar(req, res, next) {
 
         try {
-
             const servico = new lerCaixaServico();
             const resultado = await servico.executar();
 

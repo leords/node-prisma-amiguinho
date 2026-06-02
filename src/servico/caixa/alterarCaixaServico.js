@@ -4,7 +4,7 @@ class alterarCaixaServico {
     async executar(valor) {
 
         try {
-            await prismaCliente.caixa.upsert({
+            const resultado = await prismaCliente.caixa.upsert({
                 where: {id: 1},
                 update: {valor},
                 create: {
@@ -12,6 +12,8 @@ class alterarCaixaServico {
                     valor: 200
                 }
             });
+
+            return resultado
 
             console.log("✔ Inicio de caixa criado com sucesso")
 

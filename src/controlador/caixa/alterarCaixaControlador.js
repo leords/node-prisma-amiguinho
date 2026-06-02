@@ -21,7 +21,10 @@ class alterarCaixaControlador {
             const servico = new alterarCaixaServico();
             const resultado = await servico.executar(valor)
 
-            return res.status(HTTP_STATUS_CODES.OK).json(resultado)
+            return res.status(HTTP_STATUS_CODES.OK).json({
+                sucesso: true, 
+                mensagem: 'Inicio de caixa alterado com sucesso!'
+            })
 
 
         } catch (error) {
