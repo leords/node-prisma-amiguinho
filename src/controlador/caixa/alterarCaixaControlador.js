@@ -5,12 +5,14 @@ import { alterarCaixaServico } from "../../servico/caixa/alterarCaixaServico.js"
 class alterarCaixaControlador {
 
     async tratar(req, res, next) {
-
-        const { valor } = req.body
+        const { valor } = Number(req.body)
+    
 
         try {
+
+            const valorNumero = Number(valor)
             
-            if(!valor || isNaN(valor)) {
+            if(isNaN(valorNumero)) {
                 throw new AppError(
                     "valor é obrigatório e deve ser do tipo número",
                     HTTP_STATUS_CODES.BAD_REQUEST,
@@ -19,7 +21,7 @@ class alterarCaixaControlador {
             }
 
             const servico = new alterarCaixaServico();
-            const resultado = await servico.executar(valor)
+            await servico.executar(valorNumero)
 
             return res.status(HTTP_STATUS_CODES.OK).json({
                 sucesso: true, 
