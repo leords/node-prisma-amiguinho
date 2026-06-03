@@ -5,13 +5,13 @@ import { alterarCaixaServico } from "../../servico/caixa/alterarCaixaServico.js"
 class alterarCaixaControlador {
 
     async tratar(req, res, next) {
-        const { valor } = Number(req.body)
+        const { valor } = req.body;
     
-
+        console.log(valor)
         try {
 
             const valorNumero = Number(valor)
-            
+            console.log('valor: ', valorNumero)
             if(isNaN(valorNumero)) {
                 throw new AppError(
                     "valor é obrigatório e deve ser do tipo número",
