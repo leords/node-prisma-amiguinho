@@ -11,14 +11,13 @@ class BuscarFormaPagamentoServico {
       for (const forma of formas) {
         await prismaCliente.formaPagamento.upsert({
           where: {
-            id: forma.Id,
+            id: Number(forma.Id),
           },
           update: {
             nome: forma.Forma,
             status: forma.Status,
           },
           create: {
-            id: forma.Id,
             nome: forma.Forma,
             status: forma.Status,
             tipo: forma.Tipo,
