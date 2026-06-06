@@ -13,6 +13,7 @@ export async function sincronizarProdutos() {
     await servico.executar(produtos)
     console.log(`[SYNC] ${produtos.length} produtos sincronizados`)
 }
+
 // Sincroniza os clientes delivery - busca realizada na planilha sheets e salva no banco
 export async function sincronizarClientesDelivery() {
 
@@ -33,6 +34,7 @@ export async function sincronizarClientesDelivery() {
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes delivery sincronizados`)
 }
+
 // Sincroniza os clientes externos - busca realizada na planilha sheets e salva no banco
 export async function sincronizarClientesExternos() {
 
@@ -53,6 +55,7 @@ export async function sincronizarClientesExternos() {
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes externos sincronizados`)
 }
+
 // Sincroniza as formas de pagamento - busca realizada na planilha sheets e salva no banco
 export async function sincronizarFormasPagamento() {
 
@@ -60,7 +63,7 @@ export async function sincronizarFormasPagamento() {
     const dados = await resposta.json()
     const formas = dados.saida
     const servico = new BuscarFormaPagamentoServico()
-    await servico.executar(formas)
+    await servico.executar(formas) 
 
 
     console.log(`[SYNC] ${formas.length} formas de pagamento sincronizados`)
