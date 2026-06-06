@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { BuscarFormaPagamentControlador } from '../controlador/formaPagamento/buscarFormaPagamentoControlador.js'
-import { LerFormaPagamentoControlador } from '../controlador/formaPagamento/lerFormaPagamentoControlador.js'
 import { autenticadorMiddleware } from '../middleware/autenticadorMiddleware.js'
+import { LerFormaPagamentoBalcaoControlador } from '../controlador/formaPagamento/lerFormaPagamentoBalcaoControlador.js'
+import { LerFormaPagamentoExternaControlador } from '../controlador/formaPagamento/lerFormaPagamentoExternaControlador.js'
 
 const rotas = Router()
 
@@ -10,8 +11,12 @@ rotas.get(
   autenticadorMiddleware,
   new BuscarFormaPagamentControlador().tratar
 )
-rotas.get('/ler-formas-pagamento', 
+rotas.get('/ler-formas-pagamento-balcao', 
   autenticadorMiddleware,
-  new LerFormaPagamentoControlador().tratar)
+  new LerFormaPagamentoBalcaoControlador().tratar)
+
+  rotas.get('/ler-formas-pagamento-externa', 
+  autenticadorMiddleware,
+  new LerFormaPagamentoExternaControlador().tratar)
 
 export { rotas as formaPagamentoRotas }

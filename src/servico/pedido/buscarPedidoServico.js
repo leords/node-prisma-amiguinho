@@ -61,6 +61,9 @@ class BuscarPedidoServico {
             cliente: true,
             formaPagamento: true,
           },
+          orderBy: {
+            data: 'desc'
+          }
         })
       }
 
@@ -72,6 +75,9 @@ class BuscarPedidoServico {
             cliente: true,
             formaPagamento: true,
           },
+          orderBy: {
+            data: 'desc'
+          }
         })
       }
 
@@ -82,6 +88,9 @@ class BuscarPedidoServico {
             itens: true,
             formaPagamento: true,
           },
+          orderBy: {
+            data: 'desc'
+          }
         })
       }
 
@@ -95,6 +104,9 @@ class BuscarPedidoServico {
               cliente: true,
               formaPagamento: true,
             },
+            orderBy: {
+            data: 'desc'
+          }
           }),
           prismaCliente.pedidoExterno.findMany({
             where: queryExterno,
@@ -103,6 +115,9 @@ class BuscarPedidoServico {
               cliente: true,
               formaPagamento: true,
             },
+            orderBy: {
+            data: 'desc'
+          }
           }),
           prismaCliente.pedidoBalcao.findMany({
             where: queryBalcao,
@@ -110,6 +125,9 @@ class BuscarPedidoServico {
               itens: true,
               formaPagamento: true,
             },
+            orderBy: {
+            data: 'desc'
+          }
           }),
         ])
 

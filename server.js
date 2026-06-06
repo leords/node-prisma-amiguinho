@@ -6,6 +6,7 @@ import { tratarErros } from "./src/middleware/tratarError.js";
 import { CriarUsuarioAdminServico } from "./src/servico/usuario/criarUsuarioAdminServico.js";
 import { iniciarJobs } from "./src/jobs/index.js";
 import { alterarCaixaServico } from "./src/servico/caixa/alterarCaixaServico.js";
+import { alterarTaxaEntregaServico } from "./src/servico/taxaDelivery/alterarTaxaEntregaServico.js";
 
 //dotenv.config();
 const app = express();
@@ -39,6 +40,10 @@ await servico.executar();
 // Chamar função para criar inicio de caixa = R$ 200,00
 const servicoCaixa = new alterarCaixaServico()
 await servicoCaixa.executar();
+
+// Chamar função para criar taxa de entrega = R$ 5,00
+const servicoTaxaEntrega = new alterarTaxaEntregaServico();
+await servicoTaxaEntrega.executar()
 
 
 const port = process.env.PORT || 4000

@@ -301,4 +301,9 @@ model Caixa {
   valor Float @default(0)
 }
 
+model TaxaEntregaDelivery {
+  id Int @id @default(autoincrement())
+  valor Float @default(0)
+}
+
 

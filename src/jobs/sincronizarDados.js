@@ -3,6 +3,7 @@ import { BuscarClienteDeliveryServico } from "../servico/clienteDelivery/buscarC
 import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarClienteExternoServico.js";
 import { BuscarFormaPagamentoServico } from "../servico/formaPagamento/buscarFormaPagamentoServico.js";
 
+// Sincroniza os produtos - busca realizada na planilha sheets e salva no banco
 export async function sincronizarProdutos() {
 
     const resposta = await fetch(process.env.PRODUTOS)
@@ -12,7 +13,7 @@ export async function sincronizarProdutos() {
     await servico.executar(produtos)
     console.log(`[SYNC] ${produtos.length} produtos sincronizados`)
 }
-
+// Sincroniza os clientes delivery - busca realizada na planilha sheets e salva no banco
 export async function sincronizarClientesDelivery() {
 
     const resposta = await fetch(process.env.CLIENTES_DELIVERY,         
@@ -32,7 +33,7 @@ export async function sincronizarClientesDelivery() {
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes delivery sincronizados`)
 }
-
+// Sincroniza os clientes externos - busca realizada na planilha sheets e salva no banco
 export async function sincronizarClientesExternos() {
 
     const resposta = await fetch(process.env.CLIENTES_EXTERNO,         
@@ -52,7 +53,7 @@ export async function sincronizarClientesExternos() {
     await servico.executar(clientes)
     console.log(`[SYNC] ${clientes.length} clientes externos sincronizados`)
 }
-
+// Sincroniza as formas de pagamento - busca realizada na planilha sheets e salva no banco
 export async function sincronizarFormasPagamento() {
 
     const resposta = await fetch(process.env.FORMAS_PAGAMENTO)
@@ -60,6 +61,8 @@ export async function sincronizarFormasPagamento() {
     const formas = dados.saida
     const servico = new BuscarFormaPagamentoServico()
     await servico.executar(formas)
+
+
     console.log(`[SYNC] ${formas.length} formas de pagamento sincronizados`)
 
 }

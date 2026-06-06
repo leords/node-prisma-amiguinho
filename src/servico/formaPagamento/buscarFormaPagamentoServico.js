@@ -21,6 +21,7 @@ class BuscarFormaPagamentoServico {
             id: forma.Id,
             nome: forma.Forma,
             status: forma.Status,
+            tipo: forma.Tipo,
           },
         })
       }

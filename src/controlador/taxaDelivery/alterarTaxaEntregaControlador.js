@@ -1,8 +1,8 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { AppError } from "../../error/appError.js"
-import { alterarCaixaServico } from "../../servico/caixa/alterarCaixaServico.js"
+import { alterarTaxaEntregaServico } from "../../servico/taxaDelivery/alterarCaixaServico.js";
 
-class alterarCaixaControlador {
+class alterarTaxaEntregaControlador {
 
     async tratar(req, res, next) {
         const { valor } = req.body;
@@ -19,12 +19,12 @@ class alterarCaixaControlador {
                 )
             }
 
-            const servico = new alterarCaixaServico();
+            const servico = new alterarTaxaEntregaServico();
             await servico.executar(valorNumero)
 
             return res.status(HTTP_STATUS_CODES.OK).json({
                 sucesso: true, 
-                mensagem: 'Inicio de caixa alterado com sucesso!'
+                mensagem: 'Taxa de entrega alterada com sucesso!'
             })
 
 
@@ -36,4 +36,4 @@ class alterarCaixaControlador {
 
 }
 
-export { alterarCaixaControlador }
+export { alterarTaxaEntregaControlador }

@@ -6,13 +6,11 @@ import { AppError } from '../../error/appError.js'
 import { LerFormaPagamentoServico } from '../../servico/formaPagamento/lerFormaPagamentoServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
 
-class LerFormaPagamentoControlador {
+class LerFormaPagamentoBalcaoControlador {
   async tratar(req, res, next) {
     const { status, solicitante } = req.query
 
     const StatusPossiveis = ['ATIVO', 'INATIVO']
-
-    const possivelSolicitante = ['BALCAO', 'GERAL']
 
     try {
       if (!status || !StatusPossiveis.includes(status)) {
@@ -24,29 +22,20 @@ class LerFormaPagamentoControlador {
           "STATUS_BAD_REQUEST"
         )
       }
-      if (!solicitante || !possivelSolicitante.includes(solicitante)) {
-        throw new AppError(
-          ERRO_MSG_FORMA.TIPO_SOLICITANTE,
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          "SOLICITANTE_BAD_REQUEST"
-        )
-      }
+
 
       const servico = new LerFormaPagamentoServico();
+      const resultado = await servico.balcao(status)
+      return res.status(HTTP_STATUS_CODES.OK).json(resultado)
 
-      if (solicitante === 'BALCAO') {
-        const resultado = await servico.balcao(status)
-        return res.status(HTTP_STATUS_CODES.OK).json(resultado)
       }
-      if (solicitante === 'GERAL') {
-        const resultado = await servico.geral(status)
-        return res.status(HTTP_STATUS_CODES.OK).json(resultado)
-      }
-    } catch (error) {
+  
+     catch (error) {
       console.log(error)
       next(error)
     }
   }
+
 }
 
-export { LerFormaPagamentoControlador }
+export { LerFormaPagamentoBalcaoControlador }

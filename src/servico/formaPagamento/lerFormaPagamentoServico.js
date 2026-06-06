@@ -1,13 +1,13 @@
 import prismaCliente from '../../prisma/index.js'
 
 class LerFormaPagamentoServico {
-  async geral(status) {
+  async balcao(status) {
     try {
       const formas = await prismaCliente.formaPagamento.findMany({
         where: {
           status: status,
-          nome: {
-            in: ['A VISTA', 'PIX', 'CARTÃO', 'CHEQUE'],
+          tipo: {
+            in: ['BALCÃO', 'VENDAS'],
           },
         },
       })
@@ -17,11 +17,13 @@ class LerFormaPagamentoServico {
       throw error
     }
   }
-  async balcao(status) {
+
+  async externa(status) {
     try {
       const formas = await prismaCliente.formaPagamento.findMany({
         where: {
           status: status,
+          tipo: 'VENDAS'
         },
       })
 
