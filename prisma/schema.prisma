@@ -204,6 +204,7 @@ model FormaPagamento {
   id     Int    @id @default(autoincrement())
   nome   String
   status String @default("ATIVO")
+  tipo String
 
   pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
   pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")

@@ -34,7 +34,7 @@ CREATE TABLE "produtos" (
     "margem" DOUBLE PRECISION DEFAULT 0.0,
     "quantidade" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     "precoUndVenda" DECIMAL(65,30) NOT NULL DEFAULT 0.0,
-    "estoque" INTEGER NOT NULL DEFAULT 0,
+    "estoque" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "produtos_pkey" PRIMARY KEY ("id")
 );
@@ -158,6 +158,7 @@ CREATE TABLE "formaPagamentos" (
     "id" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'ATIVO',
+    "tipo" TEXT NOT NULL,
 
     CONSTRAINT "formaPagamentos_pkey" PRIMARY KEY ("id")
 );
@@ -238,6 +239,22 @@ CREATE TABLE "Fornecedor" (
     "status" TEXT NOT NULL DEFAULT 'ATIVO',
 
     CONSTRAINT "Fornecedor_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Caixa" (
+    "id" SERIAL NOT NULL,
+    "valor" DOUBLE PRECISION NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Caixa_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TaxaEntregaDelivery" (
+    "id" SERIAL NOT NULL,
+    "valor" DOUBLE PRECISION NOT NULL DEFAULT 0,
+
+    CONSTRAINT "TaxaEntregaDelivery_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
