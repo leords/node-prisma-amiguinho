@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +5,256 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id                 Int              @id @default(autoincrement())
+  nome               String
+  email              String           @unique
+  whatsapp           String?
+  usuario            String           @unique
+  senha              String
+  nivelAcesso        NivelAcesso      @default(USUARIO)
+  status             Boolean          @default(true)
+  resetToken         String?
+  resetExpires       DateTime?
+  estoque            Estoque[]
+  NotaEntradaEstoque OrdemCompra[]
+  pedidosBalcao      PedidoBalcao[]
+  pedidosDelivery    PedidoDelivery[]
+  pedidosExterno     PedidoExterno[]
+
+  @@map("usuarios")
+}
+
+model Produto {
+  id                  Int                  @id @default(autoincrement())
+  nome                String
+  embalagem           String?
+  segmento            String?
+  fornecedor          String?
+  precoVenda          Decimal              @default(0.0)
+  precoCompra         Decimal?             @default(0.0)
+  peso                Decimal?             @default(0.0)
+  lucro               Float?               @default(0.0)
+  margem              Float?               @default(0.0)
+  quantidade          Float                @default(0.0)
+  precoUndVenda       Decimal              @default(0.0)
+  estoque             Float                @default(0)
+  itemEstoque         Estoque[]            @relation("ItemEstoque")
+  itemNotaEstoque     ItemOrdemCompra[]    @relation("ItemOrdemCompra")
+  itensPedidoBalcao   ItemPedidoBalcao[]   @relation("ItemPedidoBalcaoProduto")
+  itensPedidoDelivery ItemPedidoDelivery[] @relation("ItemPedidoDeliveryProduto")
+  itensPedidoExterno  ItemPedidoExterno[]  @relation("ItemPedidoExternoProduto")
+
+  @@map("produtos")
+}
+
+model ClienteDelivery {
+  id         Int              @id
+  nome       String
+  telefone   String?
+  endereco   String?
+  numero     Int?
+  bairro     String?
+  cidade     String?
+  referencia String?
+  pedidos    PedidoDelivery[]
+}
+
+model ClienteExterno {
+  id          Int             @id
+  nome        String
+  cnpj        String
+  cidade      String?
+  endereco    String?
+  telefone    String?
+  vendedor    String?
+  atendimento String?
+  frequencia  String?
+  pedidos     PedidoExterno[]
+}
+
+model PedidoDelivery {
+  id               Int                  @id @default(autoincrement())
+  uuid             String               @unique @default(uuid())
+  tipo             String               @default("delivery")
+  clienteId        Int
+  formaPagamentoId Int
+  vendedor         String?
+  total            Float
+  status           String               @default("pendente")
+  data             DateTime             @default(now())
+  usuarioId        Int?
+  itens            ItemPedidoDelivery[]
+  cliente          ClienteDelivery      @relation(fields: [clienteId], references: [id])
+  formaPagamento   FormaPagamento       @relation("PedidoDeliveryFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario          Usuario?             @relation(fields: [usuarioId], references: [id])
+}
+
+model PedidoExterno {
+  id               Int                 @id @default(autoincrement())
+  uuid             String              @unique @default(uuid())
+  tipo             String              @default("externo")
+  clienteId        Int
+  formaPagamentoId Int
+  vendedor         String?
+  total            Float
+  status           String              @default("pendente")
+  data             DateTime            @default(now())
+  usuarioId        Int?
+  itens            ItemPedidoExterno[]
+  cliente          ClienteExterno      @relation(fields: [clienteId], references: [id])
+  formaPagamento   FormaPagamento      @relation("PedidoExternoFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario          Usuario?            @relation(fields: [usuarioId], references: [id])
+}
+
+model PedidoBalcao {
+  id               Int                @id @default(autoincrement())
+  uuid             String             @unique @default(uuid())
+  tipo             String             @default("balcao")
+  cliente          String?
+  formaPagamentoId Int
+  vendedor         String?
+  total            Float
+  status           String             @default("carregado")
+  data             DateTime           @default(now())
+  usuarioId        Int?
+  nomeUsuario      String
+  itens            ItemPedidoBalcao[]
+  formaPagamento   FormaPagamento     @relation("PedidoBalcaoFormaPagamento", fields: [formaPagamentoId], references: [id])
+  usuario          Usuario?           @relation(fields: [usuarioId], references: [id])
+}
+
+model ItemPedidoBalcao {
+  id         Int          @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+  pedido     PedidoBalcao @relation(fields: [pedidoId], references: [id])
+  produto    Produto      @relation("ItemPedidoBalcaoProduto", fields: [produtoId], references: [id])
+}
+
+model ItemPedidoDelivery {
+  id         Int            @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+  pedido     PedidoDelivery @relation(fields: [pedidoId], references: [id])
+  produto    Produto        @relation("ItemPedidoDeliveryProduto", fields: [produtoId], references: [id])
+}
+
+model ItemPedidoExterno {
+  id         Int           @id @default(autoincrement())
+  pedidoId   Int
+  produtoId  Int
+  quantidade Int
+  valorUnit  Float
+  valorTotal Float
+  pedido     PedidoExterno @relation(fields: [pedidoId], references: [id])
+  produto    Produto       @relation("ItemPedidoExternoProduto", fields: [produtoId], references: [id])
+}
+
+model FormaPagamento {
+  id              Int              @id @default(autoincrement())
+  nome            String
+  status          String           @default("ATIVO")
+  tipo            String
+  pedidosBalcao   PedidoBalcao[]   @relation("PedidoBalcaoFormaPagamento")
+  pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
+  pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
+
+  @@map("formaPagamentos")
+}
+
+model Fechamento {
+  id             Int                  @id @default(autoincrement())
+  data           DateTime             @default(now())
+  setor          String
+  vendedor       String
+  status         String               @default("aberto")
+  totalSistema   Float                @default(0)
+  totalInformado Float                @default(0)
+  diferenca      Float                @default(0)
+  dia            String
+  movimentacoes  MovimentacaoManual[]
+
+  @@unique([vendedor, dia, setor])
+}
+
+model MovimentacaoManual {
+  id           Int        @id @default(autoincrement())
+  data         DateTime   @default(now())
+  fechamentoId Int
+  tipo         String
+  descricao    String
+  valor        Float
+  fechamento   Fechamento @relation(fields: [fechamentoId], references: [id])
+}
+
+model Estoque {
+  id         Int                     @id @default(autoincrement())
+  produtoId  Int
+  tipo       TipoMovimentacaoEstoque
+  quantidade Float
+  data       DateTime                @default(now())
+  atualizado DateTime                @default(now())
+  origem     String?
+  origemId   Int?
+  usuarioId  Int
+  produto    Produto                 @relation("ItemEstoque", fields: [produtoId], references: [id])
+  usuario    Usuario                 @relation(fields: [usuarioId], references: [id])
+}
+
+model ItemOrdemCompra {
+  id            Int         @id @default(autoincrement())
+  notaEntradaId Int
+  produtoId     Int
+  quantidade    Int
+  valorUnit     Float
+  valorTotal    Float
+  notaEntrada   OrdemCompra @relation(fields: [notaEntradaId], references: [id])
+  produto       Produto     @relation("ItemOrdemCompra", fields: [produtoId], references: [id])
+
+  @@map("ItemOrdemCompra")
+}
+
+model OrdemCompra {
+  id           Int               @id @default(autoincrement())
+  data         DateTime          @default(now())
+  usuarioId    Int
+  fornecedorId Int
+  status       String            @default("Realizada")
+  total        Float
+  itens        ItemOrdemCompra[]
+  fornecedor   Fornecedor        @relation(fields: [fornecedorId], references: [id])
+  usuario      Usuario           @relation(fields: [usuarioId], references: [id])
+
+  @@map("OrdemCompra")
+}
+
+model Fornecedor {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  vendedor     String?
+  cnpj         String        @unique
+  telefone     String?
+  status       String        @default("ATIVO")
+  notasEntrada OrdemCompra[]
+}
+
+model Caixa {
+  id    Int   @id @default(autoincrement())
+  valor Float @default(0)
+}
+
+model TaxaEntregaDelivery {
+  id    Int   @id @default(autoincrement())
+  valor Float @default(0)
 }
 
 enum NivelAcesso {
@@ -27,284 +271,3 @@ enum TipoMovimentacaoEstoque {
   SAIDA
   AJUSTE
 }
-
-model Usuario {
-  id      Int     @id @default(autoincrement())
-  nome    String
-  email   String  @unique
-  whatsapp String?
-  usuario String  @unique
-  senha   String
-  nivelAcesso NivelAcesso @default(USUARIO)
-  status  Boolean @default(true)
-  resetToken     String?
-  resetExpires   DateTime?
-
-  pedidosDelivery PedidoDelivery[]
-  pedidosExterno  PedidoExterno[]
-  pedidosBalcao   PedidoBalcao[]
-  NotaEntradaEstoque OrdemCompra[]
-  estoque Estoque[]
-
-
-
-  @@map("usuarios")
-}
-
-
-model Produto {
-  id            Int      @id @default(autoincrement())
-  nome          String
-  embalagem     String?
-  segmento      String?
-  fornecedor    String?
-  precoVenda    Decimal  @default(0.0)
-  precoCompra   Decimal? @default(0.0)
-  peso          Decimal? @default(0.0)
-  lucro         Float?   @default(0.0)
-  margem        Float?   @default(0.0)
-  quantidade    Float      @default(0.0)
-  precoUndVenda Decimal    @default(0.0)
-
-  estoque Float @default(0)
-
-  itensPedidoDelivery ItemPedidoDelivery[] @relation("ItemPedidoDeliveryProduto")
-  itensPedidoExterno  ItemPedidoExterno[]  @relation("ItemPedidoExternoProduto")
-  itensPedidoBalcao  ItemPedidoBalcao[]  @relation("ItemPedidoBalcaoProduto")
-
-  itemEstoque Estoque[] @relation("ItemEstoque")
-  itemNotaEstoque ItemOrdemCompra[] @relation("ItemOrdemCompra")
-
-
-  @@map("produtos")
-}
-
-
-
-model ClienteDelivery {
-  id         Int     @id
-  nome       String
-  telefone   String?
-  endereco   String?
-  numero     Int?
-  bairro     String?
-  cidade     String?
-  referencia String?
-
-  pedidos PedidoDelivery[]
-}
-
-model ClienteExterno {
-  id          Int     @id
-  nome        String
-  cnpj        String
-  cidade      String?
-  endereco    String?
-  telefone    String?
-  vendedor    String?
-  atendimento String?
-  frequencia  String?
-
-  pedidos PedidoExterno[]
-}
-
-model PedidoDelivery {
-  id               Int      @id @default(autoincrement())
-  uuid             String   @unique @default(uuid())
-  tipo             String   @default("delivery")
-  clienteId        Int
-  formaPagamentoId Int
-  vendedor         String?
-  total            Float
-  status           String   @default("pendente")
-  data             DateTime @default(now())
-  usuarioId        Int?
-
-  cliente        ClienteDelivery      @relation(fields: [clienteId], references: [id])
-  formaPagamento FormaPagamento       @relation("PedidoDeliveryFormaPagamento", fields: [formaPagamentoId], references: [id])
-  usuario        Usuario?           @relation(fields: [usuarioId], references: [id])
-  itens          ItemPedidoDelivery[]
-}
-
-model PedidoExterno {
-  id               Int      @id @default(autoincrement())
-  uuid             String   @unique @default(uuid())
-  tipo             String   @default("externo")
-  clienteId        Int
-  formaPagamentoId Int
-  vendedor         String? // vai pegar o vendedor cadastrado no cliente!
-  total            Float
-  status           String   @default("pendente")
-  data             DateTime @default(now())
-  usuarioId        Int?
-
-  cliente        ClienteExterno      @relation(fields: [clienteId], references: [id])
-  formaPagamento FormaPagamento      @relation("PedidoExternoFormaPagamento", fields: [formaPagamentoId], references: [id])
-  usuario        Usuario?          @relation(fields: [usuarioId], references: [id])
-  itens          ItemPedidoExterno[]
-}
-
-model PedidoBalcao {
-  id               Int      @id @default(autoincrement())
-  uuid             String   @unique @default(uuid())
-  tipo             String   @default("balcao")
-  cliente          String?
-  formaPagamentoId Int
-  vendedor         String?
-  total            Float
-  status           String   @default("carregado")
-  data             DateTime @default(now())
-  usuarioId        Int?
-  nomeUsuario      String
-
-
-  formaPagamento FormaPagamento      @relation("PedidoBalcaoFormaPagamento", fields: [formaPagamentoId], references: [id])
-  usuario        Usuario?          @relation(fields: [usuarioId], references: [id])
-  itens          ItemPedidoBalcao[]
-}
-
-model ItemPedidoBalcao {
-  id         Int   @id @default(autoincrement())
-  pedidoId   Int
-  produtoId  Int
-  quantidade Int
-  valorUnit  Float
-  valorTotal Float
-
-
-  pedido  PedidoBalcao @relation(fields: [pedidoId], references: [id])
-  produto Produto        @relation("ItemPedidoBalcaoProduto", fields: [produtoId], references: [id])
-}
-
-model ItemPedidoDelivery {
-  id         Int   @id @default(autoincrement())
-  pedidoId   Int
-  produtoId  Int
-  quantidade Int
-  valorUnit  Float
-  valorTotal Float
-
-  pedido  PedidoDelivery @relation(fields: [pedidoId], references: [id])
-  produto Produto        @relation("ItemPedidoDeliveryProduto", fields: [produtoId], references: [id])
-}
-
-model ItemPedidoExterno {
-  id         Int   @id @default(autoincrement())
-  pedidoId   Int
-  produtoId  Int
-  quantidade Int
-  valorUnit  Float
-  valorTotal Float
-
-  pedido  PedidoExterno @relation(fields: [pedidoId], references: [id])
-  produto Produto       @relation("ItemPedidoExternoProduto", fields: [produtoId], references: [id])
-}
-
-model FormaPagamento {
-  id     Int    @id @default(autoincrement())
-  nome   String
-  status String @default("ATIVO")
-  tipo String
-
-  pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
-  pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
-  pedidosBalcao  PedidoBalcao[]  @relation("PedidoBalcaoFormaPagamento")
-
-  @@map("formaPagamentos")
-}
-
-model Fechamento {
-  id        Int      @id @default(autoincrement())
-  data      DateTime @default(now())
-  setor     String    // balcao | delivery | externo
-  vendedor  String
-  status    String   @default("aberto") // aberto | fechado
-  totalSistema Float  @default(0) // total calculado pelos pedidos
-  totalInformado Float @default(0) // total contado no caixa
-  diferenca Float @default(0)
-  dia String
-  
-  movimentacoes          MovimentacaoManual[]
-
-  @@unique([vendedor, dia, setor])
-}
-
-model MovimentacaoManual {
-  id            Int      @id @default(autoincrement())
-  data     DateTime @default(now())
-  fechamentoId  Int
-  tipo          String   // entrada | saida
-  descricao     String
-  valor         Float
-
-  fechamento    Fechamento @relation(fields: [fechamentoId], references: [id])
-}
-
-model Estoque {
-  id Int @id @default(autoincrement())
-  produtoId Int 
-  tipo TipoMovimentacaoEstoque
-  quantidade Float 
-  data DateTime @default(now())
-  atualizado DateTime @default(now()) 
-
-  origem String?
-  origemId Int? 
-
-  usuarioId Int
-
-  produto Produto @relation("ItemEstoque", fields: [produtoId], references: [id])
-  usuario Usuario? @relation(fields: [usuarioId], references: [id])
-
-}
-
-model ItemOrdemCompra {
-  id         Int   @id @default(autoincrement())
-  notaEntradaId   Int
-  produtoId  Int
-  quantidade Int
-  valorUnit  Float
-  valorTotal Float
-
-  notaEntrada  OrdemCompra @relation(fields: [notaEntradaId], references: [id])
-  produto Produto       @relation("ItemOrdemCompra", fields: [produtoId], references: [id])
-	@@map("ItemOrdemCompra")
-}
-
- 
-model OrdemCompra {
-  id Int @id @default(autoincrement())
-  data DateTime @default(now())
-  usuarioId Int
-  usuario Usuario? @relation(fields: [usuarioId], references: [id])
-  fornecedorId Int
-  fornecedor Fornecedor? @relation(fields: [fornecedorId], references: [id])
-  itens ItemOrdemCompra[]
-  status String @default("Realizada")
-  total Float
-	@@map("OrdemCompra")
-}
-
-
-model Fornecedor {
-  id Int @id @default(autoincrement())
-  nome String
-  vendedor String?
-  cnpj String @unique
-  telefone String?
-  status String @default("ATIVO")
-
-  notasEntrada OrdemCompra[]
-}
-
-model Caixa {
-  id Int @id @default(autoincrement())
-  valor Float @default(0)
-}
-
-model TaxaEntregaDelivery {
-  id Int @id @default(autoincrement())
-  valor Float @default(0)
-}
-
-
