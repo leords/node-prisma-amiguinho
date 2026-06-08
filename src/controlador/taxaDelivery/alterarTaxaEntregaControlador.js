@@ -1,6 +1,7 @@
 import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
 import { AppError } from "../../error/appError.js"
-import { alterarTaxaEntregaServico } from "../../servico/taxaDelivery/alterarCaixaServico.js";
+import { alterarTaxaEntregaServico } from "../../servico/taxaDelivery/alterarTaxaEntregaServico.js";
+
 
 class alterarTaxaEntregaControlador {
 
@@ -8,7 +9,6 @@ class alterarTaxaEntregaControlador {
         const { valor } = req.body;
     
         try {
-
             const valorNumero = Number(valor)
 
             if(isNaN(valorNumero)) {

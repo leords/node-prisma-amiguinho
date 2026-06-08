@@ -12,6 +12,7 @@ import { estoque } from './estoqueRotas.js'
 import { fornecedorRotas } from './fornecedorRotas.js'
 import { ordemCompraRotas } from './ordemCompraRotas.js'
 import { caixasRotas } from './caixaRotas.js'
+import { taxaDeliveryRotas } from './taxaDeliveryRotas.js'
 
 const rotas = Router()
 
@@ -28,6 +29,7 @@ rotas.use(estoque)
 rotas.use(fornecedorRotas)
 rotas.use(ordemCompraRotas)
 rotas.use(caixasRotas)
+rotas.use(taxaDeliveryRotas)
 
 
 export { rotas }
