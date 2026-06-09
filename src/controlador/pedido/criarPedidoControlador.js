@@ -24,6 +24,9 @@ class CriarPedidoControlador {
       // Validando o setor
       // ---------------------
 
+      console.log('SETOR: ', setor)
+
+
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
         console.log('erro no setor')
