@@ -47,27 +47,39 @@ class CriarPedidoControlador {
         }
       }
 
-      // ---------------------
-      // Validando os dados
-      // ---------------------
 
-      if (cliente) {
-        if (typeof cliente !== 'string')
-          throw new AppError(
-            'Se cliente for inserido, precisa ser do tipo texto',
+      // Validando os dados
+
+      // Aqui valida apenas se é string, se for pedido para balcao, 
+      if(setor === 'balcao') {
+        if (cliente) {
+          if (typeof cliente !== 'string')
+            throw new AppError(
+              'Se cliente for inserido, precisa ser do tipo texto',
+              HTTP_STATUS_CODES.BAD_REQUEST,
+              "PRDUTO_NOT_FOUND"
+          )
+        }
+      }
+
+
+      if(!cliente) {
+        throw new AppError(
+            `Cliente id é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+            "CLIENTE_ID_NOT_FOUND"
         )
       }
 
       if (!formaPagamentoId) {
-                throw new AppError(
+        throw new AppError(
             `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+            "PRODUTO_NOT_FOUND"
         )
 
       }
+
       if (!vendedor) {
         throw new AppError(
             `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
