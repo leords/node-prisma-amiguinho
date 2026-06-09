@@ -75,7 +75,7 @@ class CriarPedidoControlador {
         throw new AppError(
             `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRODUTO_NOT_FOUND"
+            "FORMA_PAGAMENTO_NOT_FOUND"
         )
 
       }
@@ -84,7 +84,7 @@ class CriarPedidoControlador {
         throw new AppError(
             `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+            "VENDEDOR_NOT_FOUND"
         )
       }
 
@@ -96,12 +96,14 @@ class CriarPedidoControlador {
         )
       }
 
-      if (!nomeUsuario) {
-        throw new AppError(
+      if(setor === 'balcao') {
+        if (!nomeUsuario) {
+          throw new AppError(
             `Nome é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
-        )
+            "NOME_USUARIO_NOT_FOUND"
+          )
+        }
       }
 
       if (!itens || !Array.isArray(itens) || itens.length === 0) {
@@ -112,14 +114,13 @@ class CriarPedidoControlador {
         )
       }
       
-
       // validar UM POR UM e RETORNAR MSG ESPECIFICA
       itens.forEach((item) => {
         if (!item.produtoId || !item.quantidade || !item.valorUnit) {
           throw new AppError(
             ERRO_MSG_PEDIDOS.CAMPO_AUSENTE,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+            "PRODUTO_NOT_FOUND"
         )
         }
       })
