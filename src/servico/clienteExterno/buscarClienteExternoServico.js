@@ -7,7 +7,6 @@ class BuscarClienteExternoServico {
         throw new Error('Clientes não encontrados')
       }
       for (const cliente of clientes) {
-        console.log(clientes)
 
         await prismaCliente.clienteExterno.upsert({
           where: {

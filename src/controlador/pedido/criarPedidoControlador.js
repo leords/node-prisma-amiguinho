@@ -65,7 +65,6 @@ class CriarPedidoControlador {
         }
       }
 
-
       if(!cliente) {
         throw new AppError(
             `Cliente id é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
@@ -164,11 +163,29 @@ class CriarPedidoControlador {
         }
       })
 
+      if(setor === 'balcao') {
+        const dados = {
+          cliente,
+          formaPagamentoId: Number(formaPagamentoId),
+          vendedor,
+          nomeUsuario,
+          usuarioId: Number(usuarioId),
+          itens: itensValidados,
+        } 
+
+        const servico = new CriarPedidoServico()
+        const resultado = await servico.executar(setor, dados)
+
+        return res.status(HTTP_STATUS_CODES.CREATED).json({
+          mensagem: SUCESSO_MSG_PEDIDOS.CRIADO,
+          resultado: resultado,
+        })
+      }
+
       const dados = {
-        cliente,
+        cliente: Number(cliente),
         formaPagamentoId: Number(formaPagamentoId),
         vendedor,
-        nomeUsuario,
         usuarioId: Number(usuarioId),
         itens: itensValidados,
       }
@@ -180,6 +197,7 @@ class CriarPedidoControlador {
         mensagem: SUCESSO_MSG_PEDIDOS.CRIADO,
         resultado: resultado,
       })
+
     } catch (error) {
       console.log('ERRO AO CRIAR PEDIDO:', error)
       next(error)
