@@ -55,7 +55,7 @@ class CriarPedidoServico {
         )
       }
 
-      if (setor === 'externo') {
+      else if (setor === 'externo') {
 
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
@@ -98,7 +98,7 @@ class CriarPedidoServico {
       )
       }
 
-      if (setor === 'balcao') {
+      else if (setor === 'balcao') {
 
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
@@ -141,8 +141,9 @@ class CriarPedidoServico {
 
       }
 
-      throw new Error(ERRO_MSG_PEDIDOS.SETOR)
-      
+      else {
+        throw new Error(ERRO_MSG_PEDIDOS.SETOR)
+      }
     } catch (error) {
       console.log(error)
       throw error
