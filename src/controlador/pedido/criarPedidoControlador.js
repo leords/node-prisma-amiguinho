@@ -37,32 +37,17 @@ class CriarPedidoControlador {
         )
       }
 
-      // validando apenas se o setor for balcao.
-      if (setor === 'balcao') {
-        if (itens.cliente && typeof itens.cliente !== 'string') {
-          console.log('erro no cliente')
 
+      // Aqui valida apenas se é string, se for pedido para balcão.
+      // quando é balcão, vem o possivel nome adicionado na notinha.
+      // salva no campo especifico. 
+      if(setor === 'balcao') {
+        if (cliente && typeof cliente !== 'string')
           throw new AppError(
             'Se cliente for inserido, precisa ser do tipo texto',
             HTTP_STATUS_CODES.BAD_REQUEST,
             "PRDUTO_NOT_FOUND"
-          )
-        }
-      }
-
-
-      // Validando os dados
-
-      // Aqui valida apenas se é string, se for pedido para balcao, 
-      if(setor === 'balcao') {
-        if (cliente) {
-          if (typeof cliente !== 'string')
-            throw new AppError(
-              'Se cliente for inserido, precisa ser do tipo texto',
-              HTTP_STATUS_CODES.BAD_REQUEST,
-              "PRDUTO_NOT_FOUND"
-          )
-        }
+        )
       }
 
       if(!cliente) {
@@ -79,7 +64,6 @@ class CriarPedidoControlador {
             HTTP_STATUS_CODES.BAD_REQUEST,
             "FORMA_PAGAMENTO_NOT_FOUND"
         )
-
       }
 
       if (!vendedor) {
@@ -116,17 +100,18 @@ class CriarPedidoControlador {
         )
       }
       
-      // validar UM POR UM e RETORNAR MSG ESPECIFICA
+      // Valida a existencia de um por um dos campos dos itens da lista.
       itens.forEach((item) => {
         if (!item.produtoId || !item.quantidade || !item.valorUnit) {
           throw new AppError(
             ERRO_MSG_PEDIDOS.CAMPO_AUSENTE,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "PRODUTO_NOT_FOUND"
-        )
+          )
         }
       })
 
+      // Converte e valida a tipagem dos campos de cada item.
       const itensValidados = itens.map((item, index) => {
         //convertendo para números;
         const produtoId = Number(item.produtoId)
@@ -138,21 +123,21 @@ class CriarPedidoControlador {
             `Item ${index + 1}: produtoId inválido`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "PRDUTO_NOT_FOUND"
-        )
+          )
         }
         if (isNaN(quantidade)) {
           throw new AppError(
             `Item ${index + 1}: quantidade inválida`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "QUANTIDADE_NOT_FOUND"
-        )
+          )
         }
         if (isNaN(valorUnit)) {
           throw new AppError(
             `Item ${index + 1}: quantidade inválida`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "VALOR_UND_NOT_FOUND"
-        )
+          )
         }
 
         return {
@@ -163,6 +148,7 @@ class CriarPedidoControlador {
         }
       })
 
+      // Formato de envio para o serviço especifico para pedidos Balcão.
       if(setor === 'balcao') {
         const dados = {
           cliente,
@@ -182,6 +168,7 @@ class CriarPedidoControlador {
         })
       }
 
+      // Envio para o serviço de delivery e externo.
       const dados = {
         cliente: Number(cliente),
         formaPagamentoId: Number(formaPagamentoId),
