@@ -20,12 +20,10 @@ class CriarPedidoControlador {
         itens,
       } = req.body.dados
 
-      // ---------------------
+    
       // Validando o setor
-      // ---------------------
-
+    
       console.log('SETOR: ', setor)
-
 
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
@@ -36,7 +34,6 @@ class CriarPedidoControlador {
           "PRDUTO_NOT_FOUND"
         )
       }
-
 
       // Aqui valida apenas se é string, se for pedido para balcão.
       // quando é balcão, vem o possivel nome adicionado na notinha.
