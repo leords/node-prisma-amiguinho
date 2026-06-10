@@ -14,6 +14,7 @@ class CriarPedidoServico {
 
       if (setor === 'delivery') {
         console.log('Debug setor delivery!', setor)
+        console.log('Debug dados', dados)
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
 
