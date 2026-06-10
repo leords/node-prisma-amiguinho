@@ -20,11 +20,17 @@ class CriarPedidoControlador {
         itens,
       } = req.body.dados
 
+      // valido o body
+      if (!req.body.dados) {
+        throw new AppError(
+          'Dados não informados',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'DADOS_NOT_FOUND'
+        )
+      }
     
-      // Validando o setor
-    
+      // valida o setor.
       console.log('SETOR: ', setor)
-
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
         console.log('erro no setor')
@@ -35,29 +41,20 @@ class CriarPedidoControlador {
         )
       }
 
-      // Aqui valida apenas se é string, se for pedido para balcão.
-      // quando é balcão, vem o possivel nome adicionado na notinha.
-      // salva no campo especifico. 
-      if(setor === 'balcao') {
-        if (cliente && typeof cliente !== 'string')
+      // valida cliente apenas se setor for diferente de balcão.
+      if(setor !== 'balcao') {
+        if(!cliente) {
           throw new AppError(
-            'Se cliente for inserido, precisa ser do tipo texto',
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
-        )
-      }
-
-      if(!cliente) {
-        throw new AppError(
-            `Cliente id é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
+            `Cliente id é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "CLIENTE_ID_NOT_FOUND"
-        )
+          )
+        }
       }
 
       if (!formaPagamentoId) {
         throw new AppError(
-            `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
+            `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "FORMA_PAGAMENTO_NOT_FOUND"
         )
@@ -65,7 +62,7 @@ class CriarPedidoControlador {
 
       if (!vendedor) {
         throw new AppError(
-            `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
+            `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "VENDEDOR_NOT_FOUND"
         )
@@ -73,7 +70,7 @@ class CriarPedidoControlador {
 
       if (!usuarioId) {
         throw new AppError(
-            `ID de usuário é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
+            `ID de usuário é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "PRDUTO_NOT_FOUND"
         )
@@ -82,7 +79,7 @@ class CriarPedidoControlador {
       if(setor === 'balcao') {
         if (!nomeUsuario) {
           throw new AppError(
-            `Nome é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}}`,
+            `Nome é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
             "NOME_USUARIO_NOT_FOUND"
           )
@@ -147,6 +144,15 @@ class CriarPedidoControlador {
 
       // Formato de envio para o serviço especifico para pedidos Balcão.
       if(setor === 'balcao') {
+
+        // valido cliente do tipo string apenas quando vem da req para novo pedido balcão.
+        if (cliente && typeof cliente !== 'string')
+          throw new AppError(
+            'Se cliente for inserido, precisa ser do tipo texto',
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "PRDUTO_NOT_FOUND"
+        )
+
         const dados = {
           cliente,
           formaPagamentoId: Number(formaPagamentoId),
@@ -165,12 +171,40 @@ class CriarPedidoControlador {
         })
       }
 
+      const clienteId = Number(cliente)
+      const formaPagamentoIdFormatado = Number(formaPagamentoId)
+      const usuarioIdFormatado = Number(usuarioId)
+
+      if(isNaN(clienteId)) {
+        throw new AppError(
+          'Cliente inválido',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'CLIENTE_INVALIDO'
+        )
+      }
+      if(isNaN(formaPagamentoIdFormatado)) {
+        throw new AppError(
+          'Forma de pagamento inválido',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'FORMA_PAGAMENTO_INVALIDO'
+        )
+      }
+      if(isNaN(usuarioIdFormatado)) {
+        throw new AppError(
+          'Usuario id inválido',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'USUARIO_ID_INVALIDO'
+        )
+      }
+
+
+
       // Envio para o serviço de delivery e externo.
       const dados = {
-        cliente: Number(cliente),
-        formaPagamentoId: Number(formaPagamentoId),
+        cliente: clienteId,
+        formaPagamentoId: formaPagamentoIdFormatado,
         vendedor,
-        usuarioId: Number(usuarioId),
+        usuarioId: usuarioIdFormatado,
         itens: itensValidados,
       }
 
