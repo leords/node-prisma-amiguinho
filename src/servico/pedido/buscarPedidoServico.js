@@ -52,6 +52,8 @@ class BuscarPedidoServico {
       status: status ? status : 'finalizado',
     }
 
+    console.log('debug: ', queryDelivery)
+
     try {
       if (setor === 'delivery') {
         return await prismaCliente.pedidoDelivery.findMany({
@@ -67,7 +69,7 @@ class BuscarPedidoServico {
         })
       }
 
-      if (setor === 'externo') {
+      else if (setor === 'externo') {
         return await prismaCliente.pedidoExterno.findMany({
           where: queryExterno,
           include: {
@@ -81,7 +83,7 @@ class BuscarPedidoServico {
         })
       }
 
-      if (setor === 'balcao') {
+      else if (setor === 'balcao') {
         return await prismaCliente.pedidoBalcao.findMany({
           where: queryBalcao,
           include: {
