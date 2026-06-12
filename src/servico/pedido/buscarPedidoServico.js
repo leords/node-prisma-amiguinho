@@ -56,6 +56,7 @@ class BuscarPedidoServico {
 
     try {
       if (setor === 'delivery') {
+         console.log('debug setor: ', queryDelivery)
         return await prismaCliente.pedidoDelivery.findMany({
           where: queryDelivery,
           include: {
