@@ -38,19 +38,26 @@ class BuscarPedidoServico {
     }
 
     const queryDelivery = {
-      ...query,
-      status: status ? status : 'entregue',
+      ...query
     }
+    if(status) {
+        queryDelivery.status = status
+    }
+    
 
     const queryExterno = {
       ...query,
-      status: status ? status : 'entregue',
+    }
+    if(status) {
+        queryExterno.status = status
     }
 
     const queryBalcao = {
       ...query,
-      status: status ? status : 'finalizado',
     }
+    if(status) {
+        queryBalcao.status = status
+    } 
 
     console.log('debug: ', queryDelivery)
 
