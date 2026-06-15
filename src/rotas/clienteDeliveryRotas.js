@@ -13,7 +13,6 @@ rotas.post(
 rotas.get(
   '/ler-clientes-delivery',
   autenticadorMiddleware,
-  nivelAcessoMiddleware(['ADMIN']),
   new LerClienteDeliveryControlador().tratar
 )
 
