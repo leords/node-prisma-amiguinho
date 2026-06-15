@@ -13,6 +13,7 @@ import { TotalPorFormaPagamentoControlador } from '../controlador/pedido/totalPo
 import { RelatorioMixProdutosControlador } from '../controlador/pedido/relatorioMixProdutosControlador.js'
 import { EditarPedidoControlador } from '../controlador/pedido/editarPedidoControlador.js'
 import { buscarValeInternoControlador } from '../controlador/pedido/buscarValeInternoControlador.js'
+import { BuscarFechamentoDeliveryDiaControlador } from '../controlador/pedido/buscarFechamentoDeliveryDiaControlador.js'
 
 const rotas = Router()
 
@@ -38,6 +39,12 @@ rotas.get(
   '/buscar-fechamento-balcao-dia',
   autenticadorMiddleware,
   new BuscarFechamentoBalcaoDiaControlador().tratar
+)
+
+rotas.get(
+  '/buscar-fechamento-delivery-dia',
+  autenticadorMiddleware,
+  new BuscarFechamentoDeliveryDiaControlador().tratar
 )
 
 rotas.get(
