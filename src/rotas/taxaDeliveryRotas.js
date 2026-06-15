@@ -18,7 +18,6 @@ rotas.post(
 rotas.get(
     '/ler-taxa-delivery',
     autenticadorMiddleware,
-    nivelAcessoMiddleware(['ADMIN']),
     new lerTaxaEntregaControlador().tratar
 
 )
