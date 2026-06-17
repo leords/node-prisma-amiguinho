@@ -1,6 +1,5 @@
-import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes"
-import { AppError } from "../../error/appError"
-import prismaCliente from "../../prisma"
+import { HTTP_STATUS_CODES } from "../../config/httpStatusCodes.js"
+import { AppError } from "../../error/appError.js"
 
 
 class estornoEstoqueServico {
