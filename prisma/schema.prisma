@@ -90,6 +90,13 @@ model PedidoDelivery {
   cliente          ClienteDelivery      @relation(fields: [clienteId], references: [id])
   formaPagamento   FormaPagamento       @relation("PedidoDeliveryFormaPagamento", fields: [formaPagamentoId], references: [id])
   usuario          Usuario?             @relation(fields: [usuarioId], references: [id])
+
+  // Controle de entrega.
+  dataCarregada   DateTime?
+  dataEntrega        DateTime?
+  latitudeEntrega    Float?
+  longitudeEntrega   Float?
+  precisaoGps        Float?
 }
 
 model PedidoExterno {

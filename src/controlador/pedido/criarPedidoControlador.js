@@ -197,8 +197,6 @@ class CriarPedidoControlador {
         )
       }
 
-
-
       // Envio para o serviço de delivery e externo.
       const dados = {
         cliente: clienteId,
