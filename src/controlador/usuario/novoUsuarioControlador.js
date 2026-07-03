@@ -69,7 +69,7 @@ class NovoUsuarioControlador {
         )
       }
 
-      const opcoesNivelAcesso = ["ADMIN", "VENDAS", "BALCAO", "DELIVERY", "EXTERNO", "USUARIO"]
+      const opcoesNivelAcesso = ["ADMIN", "VENDAS", "BALCAO", "DELIVERY", "EXTERNO", "USUARIO", "ENTREGADOR"]
 
       if (!opcoesNivelAcesso.includes(nivelAcesso)) {
         throw new AppError(

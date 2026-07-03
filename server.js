@@ -7,9 +7,23 @@ import { CriarUsuarioAdminServico } from "./src/servico/usuario/criarUsuarioAdmi
 import { iniciarJobs } from "./src/jobs/index.js";
 import { alterarCaixaServico } from "./src/servico/caixa/alterarCaixaServico.js";
 import { alterarTaxaEntregaServico } from "./src/servico/taxaDelivery/alterarTaxaEntregaServico.js";
+import http from "http";
+import { Server } from "socket.io";
+import configurarSocket from "./src/socket/index.js";
 
 //dotenv.config();
 const app = express();
+
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
+
+configurarSocket(io);
 
 // Libera requisições de origens diferentes
 app.use(cors());
@@ -47,7 +61,7 @@ await servicoTaxaEntrega.executar()
 
 
 const port = process.env.PORT || 4000
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Servidor iniciado na porta ${port}`)
     iniciarJobs()
 });

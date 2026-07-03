@@ -70,11 +70,6 @@ class SaidaEstoqueDelivery {
                 }
             }
     
-            // atualiza status
-            return await prisma.pedidoDelivery.update({
-            where: { id: pedidoId },
-            data: { status: "carregado" }
-            })
     }
 }
 

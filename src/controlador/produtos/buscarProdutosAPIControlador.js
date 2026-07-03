@@ -10,8 +10,7 @@ import { BuscarProdutosAPIServico } from '../../servico/produtos/buscarProdutosA
 class BuscarProdutosAPIControlador {
   async tratar(req, res, next) {
     try {
-      console.time("BuscarProdutos")
-
+  
       const resposta = await fetch(
         process.env.PRODUTOS
       )

@@ -14,6 +14,8 @@ import { RelatorioMixProdutosControlador } from '../controlador/pedido/relatorio
 import { EditarPedidoControlador } from '../controlador/pedido/editarPedidoControlador.js'
 import { buscarValeInternoControlador } from '../controlador/pedido/buscarValeInternoControlador.js'
 import { BuscarFechamentoDeliveryDiaControlador } from '../controlador/pedido/buscarFechamentoDeliveryDiaControlador.js'
+import { carregarPedidoDeliveryControlador } from '../controlador/pedido/carregarPedidoDeliveryControlador.js'
+import { finalizarPedidoDeliveryControlador } from '../controlador/pedido/finalizarPedidoDeliveryControlador.js'
 
 const rotas = Router()
 
@@ -99,6 +101,22 @@ rotas.put(
   '/editar-pedido/:setor/:uuid',
   autenticadorMiddleware,
   new EditarPedidoControlador().tratar
+)
+
+
+
+// ROTAS ESPECIFICAS PARA DELIVERY
+
+rotas.patch(
+  '/carregar-pedido-delivery/:uuid',
+  autenticadorMiddleware,
+  new carregarPedidoDeliveryControlador().tratar
+)
+
+rotas.patch(
+  '/finalizar-pedido-delivery/:uuid',
+  autenticadorMiddleware,
+  new finalizarPedidoDeliveryControlador().tratar
 )
 
 export { rotas as pedidoRotas }
