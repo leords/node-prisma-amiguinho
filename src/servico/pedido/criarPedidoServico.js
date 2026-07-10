@@ -13,8 +13,7 @@ class CriarPedidoServico {
 
 
       if (setor === 'delivery') {
-        console.log('Debug setor delivery!', setor)
-        console.log('Debug dados', dados)
+
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
 
@@ -44,6 +43,8 @@ class CriarPedidoServico {
               formaPagamento: true,
             },
           })
+
+          console.log('pedidos: ', pedido.itens);
           
           const estoqueServico = new SaidaEstoqueServico()
           // está sendo passado o transaction(prisma) por parametro.
@@ -103,11 +104,12 @@ class CriarPedidoServico {
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
 
+        console.log('Dados: ', dados)
+
         await prismaCliente.$transaction(async (prisma) => {
           const pedido = await prisma.pedidoBalcao.create({
             data: {
               cliente: dados.cliente || null,
-              formaPagamentoId: Number(dados.formaPagamentoId),
               vendedor: dados.vendedor,
               nomeUsuario: dados.nomeUsuario,
               usuarioId: Number(dados.usuarioId),
@@ -126,9 +128,37 @@ class CriarPedidoServico {
             },
             include: {
               itens: true,
-              formaPagamento: true,
+              pagamentos: {
+                include: {
+                  formaPagamento: true,
+                },
+              },
             },
           })
+
+          if (dados.pagamentos?.length >= 1) {
+
+            // Aqui valida se as duas formas de pagamentos somadas são o mesmo que o total do pedido
+              const totalPagamentos = dados.pagamentos.reduce(
+                  (acc, pagamento) => acc + Number(pagamento.valor),
+                  0
+              )
+              if (Math.abs(totalPagamentos - total) > 0.01) {
+                  throw new Error(
+                    "A soma das formas de pagamento é diferente do total do pedido."
+                  )
+              }
+
+
+              await prisma.pagamentoPedidoBalcao.createMany({
+                  data: dados.pagamentos.map((pagamento) => ({
+                      pedidoId: pedido.id,
+                      formaPagamentoId: Number(pagamento.idFormaPagamentoParcial),
+                      valor: Number(pagamento.valorParcialFormaPagamento),
+                  })),
+              })
+          }
+
 
           const estoqueServico = new SaidaEstoqueServico()
           // está sendo passado o transaction(prisma) por parametro.

@@ -2,6 +2,7 @@ import prismaCliente from '../../prisma/index.js'
 
 class BuscarFechamentoDeliveryDiaServico {
   async executar(inicio, fim) {
+    console.log('Dados buscar fechamento delivery: ', inicio, ' - ', fim)
     try {
       // buscando o total de vendas
       const total = await prismaCliente.pedidoDelivery.aggregate({

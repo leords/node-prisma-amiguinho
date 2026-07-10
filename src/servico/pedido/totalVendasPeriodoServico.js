@@ -4,9 +4,7 @@ class TotalVendasPeriodoServico {
   async executar(setor, vendedor, dataInicio, dataFim) {
     try {
       
-      // ------------------------------------
       // SETOR BALCAO
-      // ------------------------------------
 
       if (setor === 'balcao') {
         const totalVendas = await prismaCliente.pedidoBalcao.aggregate({
@@ -38,9 +36,7 @@ class TotalVendasPeriodoServico {
         }
       }
 
-      // ------------------------------------
       // SETOR DELIVERY
-      // ------------------------------------
 
       if (setor === 'delivery') {
         const totalVendas = await prismaCliente.pedidoDelivery.aggregate({
@@ -72,9 +68,7 @@ class TotalVendasPeriodoServico {
         }
       }
 
-      // ------------------------------------
       // SETOR EXTERNO
-      // ------------------------------------
 
       if (setor === 'externo') {
         const totalVendas = await prismaCliente.pedidoExterno.aggregate({

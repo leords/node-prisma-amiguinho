@@ -1,5 +1,4 @@
-import prismaCliente from '../../prisma/index.js'
-import { coletarErro } from '../../utilidades/coletarErro.js'
+import prismaCliente from "../../prisma/index.js"
 
 class BuscarPedidoServico {
   async executar(
@@ -13,133 +12,146 @@ class BuscarPedidoServico {
     status
   ) {
 
-    const query = {}
-
-    // Montando o query conforme a existencia dos valores
-    if (vendedor) {
-      query.vendedor = vendedor
-    }
-    if (cliente) {
-      query.cliente = cliente
-    }
-    
-    if (formaPagamentoId ) {
-      query.formaPagamentoId = formaPagamentoId
-    }
-
-    if (usuarioId) {
-      query.usuarioId = usuarioId
-    }
+    // Campos comuns aos três models
+    const queryBase = {}
+    if (vendedor) queryBase.vendedor = vendedor
+    if (usuarioId) queryBase.usuarioId = usuarioId
     if (dataInicio && dataFim) {
-      query.data = {
-        gte: dataInicio,
-        lte: dataFim,
+      queryBase.data = { 
+        gte: dataInicio, 
+        lte: dataFim 
       }
     }
 
-    const queryDelivery = {
-      ...query
-    }
-    if(status) {
-        queryDelivery.status = status
-    }
-    
+    if (status) queryBase.status = status
 
-    const queryExterno = {
-      ...query,
-    }
-    if(status) {
-        queryExterno.status = status
+    // Delivery: cliente é relação (via clienteId), formaPagamentoId é escalar direto
+    const queryDelivery = { ...queryBase }
+    if (formaPagamentoId) queryDelivery.formaPagamentoId = formaPagamentoId
+    if (cliente) {
+      queryDelivery.cliente = { 
+        nome: { 
+          contains: cliente, 
+          mode: 'insensitive' 
+        } 
+      }
     }
 
-    const queryBalcao = {
-      ...query,
+    // Externo: mesma estrutura do Delivery
+    const queryExterno = { ...queryBase }
+    if (formaPagamentoId) queryExterno.formaPagamentoId = formaPagamentoId
+    if (cliente) {
+      queryExterno.cliente = { 
+        nome: { 
+          contains: cliente, 
+          mode: 'insensitive' 
+        } 
+      }
     }
-    if(status) {
-        queryBalcao.status = status
-    } 
 
-    console.log('debug: ', queryDelivery)
+    // Balcao: cliente é String simples, formaPagamentoId vem via relação "pagamentos"
+    const queryBalcao = { ...queryBase }
+    if (cliente) {
+      queryBalcao.cliente = { 
+        contains: cliente, 
+        mode: 'insensitive' 
+      }
+    }
+    if (formaPagamentoId) {
+      queryBalcao.pagamentos = {
+        some: { 
+          formaPagamentoId 
+        }
+      }
+    }
 
     try {
       if (setor === 'delivery') {
-         console.log('debug setor: ', queryDelivery)
         return await prismaCliente.pedidoDelivery.findMany({
           where: queryDelivery,
-          include: {
-            itens: true,
-            cliente: true,
-            formaPagamento: true,
+          include: { 
+            itens: true, 
+            cliente: true, 
+            formaPagamento: true 
           },
-          orderBy: {
-            data: 'desc'
+          orderBy: { 
+            data: 'desc' 
           }
         })
       }
 
-      else if (setor === 'externo') {
+      if (setor === 'externo') {
         return await prismaCliente.pedidoExterno.findMany({
           where: queryExterno,
-          include: {
-            itens: true,
-            cliente: true,
-            formaPagamento: true,
+          include: { 
+            itens: true, 
+            cliente: true, 
+            formaPagamento: true 
           },
-          orderBy: {
-            data: 'desc'
+          orderBy: { 
+            data: 'desc' 
           }
         })
       }
 
-      else if (setor === 'balcao') {
+      if (setor === 'balcao') {
         return await prismaCliente.pedidoBalcao.findMany({
           where: queryBalcao,
           include: {
             itens: true,
-            formaPagamento: true,
+            pagamentos: { 
+              include: { 
+                formaPagamento: true
+              } 
+            },
           },
-          orderBy: {
-            data: 'desc'
+          orderBy: { 
+            data: 'desc' 
           }
         })
       }
 
-      // Se nenhum setor for especificado, buscar em todos
-      const [pedidosDelivery, pedidosExterno, pedidosBalcao] =
-        await Promise.all([
-          prismaCliente.pedidoDelivery.findMany({
-            where: queryDelivery,
-            include: {
-              itens: true,
-              cliente: true,
-              formaPagamento: true,
+      const [pedidosDelivery, pedidosExterno, pedidosBalcao] = await Promise.all([
+
+        prismaCliente.pedidoDelivery.findMany({
+          where: queryDelivery,
+          include: { 
+            itens: true, 
+            cliente: true, 
+            formaPagamento: true 
+          },
+          orderBy: { 
+            data: 'desc' 
+          }
+        }),
+
+        prismaCliente.pedidoExterno.findMany({
+          where: queryExterno,
+          include: { 
+            itens: true, 
+            cliente: true, 
+            formaPagamento: true 
+          },
+          orderBy: { 
+            data: 'desc' 
+          }
+        }),
+
+        prismaCliente.pedidoBalcao.findMany({
+          where: queryBalcao,
+          include: {
+            itens: true,
+            pagamentos: { 
+              include: { 
+                formaPagamento: true 
+              } 
             },
-            orderBy: {
+          },
+          orderBy: { 
             data: 'desc'
           }
-          }),
-          prismaCliente.pedidoExterno.findMany({
-            where: queryExterno,
-            include: {
-              itens: true,
-              cliente: true,
-              formaPagamento: true,
-            },
-            orderBy: {
-            data: 'desc'
-          }
-          }),
-          prismaCliente.pedidoBalcao.findMany({
-            where: queryBalcao,
-            include: {
-              itens: true,
-              formaPagamento: true,
-            },
-            orderBy: {
-            data: 'desc'
-          }
-          }),
-        ])
+        }),
+      ])
 
       return [...pedidosDelivery, ...pedidosExterno, ...pedidosBalcao]
 

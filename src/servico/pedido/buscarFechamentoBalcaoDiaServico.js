@@ -20,38 +20,42 @@ class BuscarFechamentoBalcaoDiaServico {
         },
       })
 
-      const totalInterno = await prismaCliente.pedidoBalcao.aggregate({
+      const totalInterno = await prismaCliente.pagamentoPedidoBalcao.aggregate({
         where: {
-          data: {
-            gte: inicio,
-            lte: fim,
+          pedido: {
+            vendedor: vendedor || undefined,
+            data: {
+              gte: inicio,
+              lte: fim,
+            },
           },
-          vendedor,
           formaPagamento: {
             nome: {
-              notIn: ['A VISTA', 'CARTÃO', 'PIX', 'CHEQUE', 'DINHEIRO'],
+              notIn: ["A VISTA", "CARTÃO", "PIX", "CHEQUE", "DINHEIRO"],
             },
           },
         },
         _sum: {
-          total: true,
+          valor: true,
         },
-      })
+      });
 
       // buscando formas de pagamentos por grupo, via ID
-      const totais = await prismaCliente.pedidoBalcao.groupBy({
+      const totais = await prismaCliente.pagamentoPedidoBalcao.groupBy({
         by: ['formaPagamentoId'],
         where: {
-          data: {
-            gte: inicio,
-            lte: fim,
+          pedido: {
+            vendedor: vendedor || undefined,
+            data: {
+              gte: inicio,
+              lte: fim,
+            },
           },
-          vendedor,
         },
         _sum: {
-          total: true,
+          valor: true,
         },
-      })
+      });
 
       // validando o retorno de totais
       if (!Array.isArray(totais)) {
@@ -67,21 +71,21 @@ class BuscarFechamentoBalcaoDiaServico {
       })
 
       const resultado = totais.reduce((acc, t) => {
-        const forma = formasPagamento.find((f) => f.id === t.formaPagamentoId)
+        const forma = formasPagamento.find((f) => f.id === t.formaPagamentoId);
 
         const chave =
-          forma?.nome?.toLowerCase()?.replace(/\s+/g, '_') ?? 'nao_informado'
+          forma?.nome?.toLowerCase()?.replace(/\s+/g, "_") ?? "nao_informado";
 
-        acc[chave] = t._sum.total ?? 0
-        return acc
-      }, {})
+        acc[chave] = t._sum.valor ?? 0;
+
+        return acc;
+      }, {});
 
       // criando o retorno
-
       const resultadoFinal = {
         resultado: resultado,
         total: total._sum.total || 0,
-        interno: totalInterno._sum.total || 0,
+        interno: totalInterno._sum.valor || 0,
         quantidade: total._count.id || 0,
       }
 

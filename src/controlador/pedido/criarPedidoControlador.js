@@ -18,7 +18,9 @@ class CriarPedidoControlador {
         nomeUsuario,
         usuarioId,
         itens,
+        pagamentos
       } = req.body.dados
+
 
       // valido o body
       if (!req.body.dados) {
@@ -30,7 +32,6 @@ class CriarPedidoControlador {
       }
     
       // valida o setor.
-      console.log('SETOR: ', setor)
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
         console.log('erro no setor')
@@ -50,14 +51,6 @@ class CriarPedidoControlador {
             "CLIENTE_ID_NOT_FOUND"
           )
         }
-      }
-
-      if (!formaPagamentoId) {
-        throw new AppError(
-            `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "FORMA_PAGAMENTO_NOT_FOUND"
-        )
       }
 
       if (!vendedor) {
@@ -86,6 +79,14 @@ class CriarPedidoControlador {
         }
       }
 
+      if (formaPagamentoId && isNaN(formaPagamentoId)) {
+        throw new AppError(
+            `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            "FORMA_PAGAMENTO_NOT_FOUND"
+        )
+      }
+
       if (!itens || !Array.isArray(itens) || itens.length === 0) {
           throw new AppError(
             ERRO_MSG_PEDIDOS.LISTA_PEDIDOS,
@@ -94,6 +95,24 @@ class CriarPedidoControlador {
         )
       }
       
+
+
+      // Valido a existencia de multiplos pagamentos, quanto é existente
+      if(pagamentos?.length > 0) {
+
+        pagamentos.forEach((item) => {
+          if (!item.idFormaPagamentoParcial || !item.valorParcialFormaPagamento) {
+            throw new AppError(
+              "Campo obrigatório ausente em alguma forma de pagamento",
+              HTTP_STATUS_CODES.BAD_REQUEST,
+              "PRODUTO_NOT_FOUND"
+            )
+          }
+        })
+
+      }
+
+
       // Valida a existencia de um por um dos campos dos itens da lista.
       itens.forEach((item) => {
         if (!item.produtoId || !item.quantidade || !item.valorUnit) {
@@ -105,8 +124,8 @@ class CriarPedidoControlador {
         }
       })
 
-      // Converte e valida a tipagem dos campos de cada item.
-      const itensValidados = itens.map((item, index) => {
+      // Converte e valida a tipagem dos campos de cada forma de pagamentos.
+      const itensValidados= itens.map((item, index) => {
         //convertendo para números;
         const produtoId = Number(item.produtoId)
         const quantidade = Number(item.quantidade)
@@ -155,11 +174,11 @@ class CriarPedidoControlador {
 
         const dados = {
           cliente,
-          formaPagamentoId: Number(formaPagamentoId),
           vendedor,
           nomeUsuario,
           usuarioId: Number(usuarioId),
           itens: itensValidados,
+          pagamentos: pagamentos
         } 
 
         const servico = new CriarPedidoServico()
@@ -174,6 +193,7 @@ class CriarPedidoControlador {
       const clienteId = Number(cliente)
       const formaPagamentoIdFormatado = Number(formaPagamentoId)
       const usuarioIdFormatado = Number(usuarioId)
+
 
       if(isNaN(clienteId)) {
         throw new AppError(

@@ -121,15 +121,16 @@ model PedidoBalcao {
   uuid             String             @unique @default(uuid())
   tipo             String             @default("balcao")
   cliente          String?
-  formaPagamentoId Int
   vendedor         String?
   total            Float
   status           String             @default("carregado")
   data             DateTime           @default(now())
   usuarioId        Int?
   nomeUsuario      String
+
   itens            ItemPedidoBalcao[]
-  formaPagamento   FormaPagamento     @relation("PedidoBalcaoFormaPagamento", fields: [formaPagamentoId], references: [id])
+  pagamentos       PagamentoPedidoBalcao[]
+
   usuario          Usuario?           @relation(fields: [usuarioId], references: [id])
 }
 
@@ -137,7 +138,7 @@ model ItemPedidoBalcao {
   id         Int          @id @default(autoincrement())
   pedidoId   Int
   produtoId  Int
-  quantidade Int
+  quantidade Float
   valorUnit  Float
   valorTotal Float
   pedido     PedidoBalcao @relation(fields: [pedidoId], references: [id])
@@ -148,7 +149,7 @@ model ItemPedidoDelivery {
   id         Int            @id @default(autoincrement())
   pedidoId   Int
   produtoId  Int
-  quantidade Int
+  quantidade Float
   valorUnit  Float
   valorTotal Float
   pedido     PedidoDelivery @relation(fields: [pedidoId], references: [id])
@@ -159,7 +160,7 @@ model ItemPedidoExterno {
   id         Int           @id @default(autoincrement())
   pedidoId   Int
   produtoId  Int
-  quantidade Int
+  quantidade Float
   valorUnit  Float
   valorTotal Float
   pedido     PedidoExterno @relation(fields: [pedidoId], references: [id])
@@ -171,7 +172,9 @@ model FormaPagamento {
   nome            String
   status          String           @default("ATIVO")
   tipo            String
-  pedidosBalcao   PedidoBalcao[]   @relation("PedidoBalcaoFormaPagamento")
+  
+  pagamentosBalcao PagamentoPedidoBalcao[]
+
   pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
   pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
 
@@ -264,6 +267,20 @@ model TaxaEntregaDelivery {
   valor Float @default(0)
 }
 
+model PagamentoPedidoBalcao {
+  id               Int @id @default(autoincrement())
+
+  pedidoId         Int
+  formaPagamentoId Int
+  valor            Float
+
+  pedido           PedidoBalcao   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  formaPagamento   FormaPagamento @relation(fields: [formaPagamentoId], references: [id])
+
+  @@index([pedidoId])
+  @@index([formaPagamentoId])
+}
+
 enum NivelAcesso {
   ADMIN // ADMIN
   VENDAS // SUPORTE DE VENDAS
@@ -279,3 +296,4 @@ enum TipoMovimentacaoEstoque {
   SAIDA
   AJUSTE
 }
+
