@@ -48,7 +48,7 @@ class finalizarPedidoDeliveryControlador {
                 )
             }
 
-            if(typeof precisao !== 'float') {
+            if(typeof precisao !== 'number') {
                 "Precisão é obrigatório serem tipo float",
                 HTTP_STATUS_CODES.BAD_REQUEST,
                 "PRECISAO_GPS_BAD_REQUEST"
