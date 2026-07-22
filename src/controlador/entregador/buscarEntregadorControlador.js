@@ -9,8 +9,10 @@ class buscarEntregadorControlador {
 
         console.log('painelID: ', painelId)
 
+        console.log('entregadores: ', entregadores)
+
         // pegando o id do usuario do app
-        const entregadorId = Number(req.body.entregadorId)
+        const entregadorId = String(req.body.entregadorId)
 
         // Busco em conexoes se tem conexao em aberto com id
         const socketEntregador = entregadores.get(entregadorId);

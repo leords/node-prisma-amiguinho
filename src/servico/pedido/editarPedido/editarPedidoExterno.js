@@ -34,14 +34,6 @@ class EditarPedidoExterno {
                 )
             }
 
-            // validando o status do pedido
-            if(validarStatusPedido.status !== 'carregado') {
-                throw new AppError(
-                    `Pedido das vendas externa com o status ${validarStatusPedido.status} não permite alteração`,
-                    HTTP_STATUS_CODES.NOT_FOUND,
-                    "EDITAR_PEDIDO_NOT_FOUND"
-                )
-            }
 
             // Alterando dados e forma de pagamento se dados existir
             if(dados && dados.dados && dados.dados.length > 0) {

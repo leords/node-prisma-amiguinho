@@ -18,7 +18,7 @@ class EditarPedidoControlador {
             )
         }
 
-        const opcaoSetor = ['delivery', 'externo', 'balcao']
+        const opcaoSetor = ['delivery', 'externo']
         if (!opcaoSetor.includes(setor)) {
             throw new AppError(
                 'Setor inválido',

@@ -1,102 +1,64 @@
 import { HTTP_STATUS_CODES } from "../../../config/httpStatusCodes.js";
 import { AppError } from "../../../error/appError.js";
-import prismaCliente from "../../../prisma/index.js"
+import prismaCliente from "../../../prisma/index.js";
 
 class EditarPedidoBalcao {
-    async executar(uuid, formaPagamentoId, dados) {
+    async executar(uuid, formasPagamentos, dados) {
         try {
 
-            // validando a existencia de forma de pagamento
-            const validarFormaPagamento = await prismaCliente.formaPagamento.findFirst({
-                where: {
-                    id: formaPagamentoId
-                }
-            })
-            if(!validarFormaPagamento) {
-                throw new AppError(
-                    "Forma de pagamento não encontrada",
-                    HTTP_STATUS_CODES.NOT_FOUND,
-                    "EDITAR_PEDIDO_NOT_FOUND"
-                )
+        await prismaCliente.$transaction(async (tx) => {
+
+            const data = {};
+
+            if (dados?.length) {
+
+                const itensFormatados = dados.map(item => ({
+                    ...item,
+                    valorTotal: item.quantidade * item.valorUnit
+                }));
+
+                data.total = itensFormatados.reduce(
+                    (acc, item) => acc + item.valorTotal,
+                    0
+                );
+
+                data.itens = {
+                    deleteMany: {},
+                    createMany: {
+                        data: itensFormatados
+                    }
+                };
             }
+
             
-            // buscando o pedido
-            const validarStatusPedido = await prismaCliente.pedidoBalcao.findFirst({
+            if (formasPagamentos?.length) {
+
+                data.pagamentos = {
+                    deleteMany: {},
+                    createMany: {
+                        data: formasPagamentos.map(p => ({
+                            formaPagamentoId: p.formaPagamentoId,
+                            valor: p.valor
+                        }))
+                    }
+                };
+
+            }
+
+            await tx.pedidoBalcao.update({
                 where: {
-                    uuid: uuid
+                    uuid
                 },
+                data
             });
-            if(!validarStatusPedido) {
-                throw new AppError(
-                    "Pedido balcão não encontrado.",
-                    HTTP_STATUS_CODES.NOT_FOUND,
-                    "EDITAR_PEDIDO_NOT_FOUND"
-                )
-            }
 
+        });
 
-            // validando o status do pedido
-            if(validarStatusPedido.status !== 'carregado') {
-                throw new AppError(
-                    `Pedido do Balcão com o status ${validarStatusPedido.status} não permite alteração`,
-                    HTTP_STATUS_CODES.NOT_FOUND,
-                    "EDITAR_PEDIDO_NOT_FOUND"
-                )
-            }
-
-            // Alterando dados e forma de pagamento se dados existir
-            if(dados && dados.length > 0) {
-                // calculando total de cada item
-                const itensFormatados = dados.map(item => {
-                    const valorTotal = item.quantidade * item.valorUnit
-
-                    // retornando o objeto apenas alterando o valorTotal
-                    return {
-                        ...item,
-                        valorTotal: valorTotal
-                    }
-                })
-                
-
-                // recacular total
-                const total = itensFormatados.reduce((acc, soma) => {
-                    return acc + soma.valorTotal;
-                }, 0);
-
-                console.log('total: ', total)
-
-                await prismaCliente.pedidoBalcao.update({
-                    where: {
-                        uuid: uuid
-                    },
-                    data: {
-                        total: total,
-                        formaPagamentoId: formaPagamentoId,
-                        itens: {
-                            deleteMany: {},
-                            createMany: {
-                                data: itensFormatados
-                            }
-                        }
-                    }
-                })
-            }
-
-            // alterando apenas forma de pagamento sem dados.
-            await prismaCliente.pedidoBalcao.update({
-                where: {
-                    uuid: uuid
-                },
-                data: {
-                    formaPagamentoId: formaPagamentoId,
-                }
-            })
-            
         } catch (error) {
-            console.log(error)
-            throw error
+            console.log(error);
+            throw error;
         }
-    }   
+    }
 }
 
-export { EditarPedidoBalcao }
+export { EditarPedidoBalcao };

@@ -16,6 +16,7 @@ import { taxaDeliveryRotas } from './taxaDeliveryRotas.js'
 import { socketRotas } from './socket.js'
 import { deliveryRotas } from './deliveryRotas.js'
 
+
 const rotas = Router()
 
 rotas.use(clienteDeliveryRotas)
@@ -34,6 +35,7 @@ rotas.use(caixasRotas)
 rotas.use(taxaDeliveryRotas)
 rotas.use(socketRotas)
 rotas.use(deliveryRotas)
+
 
 
 export { rotas }

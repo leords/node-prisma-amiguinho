@@ -11,6 +11,9 @@ class BuscarFechamentoBalcaoDiaServico {
             lte: fim,
           },
           vendedor,
+          status: {
+            not: "cancelado",
+          },
         },
         _sum: {
           total: true,
@@ -24,6 +27,9 @@ class BuscarFechamentoBalcaoDiaServico {
         where: {
           pedido: {
             vendedor: vendedor || undefined,
+            status: {
+              not: "cancelado",
+            },
             data: {
               gte: inicio,
               lte: fim,
@@ -46,6 +52,9 @@ class BuscarFechamentoBalcaoDiaServico {
         where: {
           pedido: {
             vendedor: vendedor || undefined,
+            status: {
+              not: "cancelado",
+            },
             data: {
               gte: inicio,
               lte: fim,

@@ -25,6 +25,8 @@ const io = new Server(server, {
 
 configurarSocket(io);
 
+app.set("io", io);
+
 // Libera requisições de origens diferentes
 app.use(cors());
 

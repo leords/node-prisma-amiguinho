@@ -16,6 +16,7 @@ import { buscarValeInternoControlador } from '../controlador/pedido/buscarValeIn
 import { BuscarFechamentoDeliveryDiaControlador } from '../controlador/pedido/buscarFechamentoDeliveryDiaControlador.js'
 import { carregarPedidoDeliveryControlador } from '../controlador/pedido/carregarPedidoDeliveryControlador.js'
 import { finalizarPedidoDeliveryControlador } from '../controlador/pedido/finalizarPedidoDeliveryControlador.js'
+import { EditarPedidoBalcaoControlador } from '../controlador/pedido/editarPedidoBalcaoControlador.js'
 
 const rotas = Router()
 
@@ -101,6 +102,12 @@ rotas.put(
   '/editar-pedido/:setor/:uuid',
   autenticadorMiddleware,
   new EditarPedidoControlador().tratar
+)
+
+rotas.put(
+  '/editar-pedido-balcao/:uuid',
+  autenticadorMiddleware,
+  new EditarPedidoBalcaoControlador().tratar
 )
 
 

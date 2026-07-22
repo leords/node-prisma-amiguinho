@@ -9,7 +9,7 @@ class EditarPedidoServico {
 
         // criando um objeto com as classes, 
         const servicos = {
-            balcao: new EditarPedidoBalcao(),
+           // balcao: new EditarPedidoBalcao(),  ** agora pedido editar pedido balcao tem uma rota unica, devido a multiplos pagamentos.
             delivery: new EditarPedidoDelivery(),
             externo: new EditarPedidoExterno()
         }

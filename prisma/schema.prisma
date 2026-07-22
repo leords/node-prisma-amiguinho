@@ -14,6 +14,7 @@ model Usuario {
   whatsapp           String?
   usuario            String           @unique
   senha              String
+  pushToken          String?
   nivelAcesso        NivelAcesso      @default(USUARIO)
   status             Boolean          @default(true)
   resetToken         String?
