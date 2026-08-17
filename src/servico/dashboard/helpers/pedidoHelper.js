@@ -1,4 +1,4 @@
-class PedidoHelper {
+class pedidoHelper {
 
     /**
      * Soma o total vendido.
@@ -108,4 +108,4 @@ class PedidoHelper {
     
 }
 
-export default PedidoHelper;
+export default pedidoHelper;
