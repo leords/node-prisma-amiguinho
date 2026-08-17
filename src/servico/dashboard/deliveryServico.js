@@ -1,4 +1,5 @@
-import PedidoHelper from "./helpers/PedidoHelper.js";
+import PedidoHelper from "./helpers/pedidoHelper";
+
 
 class DeliveryServico {
 
