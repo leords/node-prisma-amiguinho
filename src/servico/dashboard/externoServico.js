@@ -1,4 +1,4 @@
-import PedidoHelper from "./helpers/PedidoHelper.js";
+import pedidoHelper from "./helpers/pedidoHelper.js";
 
 class ExternoServico {
 
