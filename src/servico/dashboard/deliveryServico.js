@@ -16,19 +16,19 @@ class DeliveryServico {
 
 
         const total =
-            PedidoHelper.total(
+            pedidoHelper.total(
                 pedidosEntregues
             );
 
 
         const quantidadePedidos =
-            PedidoHelper.quantidade(
+            pedidoHelper.quantidade(
                 pedidosEntregues
             );
 
 
         const ticketMedio =
-            PedidoHelper.ticketMedio(
+            pedidoHelper.ticketMedio(
                 pedidosEntregues
             );
 
