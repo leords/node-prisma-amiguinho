@@ -7,10 +7,21 @@ import { ResetarSenhaControlador } from '../controlador/usuario/resetarSenhaCont
 import { nivelAcessoMiddleware } from '../middleware/nivelAcessoMiddleware.js'
 import { autenticadorMiddleware } from '../middleware/autenticadorMiddleware.js'
 import { LoginUsuario } from '../controlador/loginUsuario/loginUsuario.js'
+import { RefreshTokenControlador } from '../controlador/refleshToken/refleshTokenControlador.js'
+import { LogoutUsuarioControlador } from '../controlador/usuario/logoutUsuarioControlador.js'
 
 const rotas = Router()
 
 rotas.post('/login', new LoginUsuario().tratar)
+
+rotas.post(
+  '/refresh-token', 
+  new RefreshTokenControlador().tratar
+)
+rotas.post(
+  'logout',
+  new LogoutUsuarioControlador().tratar
+)
 
 rotas.post(
   '/novo-usuario',

@@ -22,7 +22,12 @@ class LerClienteExternoServico {
       condicoes.endereco = filtros.endereco.toUpperCase()
     }
     if (filtros.vendedor) {
-      condicoes.vendedor = filtros.vendedor.toUpperCase()
+      condicoes.vendedor = {
+      contains: filtros.vendedor.toUpperCase(),
+      mode: "insensitive"
+      }
+
+        
     }
     if (filtros.atendimento) {
       condicoes.atendimento = filtros.atendimento.toUpperCase()

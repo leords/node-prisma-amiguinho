@@ -4,7 +4,7 @@ import { SaidaEstoqueServico } from '../estoque/saida/saidaEstoqueServico.js'
 
 class CriarPedidoServico {
   async executar(setor, dados) {
-    console.log('Debug setor: ', setor)
+    
     try {
       // total calculado automaticamente
       const total = dados.itens.reduce((acc, item) => {
@@ -104,7 +104,6 @@ class CriarPedidoServico {
         // Força uma conexão com o bancoantes do transaction.
         await prismaCliente.$queryRaw`SELECT 1`;
 
-        console.log('Dados: ', dados)
 
         await prismaCliente.$transaction(async (prisma) => {
           const pedido = await prisma.pedidoBalcao.create({

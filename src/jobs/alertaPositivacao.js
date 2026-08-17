@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { gerarTextoGroq } from "../utilidades/groq.js";
 import { enviarWhatsApp } from "../utilidades/whatsapp.js";
 import { EnviarEmailServico } from "../servico/email/enviarEmailServico.js";
+import { buscarIA } from "../utilidades/openRouter.js";
 
 const prisma = new PrismaClient();
 
@@ -89,6 +90,11 @@ export async function executarAlertaPositivacao() {
     `.trim();
 
     const analise = await gerarTextoGroq(prompt);
+
+
+    const analise = await buscarIA(prompt);
+
+    
 
     // 5. Busca admins
     const admins = await prisma.usuario.findMany({

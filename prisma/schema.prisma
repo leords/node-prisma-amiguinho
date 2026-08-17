@@ -24,6 +24,8 @@ model Usuario {
   pedidosBalcao      PedidoBalcao[]
   pedidosDelivery    PedidoDelivery[]
   pedidosExterno     PedidoExterno[]
+  refreshTokens RefreshToken[]
+  localizacao      Localizacao[]
 
   @@map("usuarios")
 }
@@ -74,6 +76,7 @@ model ClienteExterno {
   atendimento String?
   frequencia  String?
   pedidos     PedidoExterno[]
+  localizacao      Localizacao[]
 }
 
 model PedidoDelivery {
@@ -102,19 +105,20 @@ model PedidoDelivery {
 
 model PedidoExterno {
   id               Int                 @id @default(autoincrement())
-  uuid             String              @unique @default(uuid())
+  uuid             String              @unique 
   tipo             String              @default("externo")
   clienteId        Int
   formaPagamentoId Int
   vendedor         String?
   total            Float
   status           String              @default("pendente")
-  data             DateTime            @default(now())
+  data             DateTime             
   usuarioId        Int?
   itens            ItemPedidoExterno[]
   cliente          ClienteExterno      @relation(fields: [clienteId], references: [id])
   formaPagamento   FormaPagamento      @relation("PedidoExternoFormaPagamento", fields: [formaPagamentoId], references: [id])
   usuario          Usuario?            @relation(fields: [usuarioId], references: [id])
+  
 }
 
 model PedidoBalcao {
@@ -297,4 +301,32 @@ enum TipoMovimentacaoEstoque {
   SAIDA
   AJUSTE
 }
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  usuarioId  Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  expiraEm   DateTime 
+  criadoEm   DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model Localizacao {
+  id          Int     @id @default(autoincrement())
+  uuid        String              @unique @default(uuid())
+  data        DateTime
+  latitude    Float?
+  longitude   Float?
+  precisao    Float?
+  origem      String
+
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  clienteId   Int
+  cliente     ClienteExterno @relation(fields: [clienteId], references: [id])
+
+}
+
 

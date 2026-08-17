@@ -17,13 +17,22 @@ import { BuscarFechamentoDeliveryDiaControlador } from '../controlador/pedido/bu
 import { carregarPedidoDeliveryControlador } from '../controlador/pedido/carregarPedidoDeliveryControlador.js'
 import { finalizarPedidoDeliveryControlador } from '../controlador/pedido/finalizarPedidoDeliveryControlador.js'
 import { EditarPedidoBalcaoControlador } from '../controlador/pedido/editarPedidoBalcaoControlador.js'
+import { criarpedidoExternoControlador } from '../controlador/pedido/criarPedidoExternoControlador.js'
 
 const rotas = Router()
 
+// novo pedido apenas para balcão e delivery.
 rotas.post(
   '/novo-pedido/:setor',
   autenticadorMiddleware,
   new CriarPedidoControlador().tratar
+)
+
+// novo pedido apenas para descarga no app.
+rotas.post(
+  '/novo-pedido-app',
+  autenticadorMiddleware,
+  new criarpedidoExternoControlador().tratar
 )
 
 rotas.get(
