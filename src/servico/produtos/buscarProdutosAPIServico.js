@@ -1,4 +1,4 @@
-class BuscarProdutosAPIServico {
+class buscarProdutosAPIServico {
   async executar(produtos) {
     if (!produtos || produtos.length === 0) {
       throw new Error(ERRO_MSG_PRODUTO.NAO_ENCONTRADO);
@@ -54,3 +54,6 @@ class BuscarProdutosAPIServico {
     }
   }
 }
+
+
+export { buscarProdutosAPIServico }
