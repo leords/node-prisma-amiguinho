@@ -89,7 +89,7 @@ export async function executarAlertaPositivacao() {
         (estoque, sazonalidade, preço, concorrência). Máximo 4 parágrafos curtos. Sem markdown, só texto simples.
     `.trim();
 
-    const analise = await gerarTextoGroq(prompt);
+    //const analise = await gerarTextoGroq(prompt);
 
 
     const analise = await buscarIA(prompt);
