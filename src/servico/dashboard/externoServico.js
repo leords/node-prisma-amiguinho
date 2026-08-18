@@ -11,19 +11,19 @@ class ExternoServico {
 
 
         const total =
-            PedidoHelper.total(
+            pedidoHelper.total(
                 pedidos
             );
 
 
         const quantidadePedidos =
-            PedidoHelper.quantidade(
+            pedidoHelper.quantidade(
                 pedidos
             );
 
 
         const ticketMedio =
-            PedidoHelper.ticketMedio(
+            pedidoHelper.ticketMedio(
                 pedidos
             );
 
@@ -36,7 +36,7 @@ class ExternoServico {
 
 
         const vendedoresAgrupados =
-            PedidoHelper.agruparPorVendedor(
+            pedidoHelper.agruparPorVendedor(
                 pedidos
             );
 
@@ -47,178 +47,91 @@ class ExternoServico {
 
                     ([nome, pedidosVendedor]) => {
 
-
                         const totalVendedor =
-                            PedidoHelper.total(
+                            pedidoHelper.total(
                                 pedidosVendedor
                             );
-
 
                         const quantidade =
-                            PedidoHelper.quantidade(
+                            pedidoHelper.quantidade(
                                 pedidosVendedor
                             );
 
-
                         return {
-
                             nome,
-
-                            total:
-                                totalVendedor,
-
-
-                            pedidos:
-                                quantidade,
-
-
+                            total: totalVendedor,
+                            pedidos: quantidade,
                             ticketMedio:
-                                PedidoHelper.ticketMedio(
+                                pedidoHelper.ticketMedio(
                                     pedidosVendedor
                                 ),
-
-
                             participacao:
                                 this.#percentual(
                                     totalVendedor,
                                     total
                                 )
-
                         };
-
-
                     }
-
                 );
 
 
         vendedores.sort(
-
             (a, b) =>
                 b.total - a.total
-
         );
 
 
         return {
-
             total,
-
-            pedidos:
-                quantidadePedidos,
-
-
+            pedidos: quantidadePedidos,
             ticketMedio,
-
-
             formasPagamento,
-
-
             vendedores
-
         };
-
-
     }
 
 
 
-    // ======================================================
     // FORMAS DE PAGAMENTO
-    // ======================================================
-
-    #buscarFormasPagamento(
-        pedidos,
-        totalVendas
-    ) {
-
+    #buscarFormasPagamento(pedidos, totalVendas) {
 
         const formas = {};
 
-
         for (const pedido of pedidos) {
-
-
-            const nome =
-                pedido.formaPagamento.nome;
-
-
+            const nome = pedido.formaPagamento.nome;
 
             if (!formas[nome]) {
-
                 formas[nome] = 0;
-
             }
 
-
-
             formas[nome] += pedido.total;
-
-
         }
 
 
 
         return Object.entries(formas)
             .map(
-
                 ([nome, valor]) => ({
-
-
                     nome,
-
-
                     valor,
-
-
                     percentual:
                         this.#percentual(
                             valor,
                             totalVendas
                         )
-
-
                 })
-
             );
-
-
     }
 
 
 
-    // ======================================================
     // PERCENTUAL
-    // ======================================================
-
-    #percentual(
-        valor,
-        total
-    ) {
-
-
+    #percentual(valor, total) {
         if (total === 0) {
-
             return 0;
-
         }
-
-
-        return Number(
-
-            (
-                (valor / total)
-                *
-                100
-
-            ).toFixed(2)
-
-        );
-
-
+        return Number(((valor / total)*100).toFixed(2));
     }
-
-
 }
 
 

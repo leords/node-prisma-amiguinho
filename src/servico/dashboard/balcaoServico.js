@@ -1,33 +1,33 @@
-import PedidoHelper from "./helpers/pedidoHelper.js";
+import pedidoHelper from "./helpers/pedidoHelper.js";
 
 class BalcaoServico {
 
     executar(dados) {
 
         const pedidos = dados.pedidos.balcao;
-        const total = PedidoHelper.total(pedidos);
-        const quantidadePedidos = PedidoHelper.quantidade(pedidos);
-        const ticketMedio = PedidoHelper.ticketMedio(pedidos);
+        const total = pedidoHelper.total(pedidos);
+        const quantidadePedidos = pedidoHelper.quantidade(pedidos);
+        const ticketMedio = pedidoHelper.ticketMedio(pedidos);
         const valeInterno = this.#buscarValeInterno(pedidos);
         const formasPagamento = this.#buscarFormasPagamento(
             pedidos,
             total
         );
 
-        const vendedoresAgrupados = PedidoHelper.agruparPorVendedor(pedidos);
+        const vendedoresAgrupados = pedidoHelper.agruparPorVendedor(pedidos);
 
         const vendedores = Object.entries(vendedoresAgrupados).map(
 
             ([nome, pedidosVendedor]) => {
 
                 const totalVendedor =
-                    PedidoHelper.total(pedidosVendedor);
+                    pedidoHelper.total(pedidosVendedor);
 
                 const quantidade =
-                    PedidoHelper.quantidade(pedidosVendedor);
+                    pedidoHelper.quantidade(pedidosVendedor);
 
                 const ticket =
-                    PedidoHelper.ticketMedio(pedidosVendedor);
+                    pedidoHelper.ticketMedio(pedidosVendedor);
 
                 const valeInterno =
                     this.#buscarValeInterno(pedidosVendedor);

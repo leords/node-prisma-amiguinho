@@ -7,7 +7,6 @@ class DeliveryServico {
 
         const pedidos = dados.pedidos.delivery;
 
-
         const pedidosEntregues =
             this.#filtrarPorStatus(
                 pedidos,
@@ -41,7 +40,6 @@ class DeliveryServico {
 
 
         const status = {
-
             pendentes:
                 this.#quantidadeStatus(
                     pedidos,
@@ -65,7 +63,6 @@ class DeliveryServico {
                     pedidos,
                     "cancelado"
                 )
-
         };
 
 
@@ -82,283 +79,134 @@ class DeliveryServico {
 
 
         return {
-
             total,
-
-            pedidos:
-                quantidadePedidos,
-
+            pedidos: quantidadePedidos,
             ticketMedio,
-
             formasPagamento,
-
             status,
-
             tempoEntrega,
-
             tempoCarregamento
-
         };
 
     }
 
 
-    // ======================================================
     // FILTRA STATUS
-    // ======================================================
-
     #filtrarPorStatus(pedidos, status) {
-
         return pedidos.filter(
-
             pedido =>
                 pedido.status === status
-
         );
-
     }
 
 
-    // ======================================================
     // QUANTIDADE POR STATUS
-    // ======================================================
-
     #quantidadeStatus(pedidos, status) {
-
-        return pedidos.filter(
-
-            pedido =>
-                pedido.status === status
-
-        ).length;
-
+        return pedidos.filter(pedido => pedido.status === status).length;
     }
 
 
-    // ======================================================
     // FORMAS DE PAGAMENTO
-    // ======================================================
-
-    #buscarFormasPagamento(
-        pedidos,
-        totalVendas
-    ) {
+    #buscarFormasPagamento(pedidos, totalVendas) {
 
         const formas = {};
 
-
         for (const pedido of pedidos) {
 
+            const nome = pedido.formaPagamento.nome;
 
-            const nome =
-                pedido.formaPagamento.nome;
-
-
-            if (!formas[nome]) {
-
+            if (!formas[nome]) { 
                 formas[nome] = 0;
-
             }
 
-
             formas[nome] += pedido.total;
-
-
         }
 
 
         return Object.entries(formas).map(
 
             ([nome, valor]) => ({
-
                 nome,
-
                 valor,
-
                 percentual:
                     this.#percentual(
                         valor,
                         totalVendas
                     )
-
             })
-
         );
-
-
     }
 
 
-    // ======================================================
     // TEMPO MÉDIO ENTRE CARREGAMENTO E ENTREGA
-    // ======================================================
-
     #tempoMedioEntrega(pedidos) {
-
 
         const tempos = [];
 
-
         for (const pedido of pedidos) {
-
-
             if (
                 !pedido.dataCarregada ||
                 !pedido.dataEntrega
             ) {
-
                 continue;
-
             }
 
-
-            const inicio =
-                new Date(
-                    pedido.dataCarregada
-                );
-
-
-            const fim =
-                new Date(
-                    pedido.dataEntrega
-                );
-
-
-            const minutos =
-                (fim - inicio) / 1000 / 60;
-
+            const inicio = new Date(pedido.dataCarregada);
+            const fim = new Date(pedido.dataEntrega);
+            const minutos = (fim - inicio) / 1000 / 60;
 
             tempos.push(minutos);
-
-
         }
 
-
-        if (tempos.length === 0) {
-
+        if (tempos.length === 0) { 
             return 0;
-
         }
-
 
         return Number(
-
-            (
-                tempos.reduce(
-                    (total, valor) =>
-                        total + valor,
-                    0
-                )
-                /
-                tempos.length
-
+            (tempos.reduce((total, valor) => total + valor, 0) / tempos.length
             ).toFixed(2)
 
         );
-
-
     }
 
 
-    // ======================================================
     // TEMPO MÉDIO ATÉ CARREGAR
-    // ======================================================
-
     #tempoMedioCarregamento(pedidos) {
-
-
         const tempos = [];
 
-
         for (const pedido of pedidos) {
-
-
-            if (
-                !pedido.data ||
-                !pedido.dataCarregada
-            ) {
-
+            if (!pedido.data || !pedido.dataCarregada) {
                 continue;
-
             }
 
-
-            const inicio =
-                new Date(
-                    pedido.data
-                );
-
-
-            const fim =
-                new Date(
-                    pedido.dataCarregada
-                );
-
-
-            const minutos =
-                (fim - inicio) / 1000 / 60;
-
+            const inicio = new Date(pedido.data);
+            const fim = new Date(pedido.dataCarregada);
+            const minutos = (fim - inicio) / 1000 / 60;
 
             tempos.push(minutos);
-
-
         }
-
 
         if (tempos.length === 0) {
-
             return 0;
-
         }
 
-
         return Number(
-
-            (
-                tempos.reduce(
-                    (total, valor) =>
-                        total + valor,
-                    0
-                )
-                /
-                tempos.length
-
-            ).toFixed(2)
-
+            (tempos.reduce((total, valor) => total + valor, 0) / tempos.length).toFixed(2)
         );
-
-
     }
 
 
-    // ======================================================
     // PERCENTUAL
-    // ======================================================
-
     #percentual(valor, total) {
 
-
         if (total === 0) {
-
             return 0;
-
         }
 
-
         return Number(
-
-            (
-                (valor / total)
-                *
-                100
-
-            ).toFixed(2)
-
+            ((valor / total) * 100).toFixed(2)
         );
-
-
     }
-
 }
 
 

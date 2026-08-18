@@ -40,21 +40,13 @@ class DashboardServico {
         
 
         return {
-
             atualizadoEm: new Date(),
-
             filtro,
-
             resumo,
-
             geral,
-
             balcao,
-
             delivery,
-
             externo
-
         };
 
     }
