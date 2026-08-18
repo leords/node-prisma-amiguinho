@@ -25,6 +25,8 @@ class DashboardServico {
         const servicoDelivery = new DeliveryServico();
         const delivery = servicoDelivery.executar(dados);
 
+        //console.log('Debug dashboard: ', delivery)
+
 
         const servicoExterno = new ExternoServico();
         const externo = servicoExterno.executar(dados);

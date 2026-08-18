@@ -78,6 +78,17 @@ class DeliveryServico {
             );
 
 
+            console.log('DEBUG ANTES DO RETURN: ',            
+                total,
+                quantidadePedidos,
+                ticketMedio,
+                formasPagamento,
+                status,
+                tempoEntrega,
+                tempoCarregamento 
+            )
+
+
         return {
             total,
             pedidos: quantidadePedidos,
@@ -115,7 +126,7 @@ class DeliveryServico {
 
             const nome = pedido.formaPagamento.nome;
 
-            if (!formas[nome]) { 
+            if (!formas[nome]) {
                 formas[nome] = 0;
             }
 

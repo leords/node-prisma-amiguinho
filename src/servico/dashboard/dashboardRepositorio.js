@@ -49,13 +49,18 @@ class DashboardRepositorio {
 
             // buscando todos os pedidos de delivery no intervalo de datas
             prismaCliente.pedidoDelivery.findMany({
-                where, 
+                where: {
+                    ...where,
+                    status: 'entregue'
+                }, 
                 select: {
                     id: true,
                     total: true,
                     vendedor: true,
                     dataCarregada: true,
                     dataEntrega: true,
+                    status: true,
+                    
                     formaPagamento: {
                         select: {
                             id: true,
@@ -76,6 +81,7 @@ class DashboardRepositorio {
                     total: true,
                     vendedor: true,
                     data: true,
+                    status: true,
                     formaPagamento: {
                         select: {
                             id: true,
@@ -86,6 +92,7 @@ class DashboardRepositorio {
             })
 
         ]);
+
 
         // retornando os resultados da promisse All
         return {
