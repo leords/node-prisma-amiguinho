@@ -9,11 +9,14 @@ class DashboardServico {
 
     async executar(filtro) {
 
+        // chegando aqui assim: 2026-01-01 : 2026-08-18
 
         // formatando datas vindo por parametro.
         const inicio = new Date(`${filtro.dataInicio}T00:00:00-03:00`);
         const fim = new Date(`${filtro.dataFim}T23:59:59.999-03:00`);
 
+
+        console.log('DEBUG DATAS DASHBOARD SERVIÇO: ', inicio, '-', fim)
 
         const repositorio = new DashboardRepositorio();
 
