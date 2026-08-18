@@ -9,10 +9,10 @@ class DashboardServico {
 
     async executar(filtro) {
 
+
         // formatando datas vindo por parametro.
         const inicio = new Date(`${filtro.dataInicio}T00:00:00-03:00`);
         const fim = new Date(`${filtro.dataFim}T23:59:59.999-03:00`);
-        fim.setUTCDate(fim.getUTCDate() + 1);
 
 
         const repositorio = new DashboardRepositorio();
