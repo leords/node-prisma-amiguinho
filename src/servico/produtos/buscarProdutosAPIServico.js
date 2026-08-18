@@ -1,3 +1,5 @@
+import prismaCliente from "../../prisma/index.js";
+
 class buscarProdutosAPIServico {
   async executar(produtos) {
     if (!produtos || produtos.length === 0) {

@@ -1,4 +1,4 @@
-import { BuscarProdutosAPIServico } from "../servico/produtos/buscarProdutosAPIServico.js";
+import { buscarProdutosAPIServico } from "../servico/produtos/buscarProdutosAPIServico.js";
 import { BuscarClienteDeliveryServico } from "../servico/clienteDelivery/buscarClienteDeliveryServico.js";
 import { BuscarClienteExternoServico } from "../servico/clienteExterno/buscarClienteExternoServico.js";
 import { BuscarFormaPagamentoServico } from "../servico/formaPagamento/buscarFormaPagamentoServico.js";
@@ -9,7 +9,7 @@ export async function sincronizarProdutos() {
     const resposta = await fetch(process.env.PRODUTOS)
     const dados = await resposta.json()
     const produtos = dados.saida
-    const servico = new BuscarProdutosAPIServico();
+    const servico = new buscarProdutosAPIServico();
     await servico.executar(produtos)
     console.log(`[SYNC] ${produtos.length} produtos sincronizados`)
 }
