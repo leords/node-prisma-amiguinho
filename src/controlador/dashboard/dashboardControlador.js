@@ -7,6 +7,8 @@ class DashboardControlador {
 
         const { dataInicio, dataFim } = req.query;
 
+        console.log('DEBUG DATAS: ', dataInicio, ':', dataFim)
+
         const servico = new DashboardServico();
 
         const resultado = await servico.executar({

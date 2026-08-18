@@ -4,14 +4,15 @@ class DashboardRepositorio {
 
     async buscarPedidos(dataInicio, dataFim) {
 
+
         const where = {};
 
         // se as datas existir, popular o objeto where com dataInicio e dataFim
-        if (dataInicio && dataFim) {
-            where.data = {
-                gte: new Date(dataInicio),
+         if (dataInicio && dataFim) {
+             where.data = {
+                 gte: new Date(dataInicio),
                 lte: new Date(dataFim)
-            };
+             };
         }
 
         // Promisse all, faz varias chamadas, caso alguma falhe, todas são rejeitadas.

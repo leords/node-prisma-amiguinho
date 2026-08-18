@@ -9,11 +9,17 @@ class DashboardServico {
 
     async executar(filtro) {
 
+        const inicio = new Date(`${filtro.dataInicio}T00:00:00-03:00`);
+
+        const fim = new Date(`${filtro.dataFim}T23:59:59.999-03:00`);
+        fim.setUTCDate(fim.getUTCDate() + 1);
+
         const repositorio = new DashboardRepositorio();
 
+        // validar as datas para buscar os pedidos corretos do dia! 
         const dados = await repositorio.buscarPedidos(
-            filtro.dataInicio,
-            filtro.dataFim
+            inicio,
+            fim
         );
 
         const servicoGeral = new GeralServico();
@@ -24,8 +30,6 @@ class DashboardServico {
 
         const servicoDelivery = new DeliveryServico();
         const delivery = servicoDelivery.executar(dados);
-
-        //console.log('Debug dashboard: ', delivery)
 
 
         const servicoExterno = new ExternoServico();
@@ -39,8 +43,7 @@ class DashboardServico {
                 geral.totalVendas
         };
 
-        
-
+    
         return {
             atualizadoEm: new Date(),
             filtro,
