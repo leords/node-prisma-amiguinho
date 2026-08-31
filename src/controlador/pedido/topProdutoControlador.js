@@ -20,7 +20,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Setor é obrigatório',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_FIM_NOT_FOUND"
+          'DATA_FIM_NOT_FOUND'
         )
       }
 
@@ -28,7 +28,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Setor inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_FIM_NOT_FOUND"
+          'DATA_FIM_NOT_FOUND'
         )
       }
 
@@ -36,7 +36,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Vendedor deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
 
@@ -44,7 +44,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Data de início e fim são obrigatórios',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_INICIO_NOT_FOUND"
+          'DATA_INICIO_NOT_FOUND'
         )
       }
 
@@ -52,7 +52,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Data de início deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_INICIO_NOT_FOUND"
+          'DATA_INICIO_NOT_FOUND'
         )
       }
 
@@ -60,7 +60,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Data de fim deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_FIM_NOT_FOUND"
+          'DATA_FIM_NOT_FOUND'
         )
       }
 
@@ -68,7 +68,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Quantidade deve ser maior que 0',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "QUANTIDADE_NOT_FOUND"
+          'QUANTIDADE_NOT_FOUND'
         )
       }
 
@@ -76,7 +76,7 @@ class TopProdutoControlador {
         throw new AppError(
           'Quantidade é obrigatória',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "QUANTIDADE_NOT_FOUND"
+          'QUANTIDADE_NOT_FOUND'
         )
       }
 
@@ -84,12 +84,16 @@ class TopProdutoControlador {
         throw new AppError(
           'Quantidade deve ser um número',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "QUANTIDADE_NOT_FOUND"
+          'QUANTIDADE_NOT_FOUND'
         )
       }
 
-      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
-      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
+      const fim = dataFim
+        ? new Date(`${dataFim}T23:59:59.999-03:00`)
+        : undefined
+      const inicio = dataInicio
+        ? new Date(`${dataInicio}T00:00:00-03:00`)
+        : undefined
 
       const servico = new TopProdutosServico()
       const resultado = await servico.executar(

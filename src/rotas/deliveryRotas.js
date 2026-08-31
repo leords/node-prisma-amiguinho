@@ -1,15 +1,13 @@
-import { Router } from "express";
-import { autenticadorMiddleware } from "../middleware/autenticadorMiddleware.js";
-import { estatisticasEntregaControlador } from "../controlador/entregaDelivery/estatisticasEntregaControlador.js";
+import { Router } from 'express'
+import { autenticadorMiddleware } from '../middleware/autenticadorMiddleware.js'
+import { estatisticasEntregaControlador } from '../controlador/entregaDelivery/estatisticasEntregaControlador.js'
 
-
-const rotas = Router();
+const rotas = Router()
 
 rotas.get(
-    '/tempo-medio-entregas',
-    autenticadorMiddleware,
-    new estatisticasEntregaControlador().tratar
+  '/tempo-medio-entregas',
+  autenticadorMiddleware,
+  new estatisticasEntregaControlador().tratar
 )
-
 
 export { rotas as deliveryRotas }

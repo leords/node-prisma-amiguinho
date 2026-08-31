@@ -3,16 +3,8 @@ import { SaidaEstoqueServico } from "../estoque/saida/saidaEstoqueServico.js";
 
 class criarPedidoExternoServico {
     async executar(listaPedidos) {
-        console.log('debug: ', listaPedidos)
 
         try {
-
-        const total = listaPedidos.reduce((acc, pedido) => {
-            return acc + pedido.itens.reduce((total, item) => {
-                return total + Number(item.quantidade) * Number(item.valorUnit);
-            }, 0);
-        }, 0);
-
 
             // coletando os uuid dos pedidos enviado via REQ
             const uuids = listaPedidos.map((pedido) => pedido.uuid);
@@ -47,19 +39,26 @@ class criarPedidoExternoServico {
             // instanciando o SaidaEstoque fora do for.
             const estoqueServico = new SaidaEstoqueServico()
 
+            const pedidosCriados = [];
 
             await prismaCliente.$transaction(async (prisma) => {
 
                 for (const pedido of pedidosValidos) { 
-                    
+
+                    const totalPedido = pedido.itens.reduce((acc, item) => {
+                        return acc +
+                            Number(item.quantidade) *
+                            Number(item.valorUnit);
+                    }, 0);
+                                    
                     const pedidoEnviado = await prisma.pedidoExterno.create({
                         data: {
                             uuid: pedido.uuid,
-                            tipo: pedido.tipo,
+                            tipo: 'externo',
                             clienteId: Number(pedido.clienteId),
-                            formapagamentoId: Number(pedido.formaPagamentoId),
+                            formaPagamentoId: Number(pedido.formaPagamentoId),
                             vendedor: pedido.vendedor,
-                            total: Number(total),
+                            total: Number(totalPedido),
                             data: new Date(pedido.data),
                             usuarioId: pedido.usuarioId,
                             itens: {
@@ -75,20 +74,23 @@ class criarPedidoExternoServico {
                         }
                     })
 
-
+                    // Preciso retornar aqui o return e passar ele ali em baixo nos enviados.  
                     await estoqueServico.executar(
                         pedidoEnviado.id, 
                         "externo", 
                         prisma
                     );
 
+                    pedidosCriados.push({
+                        clienteId: pedidoEnviado.clienteId,
+                        uuid: pedidoEnviado.uuid
+                    });
                  }
+            });
 
-
-            
-
-            })
-
+            return {
+                enviados: pedidosCriados,
+            };
 
         } catch (error) {
             console.log(error)

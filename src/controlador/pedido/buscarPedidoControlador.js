@@ -20,65 +20,62 @@ class BuscarPedidoControlador {
     const usuarioId = req.query.usuarioId
       ? Number(req.query.usuarioId)
       : undefined
-      const status = req.query.status ? req.query.status : undefined
-
+    const status = req.query.status ? req.query.status : undefined
 
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       const opcoesVendedor = ['b1', 'b2', 'b3']
 
-      console.log("datas: ", dataInicio, dataFim)
-
       if (setor && typeof setor !== 'string' && !opcoesSetor.includes(setor)) {
         throw new AppError(
           ERRO_MSG_PEDIDOS.SETOR,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
       if (vendedor && typeof vendedor !== 'string') {
         throw new AppError(
-          "Vendedor inválido",
+          'Vendedor inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
       if (setor === 'balcao' && vendedor) {
         if (!opcoesVendedor.includes(vendedor)) {
           throw new AppError(
-          ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO,
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
-        )
+            ERRO_MSG_PEDIDOS.VENDEDOR_BALCAO,
+            HTTP_STATUS_CODES.BAD_REQUEST,
+            'SETOR_NOT_FOUND'
+          )
         }
       }
       if (cliente && typeof cliente !== 'string') {
         throw new AppError(
-          "Cliente inválido",
+          'Cliente inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "CLIENTE_NOT_FOUND"
+          'CLIENTE_NOT_FOUND'
         )
       }
       if (formaPagamentoId && isNaN(formaPagamentoId)) {
         throw new AppError(
-          "Forma de pagamento inválida",
+          'Forma de pagamento inválida',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "FORMA_PAGAMENTO_NOT_FOUND"
+          'FORMA_PAGAMENTO_NOT_FOUND'
         )
       }
       if (usuarioId && isNaN(usuarioId)) {
         throw new AppError(
-          "ID de usuário inválido",
+          'ID de usuário inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "USUARIO_NOT_FOUND"
+          'USUARIO_NOT_FOUND'
         )
       }
 
-      if(status && typeof status !== 'string') {
+      if (status && typeof status !== 'string') {
         throw new AppError(
-          "Status inválido",
+          'Status inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "STATUS_NOT_FOUND"
+          'STATUS_NOT_FOUND'
         )
       }
 
@@ -90,15 +87,19 @@ class BuscarPedidoControlador {
         typeof dataFim !== 'string'
       ) {
         throw new AppError(
-          "Data inválida",
+          'Data inválida',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_NOT_FOUND"
+          'DATA_NOT_FOUND'
         )
       }
 
       // transformo elas em ISO manualmente. desta forma consigo pegar o intervalo do dia inteiro.
-      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
-      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
+      const inicio = dataInicio
+        ? new Date(`${dataInicio}T00:00:00-03:00`)
+        : undefined
+      const fim = dataFim
+        ? new Date(`${dataFim}T23:59:59.999-03:00`)
+        : undefined
 
       const servico = new BuscarPedidoServico()
       const resultado = await servico.executar(

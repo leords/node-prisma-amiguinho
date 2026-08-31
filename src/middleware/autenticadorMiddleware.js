@@ -24,7 +24,6 @@ function autenticadorMiddleware(req, res, next) {
 
     // Se for válido, chama o next e a requisição continua.
     next()
-
   } catch (error) {
     console.error('Erro na verificação do token:', error)
 

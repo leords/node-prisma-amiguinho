@@ -17,7 +17,8 @@ import { socketRotas } from './socket.js'
 import { deliveryRotas } from './deliveryRotas.js'
 import { dashboardRotas } from './dashboardRotas.js'
 import { localizacaoRotas } from './localizacao.js'
-
+import { movimentacaopagamentosEletronicosRotas } from './movimentacaoPagamentosEletronicosRotas.js'
+import { whatsappRotas } from './whatsappRotas.js'
 
 const rotas = Router()
 
@@ -39,7 +40,7 @@ rotas.use(socketRotas)
 rotas.use(deliveryRotas)
 rotas.use(dashboardRotas)
 rotas.use(localizacaoRotas)
-
-
+rotas.use(movimentacaopagamentosEletronicosRotas)
+rotas.use(whatsappRotas)
 
 export { rotas }

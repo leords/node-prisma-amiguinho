@@ -8,7 +8,6 @@ class ListarUsuarioControlador {
       const servico = new listarUsuarioServico()
       const resultado = await servico.executar()
 
-
       return res.status(HTTP_STATUS_CODES.OK).json({ resultado })
     } catch (error) {
       console.log(error)

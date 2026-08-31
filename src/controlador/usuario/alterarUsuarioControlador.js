@@ -8,54 +8,58 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class AlterarUsuarioControlador {
   async tratar(req, res, next) {
-
-
     const id = Number(req.params.id)
     const { status, nivelAcesso } = req.body
 
     const statusValidado = status === 'ATIVO'
 
-
     try {
-      if(!id) {
+      if (!id) {
         throw new AppError(
           ERRO_MSG_USUARIO.ID_VAZIO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "ID_NOT_FOUND"
+          'ID_NOT_FOUND'
         )
       }
 
-      if(isNaN(id)) {
+      if (isNaN(id)) {
         throw new AppError(
           ERRO_MSG_USUARIO.TIPO_ID,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "ID_NOT_FOUND"
+          'ID_NOT_FOUND'
         )
       }
 
-      if(statusValidado && typeof statusValidado !== 'boolean') {
-          throw new AppError(
-          "Status deve ser do tipo texto",
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          "STATUS_NOT_FOUND"
-          )
-      }
-
-      if(nivelAcesso && typeof nivelAcesso !== 'string') {
+      if (statusValidado && typeof statusValidado !== 'boolean') {
         throw new AppError(
-          "Nivel de acesso deve ser do tipo texto",
+          'Status deve ser do tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "NIVEL_ACESSO_NOT_FOUND"
+          'STATUS_NOT_FOUND'
         )
       }
 
-      const opcoesNivelAcesso = ['ADMIN', 'VENDAS', 'BALCAO', 'DELIVERY', 'EXTERNO', 'USUARIO']
-
-      if(nivelAcesso && !opcoesNivelAcesso.includes(nivelAcesso)) {
-        throw new AppError (
-          "Nivel de acesso deve estar dentro dessas opções: | ADMIN | VENDAS | BALCAO | DELIVERY | EXTERNO | USUARIO |",
+      if (nivelAcesso && typeof nivelAcesso !== 'string') {
+        throw new AppError(
+          'Nivel de acesso deve ser do tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "NIVEL_ACESSO_NOT_FOUND"
+          'NIVEL_ACESSO_NOT_FOUND'
+        )
+      }
+
+      const opcoesNivelAcesso = [
+        'ADMIN',
+        'VENDAS',
+        'BALCAO',
+        'DELIVERY',
+        'EXTERNO',
+        'USUARIO',
+      ]
+
+      if (nivelAcesso && !opcoesNivelAcesso.includes(nivelAcesso)) {
+        throw new AppError(
+          'Nivel de acesso deve estar dentro dessas opções: | ADMIN | VENDAS | BALCAO | DELIVERY | EXTERNO | USUARIO |',
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'NIVEL_ACESSO_NOT_FOUND'
         )
       }
 

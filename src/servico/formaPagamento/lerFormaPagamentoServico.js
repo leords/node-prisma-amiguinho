@@ -23,7 +23,7 @@ class LerFormaPagamentoServico {
       const formas = await prismaCliente.formaPagamento.findMany({
         where: {
           status: status,
-          tipo: 'VENDAS'
+          tipo: 'VENDAS',
         },
       })
 

@@ -11,34 +11,30 @@ class BuscarClienteExternoControlador {
   async tratar(req, res, next) {
     try {
       // DEPOIS USAR .ENV PARA A URL DO GOOGLE SHEET
-      const resposta = await fetch(
-        process.env.CLIENTES_EXTERNO,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'externa',
-          }),
-        }
-      )
+      const resposta = await fetch(process.env.CLIENTES_EXTERNO, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'externa',
+        }),
+      })
       const dados = await resposta.json()
 
       if (!resposta.ok) {
         throw new AppError(
           `Erro na sincronização da coleta de clientes externos: ${resposta.status}`,
           HTTP_STATUS_CODES.NOT_FOUND,
-          "COLETA_CLIENTES_NOT_FOUND"
+          'COLETA_CLIENTES_NOT_FOUND'
         )
       }
 
       if (!dados || !dados.saida) {
-
         throw new AppError(
-          "Não foi encontrado clientes externos",
+          'Não foi encontrado clientes externos',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "COLETA_CLIENTES_NOT_FOUND"
+          'COLETA_CLIENTES_NOT_FOUND'
         )
       }
 

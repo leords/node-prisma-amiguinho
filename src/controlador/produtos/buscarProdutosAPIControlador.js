@@ -10,10 +10,7 @@ import { buscarProdutosAPIServico } from '../../servico/produtos/buscarProdutosA
 class BuscarProdutosAPIControlador {
   async tratar(req, res, next) {
     try {
-  
-      const resposta = await fetch(
-        process.env.PRODUTOS
-      )
+      const resposta = await fetch(process.env.PRODUTOS)
 
       const dados = await resposta.json()
 
@@ -21,7 +18,7 @@ class BuscarProdutosAPIControlador {
         throw new AppError(
           `Erro na coleta de produtos: ${resposta.status}`,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 
@@ -29,7 +26,7 @@ class BuscarProdutosAPIControlador {
         throw new AppError(
           ERRO_MSG_PRODUTO.SINCRONIZACAO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 
@@ -37,9 +34,8 @@ class BuscarProdutosAPIControlador {
       await servico.executar(dados.saida)
 
       return res.status(HTTP_STATUS_CODES.OK).json({
-        message: SUCESSO_MSG_PRODUTO.SINCRONIZACAO
+        message: SUCESSO_MSG_PRODUTO.SINCRONIZACAO,
       })
-
     } catch (error) {
       console.log(error)
       next(error)

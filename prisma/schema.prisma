@@ -197,11 +197,22 @@ model Fechamento {
   diferenca      Float                @default(0)
   dia            String
   movimentacoes  MovimentacaoManual[]
+  movimentacoesPagamentosEletronicos MovimentacaoPagamentosEletronicos[]
 
   @@unique([vendedor, dia, setor])
 }
 
 model MovimentacaoManual {
+  id           Int        @id @default(autoincrement())
+  data         DateTime   @default(now())
+  fechamentoId Int
+  tipo         String
+  descricao    String
+  valor        Float
+  fechamento   Fechamento @relation(fields: [fechamentoId], references: [id])
+}
+
+model MovimentacaoPagamentosEletronicos {
   id           Int        @id @default(autoincrement())
   data         DateTime   @default(now())
   fechamentoId Int

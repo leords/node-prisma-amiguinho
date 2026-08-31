@@ -18,9 +18,8 @@ class CriarPedidoControlador {
         nomeUsuario,
         usuarioId,
         itens,
-        pagamentos
+        pagamentos,
       } = req.body.dados
-
 
       // valido o body
       if (!req.body.dados) {
@@ -30,7 +29,7 @@ class CriarPedidoControlador {
           'DADOS_NOT_FOUND'
         )
       }
-    
+
       // valida o setor.
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!opcoesSetor.includes(setor)) {
@@ -38,80 +37,78 @@ class CriarPedidoControlador {
         throw new AppError(
           ERRO_MSG_PEDIDOS.SETOR,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "PRDUTO_NOT_FOUND"
+          'PRDUTO_NOT_FOUND'
         )
       }
 
       // valida cliente apenas se setor for diferente de balcão.
-      if(setor !== 'balcao') {
-        if(!cliente) {
+      if (setor !== 'balcao') {
+        if (!cliente) {
           throw new AppError(
             `Cliente id é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "CLIENTE_ID_NOT_FOUND"
+            'CLIENTE_ID_NOT_FOUND'
           )
         }
       }
 
       if (!vendedor) {
         throw new AppError(
-            `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "VENDEDOR_NOT_FOUND"
+          `Vendedor é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'VENDEDOR_NOT_FOUND'
         )
       }
 
       if (!usuarioId) {
         throw new AppError(
-            `ID de usuário é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+          `ID de usuário é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'PRDUTO_NOT_FOUND'
         )
       }
 
-      if(setor === 'balcao') {
+      if (setor === 'balcao') {
         if (!nomeUsuario) {
           throw new AppError(
             `Nome é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "NOME_USUARIO_NOT_FOUND"
+            'NOME_USUARIO_NOT_FOUND'
           )
         }
       }
 
       if (formaPagamentoId && isNaN(formaPagamentoId)) {
         throw new AppError(
-            `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "FORMA_PAGAMENTO_NOT_FOUND"
+          `Forma de pagamento é ${ERRO_MSG_PEDIDOS.CAMPO_AUSENTE}`,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'FORMA_PAGAMENTO_NOT_FOUND'
         )
       }
 
       if (!itens || !Array.isArray(itens) || itens.length === 0) {
-          throw new AppError(
-            ERRO_MSG_PEDIDOS.LISTA_PEDIDOS,
-            HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+        throw new AppError(
+          ERRO_MSG_PEDIDOS.LISTA_PEDIDOS,
+          HTTP_STATUS_CODES.BAD_REQUEST,
+          'PRDUTO_NOT_FOUND'
         )
       }
-      
-
 
       // Valido a existencia de multiplos pagamentos, quanto é existente
-      if(pagamentos?.length > 0) {
-
+      if (pagamentos?.length > 0) {
         pagamentos.forEach((item) => {
-          if (!item.idFormaPagamentoParcial || !item.valorParcialFormaPagamento) {
+          if (
+            !item.idFormaPagamentoParcial ||
+            !item.valorParcialFormaPagamento
+          ) {
             throw new AppError(
-              "Campo obrigatório ausente em alguma forma de pagamento",
+              'Campo obrigatório ausente em alguma forma de pagamento',
               HTTP_STATUS_CODES.BAD_REQUEST,
-              "PRODUTO_NOT_FOUND"
+              'PRODUTO_NOT_FOUND'
             )
           }
         })
-
       }
-
 
       // Valida a existencia de um por um dos campos dos itens da lista.
       itens.forEach((item) => {
@@ -119,13 +116,13 @@ class CriarPedidoControlador {
           throw new AppError(
             ERRO_MSG_PEDIDOS.CAMPO_AUSENTE,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRODUTO_NOT_FOUND"
+            'PRODUTO_NOT_FOUND'
           )
         }
       })
 
       // Converte e valida a tipagem dos campos de cada forma de pagamentos.
-      const itensValidados= itens.map((item, index) => {
+      const itensValidados = itens.map((item, index) => {
         //convertendo para números;
         const produtoId = Number(item.produtoId)
         const quantidade = Number(item.quantidade)
@@ -135,21 +132,21 @@ class CriarPedidoControlador {
           throw new AppError(
             `Item ${index + 1}: produtoId inválido`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
+            'PRDUTO_NOT_FOUND'
           )
         }
         if (isNaN(quantidade)) {
           throw new AppError(
             `Item ${index + 1}: quantidade inválida`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "QUANTIDADE_NOT_FOUND"
+            'QUANTIDADE_NOT_FOUND'
           )
         }
         if (isNaN(valorUnit)) {
           throw new AppError(
             `Item ${index + 1}: quantidade inválida`,
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "VALOR_UND_NOT_FOUND"
+            'VALOR_UND_NOT_FOUND'
           )
         }
 
@@ -162,15 +159,14 @@ class CriarPedidoControlador {
       })
 
       // Formato de envio para o serviço especifico para pedidos Balcão.
-      if(setor === 'balcao') {
-
+      if (setor === 'balcao') {
         // valido cliente do tipo string apenas quando vem da req para novo pedido balcão.
         if (cliente && typeof cliente !== 'string')
           throw new AppError(
             'Se cliente for inserido, precisa ser do tipo texto',
             HTTP_STATUS_CODES.BAD_REQUEST,
-            "PRDUTO_NOT_FOUND"
-        )
+            'PRDUTO_NOT_FOUND'
+          )
 
         const dados = {
           cliente,
@@ -178,8 +174,8 @@ class CriarPedidoControlador {
           nomeUsuario,
           usuarioId: Number(usuarioId),
           itens: itensValidados,
-          pagamentos: pagamentos
-        } 
+          pagamentos: pagamentos,
+        }
 
         const servico = new CriarPedidoServico()
         const resultado = await servico.executar(setor, dados)
@@ -194,22 +190,21 @@ class CriarPedidoControlador {
       const formaPagamentoIdFormatado = Number(formaPagamentoId)
       const usuarioIdFormatado = Number(usuarioId)
 
-
-      if(isNaN(clienteId)) {
+      if (isNaN(clienteId)) {
         throw new AppError(
           'Cliente inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
           'CLIENTE_INVALIDO'
         )
       }
-      if(isNaN(formaPagamentoIdFormatado)) {
+      if (isNaN(formaPagamentoIdFormatado)) {
         throw new AppError(
           'Forma de pagamento inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
           'FORMA_PAGAMENTO_INVALIDO'
         )
       }
-      if(isNaN(usuarioIdFormatado)) {
+      if (isNaN(usuarioIdFormatado)) {
         throw new AppError(
           'Usuario id inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
@@ -233,7 +228,6 @@ class CriarPedidoControlador {
         mensagem: SUCESSO_MSG_PEDIDOS.CRIADO,
         resultado: resultado,
       })
-
     } catch (error) {
       console.log('ERRO AO CRIAR PEDIDO:', error)
       next(error)

@@ -1,7 +1,7 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import { BuscarFechamentoBalcaoDiaServico } from '../../servico/pedido/buscarFechamentoBalcaoDiaServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
-import { AppError } from "../../error/appError.js"
+import { AppError } from '../../error/appError.js'
 import { BuscarFechamentoDeliveryDiaServico } from '../../servico/pedido/buscarFechamentoDeliveryDiaServico.js'
 
 class BuscarFechamentoDeliveryDiaControlador {
@@ -11,16 +11,16 @@ class BuscarFechamentoDeliveryDiaControlador {
     try {
       if (!data) {
         throw new AppError(
-          "data é obrigatória",
+          'data é obrigatória',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_NOT_FOUND"
+          'DATA_NOT_FOUND'
         )
       }
       if (typeof data !== 'string') {
         throw new AppError(
-          "data deve ser tipo texto",
+          'data deve ser tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_NOT_FOUND"
+          'DATA_NOT_FOUND'
         )
       }
 

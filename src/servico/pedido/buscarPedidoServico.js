@@ -12,9 +12,10 @@ class BuscarPedidoServico {
     status
   ) {
 
-    // Campos comuns aos três models
+    // Campos comuns aos três models.
     const queryBase = {}
-    if (vendedor) queryBase.vendedor = vendedor
+    
+    if (vendedor) queryBase.vendedor = vendedor.toUpperCase().trim();
     if (usuarioId) queryBase.usuarioId = usuarioId
     if (dataInicio && dataFim) {
       queryBase.data = { 
@@ -29,11 +30,11 @@ class BuscarPedidoServico {
     const queryDelivery = { ...queryBase }
     if (formaPagamentoId) queryDelivery.formaPagamentoId = formaPagamentoId
     if (cliente) {
-      queryDelivery.cliente = { 
-        nome: { 
+      queryDelivery.cliente = {
+        nome: {
           contains: cliente, 
           mode: 'insensitive' 
-        } 
+        }
       }
     }
 
@@ -41,11 +42,11 @@ class BuscarPedidoServico {
     const queryExterno = { ...queryBase }
     if (formaPagamentoId) queryExterno.formaPagamentoId = formaPagamentoId
     if (cliente) {
-      queryExterno.cliente = { 
-        nome: { 
+      queryExterno.cliente = {
+        nome: {
           contains: cliente, 
           mode: 'insensitive' 
-        } 
+        }
       }
     }
 

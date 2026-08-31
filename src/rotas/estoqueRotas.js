@@ -1,12 +1,10 @@
-import { Router } from "express";
-import { BuscarEstoqueControlador } from "../controlador/estoque/buscarEstoqueControlador.js";
-import { AjusteEstoqueControlador } from "../controlador/estoque/ajusteEstoqueControlador.js";
-import { autenticadorMiddleware } from "../middleware/autenticadorMiddleware.js";
+import { Router } from 'express'
+import { BuscarEstoqueControlador } from '../controlador/estoque/buscarEstoqueControlador.js'
+import { AjusteEstoqueControlador } from '../controlador/estoque/ajusteEstoqueControlador.js'
+import { autenticadorMiddleware } from '../middleware/autenticadorMiddleware.js'
 import { nivelAcessoMiddleware } from '../middleware/nivelAcessoMiddleware.js'
 
-
-const rotas = Router();
-
+const rotas = Router()
 
 rotas.get(
   '/buscar-estoque',

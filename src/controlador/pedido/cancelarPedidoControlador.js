@@ -7,6 +7,8 @@ class CancelarPedidoControlador {
   async tratar(req, res, next) {
     const { setor } = req.params
     const uuid = req.params.id
+
+    console.log('DEBUG - UUID: ', uuid)
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 

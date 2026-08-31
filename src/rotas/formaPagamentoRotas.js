@@ -11,12 +11,16 @@ rotas.get(
   autenticadorMiddleware,
   new BuscarFormaPagamentControlador().tratar
 )
-rotas.get('/ler-formas-pagamento-balcao', 
+rotas.get(
+  '/ler-formas-pagamento-balcao',
   autenticadorMiddleware,
-  new LerFormaPagamentoBalcaoControlador().tratar)
+  new LerFormaPagamentoBalcaoControlador().tratar
+)
 
-  rotas.get('/ler-formas-pagamento-externa', 
+rotas.get(
+  '/ler-formas-pagamento-externa',
   autenticadorMiddleware,
-  new LerFormaPagamentoExternaControlador().tratar)
+  new LerFormaPagamentoExternaControlador().tratar
+)
 
 export { rotas as formaPagamentoRotas }

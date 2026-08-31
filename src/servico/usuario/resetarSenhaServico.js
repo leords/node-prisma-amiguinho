@@ -36,6 +36,12 @@ class ResetarSenhaServico {
           resetToken: null,
           resetExpires: null,
         },
+        select: {
+          id: true,
+          nome: true,
+          email: true,
+          nivelAcesso: true
+        }
       })
 
       // Enviando email de nova senha para o email do usuário.
@@ -48,6 +54,8 @@ class ResetarSenhaServico {
         const servico = new EnviarEmailServico();
         await servico.enviarNovoEmail(usuario.email, 'Sistema Amiguinho - senha alterada', html )
       }
+
+      return usuarioAtualizado
 
       
     } catch (error) {

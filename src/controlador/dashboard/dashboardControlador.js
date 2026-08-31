@@ -1,25 +1,18 @@
-import { DashboardServico } from "../../servico/dashboard/dashboardServico.js";
-
+import { DashboardServico } from '../../servico/dashboard/dashboardServico.js'
 
 class DashboardControlador {
+  async tratar(req, res) {
+    const { dataInicio, dataFim } = req.query
 
-    async tratar(req, res) {
+    const servico = new DashboardServico()
 
-        const { dataInicio, dataFim } = req.query;
+    const resultado = await servico.executar({
+      dataInicio,
+      dataFim,
+    })
 
-        console.log('DEBUG DATAS: ', dataInicio, ':', dataFim)
-
-        const servico = new DashboardServico();
-
-        const resultado = await servico.executar({
-            dataInicio,
-            dataFim
-        });
-
-
-        return res.json(resultado);
-    }
-
+    return res.json(resultado)
+  }
 }
 
-export { DashboardControlador };
+export { DashboardControlador }

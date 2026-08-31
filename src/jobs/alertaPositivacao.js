@@ -1,79 +1,88 @@
 // src/jobs/alertaPositivacao.js
-import { PrismaClient } from "@prisma/client";
-import { gerarTextoGroq } from "../utilidades/groq.js";
-import { enviarWhatsApp } from "../utilidades/whatsapp.js";
-import { EnviarEmailServico } from "../servico/email/enviarEmailServico.js";
-import { buscarIA } from "../utilidades/openRouter.js";
-
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+import { gerarTextoGroq } from '../utilidades/groq.js'
+import { enviarWhatsApp } from '../utilidades/whatsapp.js'
+import { EnviarEmailServico } from '../servico/email/enviarEmailServico.js'
+import { buscarIA } from '../utilidades/openRouter.js'
+import prismaCliente from '../prisma/index.js'
 
 // Queda mínima para disparar o alerta (em pontos percentuais)
-const LIMITE_QUEDA_PERCENTUAL = 20;
+const LIMITE_QUEDA_PERCENTUAL = 20
 
 export async function executarAlertaPositivacao() {
-  console.log("[JOB] Iniciando alerta de positivação...");
+  console.log('[JOB] Iniciando alerta de positivação...')
 
-  const hoje   = new Date();
-  const seteDiasAtras    = new Date(hoje); seteDiasAtras.setDate(hoje.getDate() - 7);
-  const quatorzeDiasAtras = new Date(hoje); quatorzeDiasAtras.setDate(hoje.getDate() - 14);
+  const hoje = new Date()
+  const seteDiasAtras = new Date(hoje)
+  seteDiasAtras.setDate(hoje.getDate() - 7)
+  const quatorzeDiasAtras = new Date(hoje)
+  quatorzeDiasAtras.setDate(hoje.getDate() - 14)
 
   try {
     // 1. Busca todos os produtos
-    const produtos = await prisma.produto.findMany({
+    const produtos = await prismaCliente.produto.findMany({
       select: { id: true, nome: true },
-    });
+    })
 
     // 2. Total de pedidos por período
-    const [totalPedidosSemanaAtual, totalPedidosSemanaAnterior] = await Promise.all([
-      prisma.pedidoBalcao.count({ where: { data: { gte: seteDiasAtras, lte: hoje } } }),
-      prisma.pedidoBalcao.count({ where: { data: { gte: quatorzeDiasAtras, lte: seteDiasAtras } } }),
-    ]);
+    const [totalPedidosSemanaAtual, totalPedidosSemanaAnterior] =
+      await Promise.all([
+        prismaCliente.pedidoBalcao.count({
+          where: { data: { gte: seteDiasAtras, lte: hoje } },
+        }),
+        prismaCliente.pedidoBalcao.count({
+          where: { data: { gte: quatorzeDiasAtras, lte: seteDiasAtras } },
+        }),
+      ])
 
     if (totalPedidosSemanaAtual === 0 || totalPedidosSemanaAnterior === 0) {
-      console.log("[JOB] Dados insuficientes para calcular positivação.");
-      return;
+      console.log('[JOB] Dados insuficientes para calcular positivação.')
+      return
     }
 
     // 3. Calcula positivação por produto
-    const alertas = [];
+    const alertas = []
 
     for (const produto of produtos) {
-      const [pedidosComProdutoAtual, pedidosComProdutoAnterior] = await Promise.all([
-        prisma.itemPedidoBalcao.groupBy({
-          by: ["pedidoId"],
-          where: {
-            produtoId: produto.id,
-            pedido: { data: { gte: seteDiasAtras, lte: hoje } },
-          },
-          _count: { pedidoId: true },
-        }),
-        prisma.itemPedidoBalcao.groupBy({
-          by: ["pedidoId"],
-          where: {
-            produtoId: produto.id,
-            pedido: { data: { gte: quatorzeDiasAtras, lte: seteDiasAtras } },
-          },
-          _count: { pedidoId: true },
-        }),
-      ]);
+      const [pedidosComProdutoAtual, pedidosComProdutoAnterior] =
+        await Promise.all([
+          prismaCliente.itemPedidoBalcao.groupBy({
+            by: ['pedidoId'],
+            where: {
+              produtoId: produto.id,
+              pedido: { data: { gte: seteDiasAtras, lte: hoje } },
+            },
+            _count: { pedidoId: true },
+          }),
+          prismaCliente.itemPedidoBalcao.groupBy({
+            by: ['pedidoId'],
+            where: {
+              produtoId: produto.id,
+              pedido: { data: { gte: quatorzeDiasAtras, lte: seteDiasAtras } },
+            },
+            _count: { pedidoId: true },
+          }),
+        ])
 
-      const positAtual    = (pedidosComProdutoAtual.length    / totalPedidosSemanaAtual)    * 100;
-      const positAnterior = (pedidosComProdutoAnterior.length / totalPedidosSemanaAnterior) * 100;
-      const queda         = positAnterior - positAtual;
+      const positAtual =
+        (pedidosComProdutoAtual.length / totalPedidosSemanaAtual) * 100
+      const positAnterior =
+        (pedidosComProdutoAnterior.length / totalPedidosSemanaAnterior) * 100
+      const queda = positAnterior - positAtual
 
       if (positAnterior > 0 && queda >= LIMITE_QUEDA_PERCENTUAL) {
         alertas.push({
-          produto:      produto.nome,
-          positAtual:   positAtual.toFixed(1),
+          produto: produto.nome,
+          positAtual: positAtual.toFixed(1),
           positAnterior: positAnterior.toFixed(1),
-          queda:        queda.toFixed(1),
-        });
+          queda: queda.toFixed(1),
+        })
       }
     }
 
     if (alertas.length === 0) {
-      console.log("[JOB] Nenhuma queda de positivação acima do limite.");
-      return;
+      console.log('[JOB] Nenhuma queda de positivação acima do limite.')
+      return
     }
 
     // 4. Gera análise com Groq
@@ -83,41 +92,42 @@ export async function executarAlertaPositivacao() {
         comparando a semana atual com a semana anterior.
 
         Produtos com alerta:
-        ${alertas.map((a) => `- ${a.produto}: era ${a.positAnterior}%, agora ${a.positAtual}% (queda de ${a.queda}pp)`).join("\n")}
+        ${alertas.map((a) => `- ${a.produto}: era ${a.positAnterior}%, agora ${a.positAtual}% (queda de ${a.queda}pp)`).join('\n')}
 
         Escreva um alerta em português, claro e direto, explicando a situação e sugerindo possíveis causas
         (estoque, sazonalidade, preço, concorrência). Máximo 4 parágrafos curtos. Sem markdown, só texto simples.
-    `.trim();
+    `.trim()
 
     //const analise = await gerarTextoGroq(prompt);
 
-
-    const analise = await buscarIA(prompt);
-
-    
+    const analise = await buscarIA(prompt)
 
     // 5. Busca admins
-    const admins = await prisma.usuario.findMany({
-      where: { nivelAcessoId: "ADMIN", status: true },
+    const admins = await prismaCliente.usuario.findMany({
+      where: { nivelAcessoId: 'ADMIN', status: true },
       select: { nome: true, email: true, whatsapp: true },
-    });
+    })
 
     if (admins.length === 0) {
-      console.warn("[JOB] Nenhum admin encontrado para envio do alerta.");
-      return;
+      console.warn('[JOB] Nenhum admin encontrado para envio do alerta.')
+      return
     }
 
     // 6. Envia
-    const assunto = `⚠️ Alerta de positivação — ${alertas.length} produto(s) em queda`;
+    const assunto = `⚠️ Alerta de positivação — ${alertas.length} produto(s) em queda`
 
-    const tabelaHtml = alertas.map((a) => `
+    const tabelaHtml = alertas
+      .map(
+        (a) => `
       <tr>
         <td style="padding: 10px 14px; border-bottom: 1px solid #f1f3f5; font-weight: 600;">${a.produto}</td>
         <td style="padding: 10px 14px; border-bottom: 1px solid #f1f3f5; text-align: center;">${a.positAnterior}%</td>
         <td style="padding: 10px 14px; border-bottom: 1px solid #f1f3f5; text-align: center;">${a.positAtual}%</td>
         <td style="padding: 10px 14px; border-bottom: 1px solid #f1f3f5; text-align: center; color: #c92a2a; font-weight: 700;">▼ ${a.queda}pp</td>
       </tr>
-    `).join("");
+    `
+      )
+      .join('')
 
     const htmlEmail = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -142,7 +152,7 @@ export async function executarAlertaPositivacao() {
           <p style="font-size: 12px; color: #aaa; margin: 0;">Amigão Distribuidora de Bebidas — Sistema de Gestão</p>
         </div>
       </div>
-    `;
+    `
 
     for (const admin of admins) {
       if (admin.email) {
@@ -152,15 +162,17 @@ export async function executarAlertaPositivacao() {
         await emailServico.enviarNovoEmail(admin.email, assunto, htmlEmail)
       }
       if (admin.whatsapp) {
-        const msgWpp = `${assunto}\n\n${alertas.map((a) => `• ${a.produto}: ${a.positAnterior}% → ${a.positAtual}% (▼${a.queda}pp)`).join("\n")}\n\n${analise}`;
-        await enviarWhatsApp(admin.whatsapp, msgWpp);
+        const msgWpp = `${assunto}\n\n${alertas.map((a) => `• ${a.produto}: ${a.positAnterior}% → ${a.positAtual}% (▼${a.queda}pp)`).join('\n')}\n\n${analise}`
+        await enviarWhatsApp(admin.whatsapp, msgWpp)
       }
     }
 
-    console.log(`[JOB] Alerta de positivação enviado. ${alertas.length} produto(s) em alerta.`);
+    console.log(
+      `[JOB] Alerta de positivação enviado. ${alertas.length} produto(s) em alerta.`
+    )
   } catch (err) {
-    console.error("[JOB] Erro no alerta de positivação:", err.message);
+    console.error('[JOB] Erro no alerta de positivação:', err.message)
   } finally {
-    await prisma.$disconnect();
+    await prismaCliente.$disconnect()
   }
 }

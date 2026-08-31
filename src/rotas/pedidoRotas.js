@@ -119,8 +119,6 @@ rotas.put(
   new EditarPedidoBalcaoControlador().tratar
 )
 
-
-
 // ROTAS ESPECIFICAS PARA DELIVERY
 
 rotas.patch(

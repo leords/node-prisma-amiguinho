@@ -2,7 +2,6 @@
 import { AutenticadorServico } from '../../auth/autenticadorServico.js'
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 
-
 class RefreshTokenControlador {
   async tratar(req, res, next) {
     const { refreshToken } = req.body

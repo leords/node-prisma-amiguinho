@@ -11,33 +11,30 @@ class BuscarCLienteDeliveryControlador {
   async tratar(req, res, next) {
     try {
       // DEPOIS USAR .ENV PARA A URL DO GOOGLE SHEET
-      const resposta = await fetch(
-        process.env.CLIENTES_DELIVERY,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'delivery',
-          }),
-        }
-      )
+      const resposta = await fetch(process.env.CLIENTES_DELIVERY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'delivery',
+        }),
+      })
       const dados = await resposta.json()
 
       if (!resposta.ok) {
         throw new AppError(
           `Erro na coleta clientes delivery: ${resposta.status}`,
           HTTP_STATUS_CODES.NOT_FOUND,
-          "SINCRONIZACAO_NOT_FOUND"
+          'SINCRONIZACAO_NOT_FOUND'
         )
       }
 
       if (!dados || !dados.saida) {
         throw new AppError(
-          "Erro ao sincronizar clientes delivery",
+          'Erro ao sincronizar clientes delivery',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "SINCRONIZACAO_NOT_FOUND"
+          'SINCRONIZACAO_NOT_FOUND'
         )
       }
 

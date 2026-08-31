@@ -7,7 +7,6 @@ class BuscarClienteDeliveryServico {
         throw new Error('Clientes não encontrados!')
       }
       for (const cliente of clientes) {
-
         await prismaCliente.clienteDelivery.upsert({
           where: {
             id: Number(cliente.ID),

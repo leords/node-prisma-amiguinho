@@ -25,9 +25,9 @@ class LerClienteDeliveryServico {
 
       if (!clientes) {
         throw new AppError(
-          "Cliente não encontrado",
+          'Cliente não encontrado',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "CLIENTE_NOT_FOUND"
+          'CLIENTE_NOT_FOUND'
         )
       }
 

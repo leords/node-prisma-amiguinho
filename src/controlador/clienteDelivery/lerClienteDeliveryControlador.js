@@ -16,30 +16,30 @@ class LerClienteDeliveryControlador {
     try {
       if (id && isNaN(id)) {
         throw new AppError(
-          "ID é obrigatório e deve ser um número",
+          'ID é obrigatório e deve ser um número',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "ID_NOT_FOUND"
+          'ID_NOT_FOUND'
         )
       }
       if (nome && typeof nome !== 'string') {
         throw new AppError(
-          "Nome é obrigatório e deve ser uma string",
+          'Nome é obrigatório e deve ser uma string',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "NOME_NOT_FOUND"
+          'NOME_NOT_FOUND'
         )
       }
       if (cidade && typeof cidade !== 'string') {
         throw new AppError(
-          "cidade é obrigatório e deve ser uma string",
+          'cidade é obrigatório e deve ser uma string',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "CIDADE_NOT_FOUND"
+          'CIDADE_NOT_FOUND'
         )
       }
       if (bairro && typeof bairro !== 'string') {
         throw new AppError(
-          "Bairro é obrigatório e deve ser uma string",
+          'Bairro é obrigatório e deve ser uma string',
           HTTP_STATUS_CODES.NOT_FOUND,
-          "BAIRRO_NOT_FOUND"
+          'BAIRRO_NOT_FOUND'
         )
       }
 

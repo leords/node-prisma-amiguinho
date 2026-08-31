@@ -1,5 +1,4 @@
+const paineis = new Map()
+const entregadores = new Map()
 
-const paineis = new Map();
-const entregadores = new Map();
-
-export { paineis, entregadores };
+export { paineis, entregadores }

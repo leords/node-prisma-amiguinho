@@ -10,11 +10,18 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class NovoUsuarioControlador {
   async tratar(req, res, next) {
-
     try {
       const { nome, email, usuario, senha, whatsapp, nivelAcesso } = req.body
 
-      console.log('Dados da req: ', nome, email, usuario, senha, nivelAcesso, whatsapp )
+      console.log(
+        'Dados da req: ',
+        nome,
+        email,
+        usuario,
+        senha,
+        nivelAcesso,
+        whatsapp
+      )
 
       if (!nome || !email || !usuario || !senha || !nivelAcesso) {
         throw new Error(ERRO_MSG_USUARIO.CAMPO_AUSENTE)
@@ -25,7 +32,7 @@ class NovoUsuarioControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.VALIDAR_EMAIL,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "EMAIL_NOT_FOUND"
+          'EMAIL_NOT_FOUND'
         )
       }
 
@@ -33,7 +40,7 @@ class NovoUsuarioControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.TIPO_NOME,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "NOME_NOT_FOUND"
+          'NOME_NOT_FOUND'
         )
       }
 
@@ -41,7 +48,7 @@ class NovoUsuarioControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.TIPO_USUARIO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "USUARIO_NOT_FOUND"
+          'USUARIO_NOT_FOUND'
         )
       }
 
@@ -49,7 +56,7 @@ class NovoUsuarioControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.TIPO_SENHA,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SENHA_NOT_FOUND"
+          'SENHA_NOT_FOUND'
         )
       }
 
@@ -57,33 +64,41 @@ class NovoUsuarioControlador {
         throw new AppError(
           ERRO_MSG_USUARIO.VALIDAR_SENHA,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SENHA_NOT_FOUND"
+          'SENHA_NOT_FOUND'
         )
       }
-      
+
       if (!nivelAcesso) {
         throw new AppError(
           ERRO_MSG_USUARIO.TIPO_NIVEL_ACESSO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "NIVEL_DE_ACESSO_NOT_FOUND"
+          'NIVEL_DE_ACESSO_NOT_FOUND'
         )
       }
 
-      const opcoesNivelAcesso = ["ADMIN", "VENDAS", "BALCAO", "DELIVERY", "EXTERNO", "USUARIO", "ENTREGADOR"]
+      const opcoesNivelAcesso = [
+        'ADMIN',
+        'VENDAS',
+        'BALCAO',
+        'DELIVERY',
+        'EXTERNO',
+        'USUARIO',
+        'ENTREGADOR',
+      ]
 
       if (!opcoesNivelAcesso.includes(nivelAcesso)) {
         throw new AppError(
           ERRO_MSG_USUARIO.OPCAO_NIVEL_ACESSO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "NIVEL_DE_ACESSO_NOT_FOUND"
+          'NIVEL_DE_ACESSO_NOT_FOUND'
         )
       }
 
       if (typeof whatsapp !== 'string') {
         throw new AppError(
-          "Whatsapp precisa ser do tipo texto",
+          'Whatsapp precisa ser do tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "WHATSAPP_NOT_FOUND"
+          'WHATSAPP_NOT_FOUND'
         )
       }
 

@@ -1,7 +1,7 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import { BuscarFechamentoBalcaoDiaServico } from '../../servico/pedido/buscarFechamentoBalcaoDiaServico.js'
 import { coletarErro } from '../../utilidades/coletarErro.js'
-import { AppError } from "../../error/appError.js"
+import { AppError } from '../../error/appError.js'
 
 class BuscarFechamentoBalcaoDiaControlador {
   async tratar(req, res, next) {
@@ -10,39 +10,39 @@ class BuscarFechamentoBalcaoDiaControlador {
     try {
       if (!data) {
         throw new AppError(
-          "data é obrigatória",
+          'data é obrigatória',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_NOT_FOUND"
+          'DATA_NOT_FOUND'
         )
       }
       if (typeof data !== 'string') {
         throw new AppError(
-          "data deve ser tipo texto",
+          'data deve ser tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_NOT_FOUND"
+          'DATA_NOT_FOUND'
         )
       }
       if (!vendedor) {
         throw new AppError(
-          "vendedor obrigatório",
+          'vendedor obrigatório',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
       if (typeof vendedor !== 'string') {
         throw new AppError(
-          "vendedor deve ser tipo texto",
+          'vendedor deve ser tipo texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
 
       const opcoesVendedor = ['b1', 'b2', 'b3']
       if (!opcoesVendedor.includes(vendedor)) {
         throw new AppError(
-          "Vendedor inválido, deve ser b1, b2 ou b3",
+          'Vendedor inválido, deve ser b1, b2 ou b3',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_ID_NOT_FOUND"
+          'VENDEDOR_ID_NOT_FOUND'
         )
       }
 

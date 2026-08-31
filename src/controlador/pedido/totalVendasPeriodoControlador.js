@@ -10,14 +10,13 @@ class TotalVendasPeriodoControlador {
     const dataFim = req.query.dataFim ? req.query.dataFim : undefined
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
 
-
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
       if (!setor) {
         throw new AppError(
           'Setor é obrigatório',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 
@@ -25,7 +24,7 @@ class TotalVendasPeriodoControlador {
         throw new AppError(
           'Setor inválido',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 
@@ -33,7 +32,7 @@ class TotalVendasPeriodoControlador {
         throw new AppError(
           'Vendedor deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "VENDEDOR_NOT_FOUND"
+          'VENDEDOR_NOT_FOUND'
         )
       }
 
@@ -41,7 +40,7 @@ class TotalVendasPeriodoControlador {
         throw new AppError(
           'Data de início e fim são obrigatórios',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_INICIO_NOT_FOUND"
+          'DATA_INICIO_NOT_FOUND'
         )
       }
 
@@ -49,7 +48,7 @@ class TotalVendasPeriodoControlador {
         throw new AppError(
           'Data de início deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_INICIO_NOT_FOUND"
+          'DATA_INICIO_NOT_FOUND'
         )
       }
 
@@ -57,12 +56,16 @@ class TotalVendasPeriodoControlador {
         throw new AppError(
           'Data de fim deve ser texto',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "DATA_FIM_NOT_FOUND"
+          'DATA_FIM_NOT_FOUND'
         )
       }
 
-      const inicio = dataInicio ? new Date(`${dataInicio}T00:00:00-03:00`) : undefined
-      const fim = dataFim ? new Date(`${dataFim}T23:59:59.999-03:00`) : undefined
+      const inicio = dataInicio
+        ? new Date(`${dataInicio}T00:00:00-03:00`)
+        : undefined
+      const fim = dataFim
+        ? new Date(`${dataFim}T23:59:59.999-03:00`)
+        : undefined
 
       const servico = new TotalVendasPeriodoServico()
       const resultado = await servico.executar(setor, vendedor, inicio, fim)

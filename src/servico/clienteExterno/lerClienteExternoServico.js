@@ -1,4 +1,7 @@
-import { ERRO_MSG_CLIENTE_EXTERNO, HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
+import {
+  ERRO_MSG_CLIENTE_EXTERNO,
+  HTTP_STATUS_CODES,
+} from '../../config/httpStatusCodes.js'
 import { AppError } from '../../error/appError.js'
 import prismaCliente from '../../prisma/index.js'
 
@@ -23,11 +26,9 @@ class LerClienteExternoServico {
     }
     if (filtros.vendedor) {
       condicoes.vendedor = {
-      contains: filtros.vendedor.toUpperCase(),
-      mode: "insensitive"
+        contains: filtros.vendedor.toUpperCase(),
+        mode: 'insensitive',
       }
-
-        
     }
     if (filtros.atendimento) {
       condicoes.atendimento = filtros.atendimento.toUpperCase()
@@ -44,7 +45,7 @@ class LerClienteExternoServico {
         throw new AppError(
           ERRO_MSG_CLIENTE_EXTERNO.NAO_ENCONTRADO,
           HTTP_STATUS_CODES.NOT_FOUND,
-          "CLIENTES_NOT_FOUND"
+          'CLIENTES_NOT_FOUND'
         )
       }
 

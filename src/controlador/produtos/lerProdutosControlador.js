@@ -18,28 +18,28 @@ class LerProdutosControlador {
         throw new AppError(
           ERRO_MSG_PRODUTO.TIPO_ID,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
       if (nome && typeof nome !== 'string') {
         throw new AppError(
           ERRO_MSG_PRODUTO.TIPO_NOME,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
       if (fornecedor && typeof fornecedor !== 'string') {
         throw new AppError(
           ERRO_MSG_PRODUTO.TIPO_FORNECEDOR,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
       if (segmento && typeof segmento !== 'string') {
         throw new AppError(
           ERRO_MSG_PRODUTO.TIPO_SEGMENTO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 

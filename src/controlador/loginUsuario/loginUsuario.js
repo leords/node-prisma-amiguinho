@@ -13,18 +13,18 @@ class LoginUsuario {
     try {
       if (!usuario || typeof usuario !== 'string') {
         throw new AppError(
-          "Usuário é obrigatório e deve ser do tipo texto",
+          'Usuário é obrigatório e deve ser do tipo texto',
           401,
-          "USUARIO_INVALIDO"
-      )
+          'USUARIO_INVALIDO'
+        )
       }
 
       if (!senha || typeof senha !== 'string') {
         throw new AppError(
-          "Senha é obrigatória e deve ser do tipo texto",
+          'Senha é obrigatória e deve ser do tipo texto',
           401,
-          "USUARIO_INVALIDO"
-      )
+          'USUARIO_INVALIDO'
+        )
       }
 
       const servico = new AutenticadorServico()

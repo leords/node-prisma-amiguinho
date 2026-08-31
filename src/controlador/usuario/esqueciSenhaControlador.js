@@ -10,17 +10,15 @@ import { coletarErro } from '../../utilidades/coletarErro.js'
 class EsqueciSenhaControlador {
   async tratar(req, res, next) {
     try {
-
       console.log(req.body)
       const { email } = req.body
       console.log('email', email)
 
       if (!email) {
-
         throw new AppError(
           ERRO_MSG_USUARIO.EMAIL_OBRIGADOTORIO,
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "EMAIL_BAD_REQUEST"
+          'EMAIL_BAD_REQUEST'
         )
       }
 
