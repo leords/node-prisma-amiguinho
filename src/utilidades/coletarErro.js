@@ -18,7 +18,7 @@ import {
 } from '../config/httpStatusCodes.js'
 
 function coletarErro(error) {
-  // Autenticador!!!
+  // Autenticador
   if (error.message === ERRO_MSG_AUTENTICADOR.ACESSO_NEGADO) {
     return {
       status: HTTP_STATUS_CODES.NOT_FOUND,
@@ -26,7 +26,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo usuario!!!
+  // Modelo usuario
   if (error.message === ERRO_MSG_USUARIO.USUARIO_JA_EXISTE) {
     return {
       status: HTTP_STATUS_CODES.NOT_FOUND,
@@ -184,7 +184,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo clientes Delivery!!!
+  // Modelo clientes Delivery
   if (error.message === ERRO_MSG_CLIENTE_DELIVERY.SINCRONIZACAO) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
@@ -228,7 +228,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo clientes Externo!!!
+  // Modelo clientes Externo
   if (error.message === ERRO_MSG_CLIENTE_EXTERNO.SINCRONIZACAO) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
@@ -296,7 +296,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo produtos!!!
+  // Modelo produtos
   if (error.message === ERRO_MSG_PRODUTO.SINCRONIZACAO) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
@@ -340,7 +340,7 @@ function coletarErro(error) {
     }
   }
 
-  // Modelo formas de pagamento!!!
+  // Modelo formas de pagamento
   if (error.message === ERRO_MSG_FORMA.SINCRONIZACAO) {
     return {
       status: HTTP_STATUS_CODES.BAD_REQUEST,
