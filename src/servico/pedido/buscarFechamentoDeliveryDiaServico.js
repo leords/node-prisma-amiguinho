@@ -10,7 +10,10 @@ class BuscarFechamentoDeliveryDiaServico {
           data: {
             gte: inicio,
             lte: fim,
-          }
+          },
+          status: {
+            not: 'cancelado',
+          },
         },
         _sum: {
           total: true,
@@ -25,6 +28,9 @@ class BuscarFechamentoDeliveryDiaServico {
           data: {
             gte: inicio,
             lte: fim,
+          },
+          status: {
+            not: 'cancelado',
           },
           formaPagamento: {
             nome: {
@@ -44,7 +50,10 @@ class BuscarFechamentoDeliveryDiaServico {
           data: {
             gte: inicio,
             lte: fim,
-          }
+          },
+          status: {
+            not: 'cancelado',
+          },
         },
         _sum: {
           total: true,

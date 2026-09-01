@@ -112,7 +112,14 @@ class CriarPedidoControlador {
 
       // Valida a existencia de um por um dos campos dos itens da lista.
       itens.forEach((item) => {
-        if (!item.produtoId || !item.quantidade || !item.valorUnit) {
+        console.log('DEBUG pagamentos: ', pagamentos)
+        if (
+          !item.produtoId ||
+          item.quantidade == null ||
+          item.valorUnit == null ||
+          Number(item.quantidade) < 0 ||
+          Number(item.valorUnit) < 0
+        ) {
           throw new AppError(
             ERRO_MSG_PEDIDOS.CAMPO_AUSENTE,
             HTTP_STATUS_CODES.BAD_REQUEST,
