@@ -6,8 +6,6 @@ class carregarPedidoDeliveryControlador {
   async tratar(req, res, next) {
     const uuid = req.params.uuid
 
-    console.log('UUID: ', uuid)
-
     try {
       if (!uuid && isNaN(Number(uuid))) {
         throw new AppError(

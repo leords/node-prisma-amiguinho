@@ -8,38 +8,37 @@ class CancelarPedidoControlador {
     const { setor } = req.params
     const uuid = req.params.id
 
-    console.log('DEBUG - UUID: ', uuid)
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 
       if (!setor) {
         throw new AppError(
-          "Setor é obrigatório",
+          'Setor é obrigatório',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
       if (!opcoesSetor.includes(setor)) {
         throw new AppError(
-          "Setor inválido, opções válidas: delivery, externo e balcao",
+          'Setor inválido, opções válidas: delivery, externo e balcao',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "SETOR_NOT_FOUND"
+          'SETOR_NOT_FOUND'
         )
       }
 
       if (!uuid) {
         throw new AppError(
-          "ID é obrigatório",
+          'ID é obrigatório',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "ID_NOT_FOUND"
+          'ID_NOT_FOUND'
         )
       }
 
       if (typeof uuid !== 'string') {
         throw new AppError(
-          "ID deve ser um número",
+          'ID deve ser um número',
           HTTP_STATUS_CODES.BAD_REQUEST,
-          "ID_NOT_FOUND"
+          'ID_NOT_FOUND'
         )
       }
 

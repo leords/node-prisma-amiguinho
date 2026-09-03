@@ -14,13 +14,12 @@ import configurarSocket from "./src/socket/index.js";
 //dotenv.config();
 const app = express();
 
-
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors: {
-        origin: "*"
-    }
+  cors: {
+    origin: "*",
+  },
 });
 
 configurarSocket(io);
@@ -34,11 +33,11 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
 // Middleware de registro de rotas = log.
-app.use(registroRotas);
+//app.use(registroRotas);
 
 // Desabilita cache em todas as rotas pq o Railway tem um proxy reverso na frente que faz cache automaticamente de respostas GET
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate");
   next();
 });
 
@@ -48,24 +47,20 @@ app.use(rotas);
 // Middleware de controle de erros. obs: middleware com 4 parametros é de monitoramento de erros.
 app.use(tratarErros);
 
-
 // Chamar a função de criar o usuario admin já ao executar o sistema.
-const servico = new CriarUsuarioAdminServico()
+const servico = new CriarUsuarioAdminServico();
 await servico.executar();
 
 // Chamar função para criar inicio de caixa = R$ 200,00
-const servicoCaixa = new alterarCaixaServico()
+const servicoCaixa = new alterarCaixaServico();
 await servicoCaixa.executar();
 
 // Chamar função para criar taxa de entrega = R$ 5,00
 const servicoTaxaEntrega = new alterarTaxaEntregaServico();
-await servicoTaxaEntrega.executar()
+await servicoTaxaEntrega.executar();
 
-
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 server.listen(port, () => {
-    console.log(`Servidor iniciado na porta ${port}`)
-    iniciarJobs()
+  console.log(`Servidor iniciado na porta ${port}`);
+  iniciarJobs();
 });
-
-

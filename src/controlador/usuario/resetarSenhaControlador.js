@@ -12,9 +12,6 @@ class ResetarSenhaControlador {
     try {
       const { token, novaSenha } = req.body
 
-      console.log('Debug TOKEN: ', token)
-      console.log('Debug NOVA SENHA: ', novaSenha)
-
       if (!token || !novaSenha) {
         throw new AppError(
           ERRO_MSG_USUARIO.TOKEN_INVALIDO,

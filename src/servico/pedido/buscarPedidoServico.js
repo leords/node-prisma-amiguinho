@@ -1,4 +1,4 @@
-import prismaCliente from "../../prisma/index.js"
+import prismaCliente from '../../prisma/index.js'
 
 class BuscarPedidoServico {
   async executar(
@@ -11,16 +11,15 @@ class BuscarPedidoServico {
     usuarioId,
     status
   ) {
-
     // Campos comuns aos três models.
     const queryBase = {}
-    
-    if (vendedor) queryBase.vendedor = vendedor.toUpperCase().trim();
+
+    if (vendedor) queryBase.vendedor = vendedor.trim()
     if (usuarioId) queryBase.usuarioId = usuarioId
     if (dataInicio && dataFim) {
-      queryBase.data = { 
-        gte: dataInicio, 
-        lte: dataFim 
+      queryBase.data = {
+        gte: dataInicio,
+        lte: dataFim,
       }
     }
 
@@ -32,9 +31,9 @@ class BuscarPedidoServico {
     if (cliente) {
       queryDelivery.cliente = {
         nome: {
-          contains: cliente, 
-          mode: 'insensitive' 
-        }
+          contains: cliente,
+          mode: 'insensitive',
+        },
       }
     }
 
@@ -44,25 +43,25 @@ class BuscarPedidoServico {
     if (cliente) {
       queryExterno.cliente = {
         nome: {
-          contains: cliente, 
-          mode: 'insensitive' 
-        }
+          contains: cliente,
+          mode: 'insensitive',
+        },
       }
     }
 
     // Balcao: cliente é String simples, formaPagamentoId vem via relação "pagamentos"
     const queryBalcao = { ...queryBase }
     if (cliente) {
-      queryBalcao.cliente = { 
-        contains: cliente, 
-        mode: 'insensitive' 
+      queryBalcao.cliente = {
+        contains: cliente,
+        mode: 'insensitive',
       }
     }
     if (formaPagamentoId) {
       queryBalcao.pagamentos = {
-        some: { 
-          formaPagamentoId 
-        }
+        some: {
+          formaPagamentoId,
+        },
       }
     }
 
@@ -70,28 +69,28 @@ class BuscarPedidoServico {
       if (setor === 'delivery') {
         return await prismaCliente.pedidoDelivery.findMany({
           where: queryDelivery,
-          include: { 
-            itens: true, 
-            cliente: true, 
-            formaPagamento: true 
+          include: {
+            itens: true,
+            cliente: true,
+            formaPagamento: true,
           },
-          orderBy: { 
-            data: 'desc' 
-          }
+          orderBy: {
+            data: 'desc',
+          },
         })
       }
 
       if (setor === 'externo') {
         return await prismaCliente.pedidoExterno.findMany({
           where: queryExterno,
-          include: { 
-            itens: true, 
-            cliente: true, 
-            formaPagamento: true 
+          include: {
+            itens: true,
+            cliente: true,
+            formaPagamento: true,
           },
-          orderBy: { 
-            data: 'desc' 
-          }
+          orderBy: {
+            data: 'desc',
+          },
         })
       }
 
@@ -100,62 +99,61 @@ class BuscarPedidoServico {
           where: queryBalcao,
           include: {
             itens: true,
-            pagamentos: { 
-              include: { 
-                formaPagamento: true
-              } 
+            pagamentos: {
+              include: {
+                formaPagamento: true,
+              },
             },
           },
-          orderBy: { 
-            data: 'desc' 
-          }
+          orderBy: {
+            data: 'desc',
+          },
         })
       }
 
-      const [pedidosDelivery, pedidosExterno, pedidosBalcao] = await Promise.all([
-
-        prismaCliente.pedidoDelivery.findMany({
-          where: queryDelivery,
-          include: { 
-            itens: true, 
-            cliente: true, 
-            formaPagamento: true 
-          },
-          orderBy: { 
-            data: 'desc' 
-          }
-        }),
-
-        prismaCliente.pedidoExterno.findMany({
-          where: queryExterno,
-          include: { 
-            itens: true, 
-            cliente: true, 
-            formaPagamento: true 
-          },
-          orderBy: { 
-            data: 'desc' 
-          }
-        }),
-
-        prismaCliente.pedidoBalcao.findMany({
-          where: queryBalcao,
-          include: {
-            itens: true,
-            pagamentos: { 
-              include: { 
-                formaPagamento: true 
-              } 
+      const [pedidosDelivery, pedidosExterno, pedidosBalcao] =
+        await Promise.all([
+          prismaCliente.pedidoDelivery.findMany({
+            where: queryDelivery,
+            include: {
+              itens: true,
+              cliente: true,
+              formaPagamento: true,
             },
-          },
-          orderBy: { 
-            data: 'desc'
-          }
-        }),
-      ])
+            orderBy: {
+              data: 'desc',
+            },
+          }),
+
+          prismaCliente.pedidoExterno.findMany({
+            where: queryExterno,
+            include: {
+              itens: true,
+              cliente: true,
+              formaPagamento: true,
+            },
+            orderBy: {
+              data: 'desc',
+            },
+          }),
+
+          prismaCliente.pedidoBalcao.findMany({
+            where: queryBalcao,
+            include: {
+              itens: true,
+              pagamentos: {
+                include: {
+                  formaPagamento: true,
+                },
+              },
+            },
+            orderBy: {
+              data: 'desc',
+            },
+          }),
+        ])
 
       return [...pedidosDelivery, ...pedidosExterno, ...pedidosBalcao]
-
     } catch (error) {
       console.log(error)
       throw error

@@ -28,17 +28,6 @@ class DeliveryServico {
 
     const tempoCarregamento = this.#tempoMedioCarregamento(pedidosEntregues)
 
-    console.log(
-      'DEBUG ANTES DO RETURN: ',
-      total,
-      quantidadePedidos,
-      ticketMedio,
-      formasPagamento,
-      status,
-      tempoEntrega,
-      tempoCarregamento
-    )
-
     return {
       total,
       pedidos: quantidadePedidos,

@@ -112,7 +112,6 @@ class CriarPedidoControlador {
 
       // Valida a existencia de um por um dos campos dos itens da lista.
       itens.forEach((item) => {
-        console.log('DEBUG pagamentos: ', pagamentos)
         if (
           !item.produtoId ||
           item.quantidade == null ||

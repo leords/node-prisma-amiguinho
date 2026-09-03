@@ -9,8 +9,6 @@ class SaidaEstoqueExterno {
       include: { itens: true },
     })
 
-    console.log('DEBUG - Pedido: ', pedido)
-
     // valida existencia do pedido
     if (!pedido) {
       throw new AppError(

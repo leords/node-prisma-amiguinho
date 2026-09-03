@@ -153,7 +153,6 @@ export async function executarResumoDiario() {
         await emailServico.enviarNovoEmail(admin.email, assunto, htmlEmail)
       }
       if (admin.whatsapp) {
-        console.log('DEBUG - Tentando enviar mensagem pelo wpp!')
         await enviarWhatsApp(admin.whatsapp, `${assunto}\n\n${resumo}`)
       }
     }
