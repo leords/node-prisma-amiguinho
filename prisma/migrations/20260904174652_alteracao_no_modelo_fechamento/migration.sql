@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Fechamento" ADD COLUMN     "nota10" INTEGER,
+ADD COLUMN     "nota100" INTEGER,
+ADD COLUMN     "nota2" INTEGER,
+ADD COLUMN     "nota20" INTEGER,
+ADD COLUMN     "nota200" INTEGER,
+ADD COLUMN     "nota5" INTEGER,
+ADD COLUMN     "nota50" INTEGER;

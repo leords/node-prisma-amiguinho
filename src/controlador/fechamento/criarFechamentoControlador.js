@@ -1,7 +1,6 @@
 import { HTTP_STATUS_CODES } from '../../config/httpStatusCodes.js'
 import { AppError } from '../../error/appError.js'
 import { CriarFechamentoServico } from '../../servico/fechamento/criarFechamentoServico.js'
-import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class CriarFechamentoControlador {
   async tratar(req, res, next) {
@@ -40,6 +39,7 @@ class CriarFechamentoControlador {
           'VENDEDOR_BAD_REQUEST'
         )
       }
+
       if (typeof vendedor !== 'string') {
         throw new AppError(
           'Vendedor deve ser texto',

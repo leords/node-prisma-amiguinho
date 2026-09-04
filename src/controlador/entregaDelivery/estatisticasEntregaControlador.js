@@ -7,11 +7,6 @@ class estatisticasEntregaControlador {
     const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
     const dataFim = req.query.dataFim ? req.query.dataFim : undefined
 
-    console.log('data inicio: ', dataInicio)
-    console.log('tipo data inicio: ', typeof dataInicio)
-    console.log('data fim: ', dataFim)
-    console.log('tipo data fim: ', typeof dataFim)
-
     try {
       if (!dataInicio) {
         throw new AppError(

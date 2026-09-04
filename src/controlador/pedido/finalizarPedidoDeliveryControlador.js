@@ -11,16 +11,6 @@ class finalizarPedidoDeliveryControlador {
     const precisao = req.body.precisao
     const formaPagamentoId = req.body.formaPagamentoId
 
-    console.log(
-      'dados vindo da REQ: ',
-      uuid,
-      status,
-      lat,
-      long,
-      precisao,
-      formaPagamentoId
-    )
-
     try {
       if (!uuid) {
         throw new AppError(

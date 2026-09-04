@@ -196,6 +196,13 @@ model Fechamento {
   totalInformado Float                @default(0)
   diferenca      Float                @default(0)
   dia            String
+  nota200        Int?
+  nota100        Int?
+  nota50         Int?
+  nota20         Int?
+  nota10         Int?
+  nota5          Int?
+  nota2          Int?
   movimentacoes  MovimentacaoManual[]
   movimentacoesPagamentosEletronicos MovimentacaoPagamentosEletronicos[]
 

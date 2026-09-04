@@ -5,7 +5,17 @@ import { AppError } from '../../error/appError.js'
 class EditarFechamentoControlador {
   async tratar(req, res, next) {
     const id = Number(req.params.id)
-    const { totalSistema, totalInformado } = req.body
+    const {
+      totalSistema,
+      totalInformado,
+      nota200,
+      nota100,
+      nota50,
+      nota20,
+      nota10,
+      nota5,
+      nota2,
+    } = req.body
 
     try {
       if (!id) {
@@ -15,6 +25,7 @@ class EditarFechamentoControlador {
           'ID_BAD_REQUEST'
         )
       }
+
       if (isNaN(id)) {
         throw new AppError(
           'Id deve ser um número',
@@ -53,13 +64,32 @@ class EditarFechamentoControlador {
         )
       }
 
+      const notas = {
+        nota200,
+        nota100,
+        nota50,
+        nota20,
+        nota10,
+        nota5,
+        nota2,
+      }
+
+      for (const [campo, valor] of Object.entries(notas)) {
+        //Object.entries = Transforma o objeto em uma lista de pares:
+        if (!Number.isInteger(valor) || valor < 0) {
+          throw new Error(
+            `${campo} deve ser um número inteiro maior ou igual a 0`
+          )
+        }
+      }
+
       const dados = {
         totalSistema: totalSistema,
         totalInformado: totalInformado,
       }
 
       const resultado = new EditarFechamentoServico()
-      const servico = await resultado.executar(id, dados)
+      const servico = await resultado.executar(id, dados, notas)
 
       return res.status(HTTP_STATUS_CODES.OK).json(servico)
     } catch (error) {
