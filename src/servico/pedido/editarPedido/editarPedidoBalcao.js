@@ -4,14 +4,6 @@ import prismaCliente from '../../../prisma/index.js'
 
 class EditarPedidoBalcao {
   async executar(uuid, formasPagamentos, dados) {
-    // if (formasPagamentos.length > 1) {
-    //   throw new AppError(
-    //     'Pedido com múltiplas formas de pagamento não pode ser editado. Cancele este pedido e gere um novo.',
-    //     HTTP_STATUS_CODES.BAD_REQUEST,
-    //     'FORMAS_PAGAMENTOS_BAD_REQUEST'
-    //   )
-    // }
-
     try {
       await prismaCliente.$transaction(async (tx) => {
         const data = {}
