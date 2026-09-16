@@ -1,64 +1,64 @@
-import { HTTP_STATUS_CODES } from "../../../config/httpStatusCodes.js";
-import { AppError } from "../../../error/appError.js";
-import prismaCliente from "../../../prisma/index.js";
+import { HTTP_STATUS_CODES } from '../../../config/httpStatusCodes.js'
+import { AppError } from '../../../error/appError.js'
+import prismaCliente from '../../../prisma/index.js'
 
 class EditarPedidoBalcao {
-    async executar(uuid, formasPagamentos, dados) {
-        try {
+  async executar(uuid, formasPagamentos, dados) {
+    // if (formasPagamentos.length > 1) {
+    //   throw new AppError(
+    //     'Pedido com múltiplas formas de pagamento não pode ser editado. Cancele este pedido e gere um novo.',
+    //     HTTP_STATUS_CODES.BAD_REQUEST,
+    //     'FORMAS_PAGAMENTOS_BAD_REQUEST'
+    //   )
+    // }
 
-        await prismaCliente.$transaction(async (tx) => {
+    try {
+      await prismaCliente.$transaction(async (tx) => {
+        const data = {}
 
-            const data = {};
+        if (dados?.length) {
+          const itensFormatados = dados.map((item) => ({
+            ...item,
+            valorTotal: item.quantidade * item.valorUnit,
+          }))
 
-            if (dados?.length) {
+          data.total = itensFormatados.reduce(
+            (acc, item) => acc + item.valorTotal,
+            0
+          )
 
-                const itensFormatados = dados.map(item => ({
-                    ...item,
-                    valorTotal: item.quantidade * item.valorUnit
-                }));
-
-                data.total = itensFormatados.reduce(
-                    (acc, item) => acc + item.valorTotal,
-                    0
-                );
-
-                data.itens = {
-                    deleteMany: {},
-                    createMany: {
-                        data: itensFormatados
-                    }
-                };
-            }
-
-            
-            if (formasPagamentos?.length) {
-
-                data.pagamentos = {
-                    deleteMany: {},
-                    createMany: {
-                        data: formasPagamentos.map(p => ({
-                            formaPagamentoId: p.formaPagamentoId,
-                            valor: p.valor
-                        }))
-                    }
-                };
-
-            }
-
-            await tx.pedidoBalcao.update({
-                where: {
-                    uuid
-                },
-                data
-            });
-
-        });
-
-        } catch (error) {
-            console.log(error);
-            throw error;
+          data.itens = {
+            deleteMany: {},
+            createMany: {
+              data: itensFormatados,
+            },
+          }
         }
+
+        if (formasPagamentos !== undefined) {
+          data.pagamentos = {
+            deleteMany: {},
+            createMany: {
+              data: formasPagamentos.map((p) => ({
+                formaPagamentoId: p.formaPagamentoId,
+                valor: p.valor,
+              })),
+            },
+          }
+        }
+
+        await tx.pedidoBalcao.update({
+          where: {
+            uuid,
+          },
+          data,
+        })
+      })
+    } catch (error) {
+      console.log(error)
+      throw error
     }
+  }
 }
 
-export { EditarPedidoBalcao };
+export { EditarPedidoBalcao }

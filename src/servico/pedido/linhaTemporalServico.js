@@ -54,9 +54,7 @@ class LinhaTemporalServico {
         return Object.values(agrupadoPorHorario).sort((a, b) =>
           a.horario.localeCompare(b.horario)
         )
-      }
-
-      else if (setor === 'delivery') {
+      } else if (setor === 'delivery') {
         // buscar pedido pelos filtros.
         const pedidos = await prismaCliente.pedidoDelivery.findMany({
           where: {
@@ -105,9 +103,7 @@ class LinhaTemporalServico {
         return Object.values(agrupadoPorHorario).sort((a, b) =>
           a.horario.localeCompare(b.horario)
         )
-      }
-
-      else if (setor === 'externo') {
+      } else if (setor === 'externo') {
         // buscar pedido pelos filtros.
         const pedidos = await prismaCliente.pedidoExterno.findMany({
           where: {
@@ -156,13 +152,9 @@ class LinhaTemporalServico {
         return Object.values(agrupadoPorHorario).sort((a, b) =>
           a.horario.localeCompare(b.horario)
         )
+      } else {
+        return
       }
-
-      else {
-        return 
-      }
-
-
     } catch (error) {
       console.log(error)
       throw error

@@ -6,7 +6,7 @@ class EditarFechamentoServico {
     const { totalSistema, totalInformado } = dados
     const { nota200, nota100, nota50, nota20, nota10, nota5, nota2 } = notas
 
-    const existeFechamento = await prismaCliente.fechamento.findFirst({
+    const existeFechamento = await prismaCliente.fechamento.findUnique({
       where: {
         id,
       },
@@ -42,7 +42,6 @@ class EditarFechamentoServico {
         nota10,
         nota5,
         nota2,
-        dia: new Date().toISOString().split('T')[0],
       },
     })
 

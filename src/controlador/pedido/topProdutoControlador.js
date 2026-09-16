@@ -64,25 +64,9 @@ class TopProdutoControlador {
         )
       }
 
-      if (quantidade && quantidade <= 0) {
+      if (quantidade && isNaN(quantidade)) {
         throw new AppError(
-          'Quantidade deve ser maior que 0',
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          'QUANTIDADE_NOT_FOUND'
-        )
-      }
-
-      if (!quantidade) {
-        throw new AppError(
-          'Quantidade é obrigatória',
-          HTTP_STATUS_CODES.BAD_REQUEST,
-          'QUANTIDADE_NOT_FOUND'
-        )
-      }
-
-      if (isNaN(quantidade)) {
-        throw new AppError(
-          'Quantidade deve ser um número',
+          'Quantidade deve ser maior que 0.',
           HTTP_STATUS_CODES.BAD_REQUEST,
           'QUANTIDADE_NOT_FOUND'
         )

@@ -9,6 +9,8 @@ class BuscarFechamentoControlador {
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
     const data = req.query.data ? req.query.data : undefined
 
+    console.log('req dados: ', setor, vendedor, data)
+
     try {
       if (vendedor && typeof vendedor !== 'string') {
         throw new AppError(
@@ -49,16 +51,11 @@ class BuscarFechamentoControlador {
         )
       }
 
-      const dataInicio = data ? new Date(`${data}T00:00:00-03:00`) : undefined
-      const dataFim = data ? new Date(`${data}T23:59:59.999-03:00`) : undefined
+      //const dataInicio = data ? new Date(`${data}T00:00:00-03:00`) : undefined
+      //const dataFim = data ? new Date(`${data}T23:59:59.999-03:00`) : undefined
 
       const resultado = new BuscarFechamentoServico()
-      const servico = await resultado.executar(
-        vendedor,
-        setor,
-        dataInicio,
-        dataFim
-      )
+      const servico = await resultado.executar(vendedor, setor, data)
 
       return res.status(HTTP_STATUS_CODES.OK).json(servico)
     } catch (error) {

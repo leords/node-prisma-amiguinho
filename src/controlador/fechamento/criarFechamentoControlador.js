@@ -5,7 +5,7 @@ import { CriarFechamentoServico } from '../../servico/fechamento/criarFechamento
 class CriarFechamentoControlador {
   async tratar(req, res, next) {
     const { setor } = req.params
-    const { vendedor } = req.body
+    const { vendedor, data } = req.body
 
     try {
       if (!setor) {
@@ -49,7 +49,7 @@ class CriarFechamentoControlador {
       }
 
       const servico = new CriarFechamentoServico()
-      const resultado = await servico.executar(setor, vendedor)
+      const resultado = await servico.executar(setor, vendedor, data)
 
       return res.status(HTTP_STATUS_CODES.CREATED).json(resultado)
     } catch (error) {
