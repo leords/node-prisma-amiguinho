@@ -131,6 +131,11 @@ class BuscarPedidoServico {
               itens: true,
               cliente: true,
               formaPagamento: true,
+              usuario: {
+                select: {
+                  nome: true,
+                },
+              },
             },
             orderBy: {
               data: 'desc',

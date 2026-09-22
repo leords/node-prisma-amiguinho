@@ -9,6 +9,9 @@ class LerFormaPagamentoServico {
           tipo: {
             in: ['BALCÃO', 'VENDAS'],
           },
+          nome: {
+            not: 'BOLETO',
+          },
         },
       })
 
