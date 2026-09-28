@@ -134,9 +134,13 @@ class AutenticadorServico {
 
   // Token para apenas fazer o reflesh do usuario já logado.
   async #gerarRefreshToken(usuarioId) {
-    const refreshToken = jwt.sign({ id: usuarioId }, process.env.JWT_SECRETA, {
-      expiresIn: '7d',
-    })
+    const refreshToken = jwt.sign(
+      { id: usuarioId },
+      process.env.JWT_REFRESH_SECRETA,
+      {
+        expiresIn: '7d',
+      }
+    )
 
     await prismaCliente.refreshToken.create({
       data: {
