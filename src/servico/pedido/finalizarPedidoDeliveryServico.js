@@ -5,8 +5,6 @@ import prismaCliente from "../../prisma/index.js"
 class finalizarPedidoDeliveryServico {
     async executar (uuid, status, lat, long, precisao, formaPagamentoId) {
 
-        console.log('dados vindo do Controlador: ', uuid, status, lat, long, precisao, formaPagamentoId)
-
         try {
             const pedidoExistente = await prismaCliente.pedidoDelivery.findFirst({
                 where: {

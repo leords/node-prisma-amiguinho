@@ -4,7 +4,6 @@ class CriarFechamentoServico {
   async executar(setor, vendedor, data) {
     const dataAtual = new Date().toISOString().split('T')[0]
 
-    console.log('DEBUG - DATA: ', data)
     try {
       const resultado = await prismaCliente.fechamento.upsert({
         where: {

@@ -26,7 +26,6 @@ class EditarOrdemCompraControlador {
       }
 
       const opcaoStatus = ['Realizada', 'Cancelada', 'Finalizada', 'Pendente']
-      console.log('Dados: ', status)
 
       if (!opcaoStatus.includes(status)) {
         throw new AppError(

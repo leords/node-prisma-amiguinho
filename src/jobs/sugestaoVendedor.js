@@ -1,24 +1,23 @@
 // src/jobs/sugestaoVendedor.js
-import { PrismaClient } from '@prisma/client'
-import { gerarTextoGroq } from '../utilidades/groq.js'
 import { enviarWhatsApp } from '../utilidades/whatsapp.js'
+import { buscarIA } from '../utilidades/gemini.js'
 import prismaCliente from '../prisma/index.js'
 
 // Quantos dias de histórico considerar por cliente
 const DIAS_HISTORICO = 60
 
 export async function executarSugestaoVendedor() {
-  console.log('[JOB] Iniciando sugestão de pedido para vendedores...')
+  console.log('[JOB] Iniciando sugestão de rota/pedidos para vendedores com IA (Gemini)...')
 
   const hoje = new Date()
   const inicioPeriodo = new Date(hoje)
   inicioPeriodo.setDate(hoje.getDate() - DIAS_HISTORICO)
 
   try {
-    // ── 1. Busca vendedores externos ativos com WhatsApp ──────────
+    // 1. Busca vendedores externos ativos com WhatsApp
     const vendedores = await prismaCliente.usuario.findMany({
       where: {
-        nivelAcessoId: 'EXTERNO',
+        nivelAcesso: 'EXTERNO',
         status: true,
         whatsapp: { not: null },
       },
@@ -26,20 +25,20 @@ export async function executarSugestaoVendedor() {
     })
 
     if (vendedores.length === 0) {
-      console.log('[JOB] Nenhum vendedor externo com WhatsApp cadastrado.')
+      console.log('[JOB] Nenhum vendedor externo ativo com WhatsApp cadastrado.')
       return
     }
 
     for (const vendedor of vendedores) {
-      // ── 2. Busca clientes do vendedor ─────────────────────────
+      // 2. Busca clientes atribuídos a este vendedor
       const clientes = await prismaCliente.clienteExterno.findMany({
         where: { vendedor: vendedor.usuario },
-        select: { id: true, nome: true },
+        select: { id: true, nome: true, cidade: true, bairro: true },
       })
 
       if (clientes.length === 0) continue
 
-      // ── 3. Para cada cliente, busca histórico de pedidos ──────
+      // 3. Para cada cliente, busca histórico recente de pedidos
       const dadosClientes = []
 
       for (const cliente of clientes) {
@@ -59,7 +58,7 @@ export async function executarSugestaoVendedor() {
           (hoje.getTime() - ultimoPedido.data.getTime()) / (1000 * 60 * 60 * 24)
         )
 
-        // Produtos mais comprados
+        // Contagem de produtos mais pedidos pelo cliente
         const contagemProdutos = {}
         pedidos.forEach((p) => {
           p.itens.forEach((item) => {
@@ -71,16 +70,15 @@ export async function executarSugestaoVendedor() {
 
         const topProdutos = Object.entries(contagemProdutos)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
-          .map(
-            ([nome, qtd]) => `${nome} (${qtd} un. em ${DIAS_HISTORICO} dias)`
-          )
+          .slice(0, 4)
+          .map(([nome, qtd]) => `${nome} (${qtd} un.)`)
 
         const ticketMedio =
           pedidos.reduce((acc, p) => acc + p.total, 0) / pedidos.length
 
         dadosClientes.push({
           nome: cliente.nome,
+          localizacao: cliente.bairro || cliente.cidade || 'Não informado',
           totalPedidos: pedidos.length,
           diasDesdeUltimoPedido,
           ticketMedio: ticketMedio.toFixed(2),
@@ -90,44 +88,42 @@ export async function executarSugestaoVendedor() {
 
       if (dadosClientes.length === 0) continue
 
-      // ── 4. Gera sugestão com Groq ─────────────────────────────
+      // 4. Gera roteiro inteligente e sugestão com Gemini
       const prompt = `
-            Você é um assistente de vendas de uma distribuidora de bebidas.
-            O vendedor ${vendedor.nome} vai sair para visitar clientes hoje.
+Você é o assistente comercial e coordenador de vendas da Amigão Distribuidora.
+O vendedor de campo ${vendedor.nome} está iniciando sua rota de visitas hoje.
 
-            Com base no histórico abaixo, escreva sugestões práticas de abordagem para cada cliente.
-            Para cada um, sugira quais produtos oferecer e se é um bom momento para visitar (baseado nos dias desde o último pedido).
-            Seja direto, use linguagem informal e profissional. Sem markdown, apenas texto simples com emojis leves.
+Analise o histórico dos clientes abaixo e gere um roteiro prático e motivador:
+1. Destaque clientes com maior urgência de reposição (ex: sem comprar há mais de 7 a 14 dias).
+2. Para cada cliente chave, indique produtos essenciais que ele costuma pedir para oferecer no momento do pedido.
+3. Mantenha o texto objetivo, informal, encorajador e fácil de ler no celular pelo WhatsApp (use emojis moderados e tópicos).
 
-            Clientes e histórico:
-            ${dadosClientes
-              .map(
-                (c) => `
-            Cliente: ${c.nome}
-            - Pedidos nos últimos ${DIAS_HISTORICO} dias: ${c.totalPedidos}
-            - Dias desde o último pedido: ${c.diasDesdeUltimoPedido}
-            - Ticket médio: R$ ${c.ticketMedio}
-            - Produtos mais comprados: ${c.topProdutos.join(', ')}
-        `
-              )
-              .join('\n')}
+📋 Histórico dos Clientes:
+${dadosClientes
+  .map(
+    (c) => `
+- ${c.nome} (${c.localizacao}):
+  * Último pedido há: ${c.diasDesdeUltimoPedido} dias
+  * Total de compras no período: ${c.totalPedidos} pedidos (Ticket Médio: R$ ${c.ticketMedio})
+  * Produtos mais comprados: ${c.topProdutos.join(', ') || 'Variados'}
+`
+  )
+  .join('')}
 
-        Escreva as sugestões agora:
-        `.trim()
+Escreva a mensagem matinal agora:
+      `.trim()
 
-      const sugestao = await gerarTextoGroq(prompt)
+      const sugestao = await buscarIA(prompt)
 
-      // ── 5. Envia por WhatsApp ─────────────────────────────────
-      const mensagem = `🛵 Bom dia, ${vendedor.nome}! Aqui estão as sugestões para sua rota de hoje:\n\n${sugestao}`
+      // 5. Envia por WhatsApp
+      const mensagem = `🛵 *Bom dia, ${vendedor.nome}!* ☀️\n\nAqui estão suas sugestões estratégicas para a rota de hoje:\n\n${sugestao}`
       await enviarWhatsApp(vendedor.whatsapp, mensagem)
 
-      console.log(`[JOB] Sugestão enviada para vendedor: ${vendedor.nome}`)
+      console.log(`[JOB] Sugestão de rota enviada com sucesso para o vendedor: ${vendedor.nome}`)
     }
 
-    console.log('[JOB] Sugestões de vendedor concluídas.')
+    console.log('[JOB] Processamento de sugestões para vendedores finalizado.')
   } catch (err) {
     console.error('[JOB] Erro na sugestão de vendedor:', err.message)
-  } finally {
-    await prismaCliente.$disconnect()
   }
 }

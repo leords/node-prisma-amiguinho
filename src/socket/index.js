@@ -42,8 +42,7 @@ export default function configurarSocket(io) {
     // APP responde localização
     socket.on('resposta_localizacao', (dados) => {
       const { entregadorId, latitude, longitude } = dados
-      console.log('Dados -> ', dados)
-
+      
       if (latitude == null || longitude == null) {
         console.log('⚠️ Dados incompletos recebidos:', dados)
         return

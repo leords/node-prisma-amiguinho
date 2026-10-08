@@ -9,8 +9,6 @@ class BuscarFechamentoControlador {
     const vendedor = req.query.vendedor ? req.query.vendedor : undefined
     const data = req.query.data ? req.query.data : undefined
 
-    console.log('req dados: ', setor, vendedor, data)
-
     try {
       if (vendedor && typeof vendedor !== 'string') {
         throw new AppError(

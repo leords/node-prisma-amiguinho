@@ -6,10 +6,6 @@ class buscarEntregadorControlador {
     // pegando o id de usuario que fez a REQ
     const painelId = req.user.id
 
-    console.log('painelID: ', painelId)
-
-    console.log('entregadores: ', entregadores)
-
     // pegando o id do usuario do app
     const entregadorId = String(req.body.entregadorId)
 

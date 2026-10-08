@@ -24,8 +24,10 @@ model Usuario {
   pedidosBalcao      PedidoBalcao[]
   pedidosDelivery    PedidoDelivery[]
   pedidosExterno     PedidoExterno[]
-  refreshTokens RefreshToken[]
-  localizacao      Localizacao[]
+  refreshTokens      RefreshToken[]
+  localizacao        Localizacao[]
+  cargasCriadas      Carga[]          @relation("UsuarioCargas")
+  pagamentos         Pagamento[]      @relation("UsuarioPagamentos")
 
   @@map("usuarios")
 }
@@ -76,7 +78,8 @@ model ClienteExterno {
   atendimento String?
   frequencia  String?
   pedidos     PedidoExterno[]
-  localizacao      Localizacao[]
+  localizacao Localizacao[]
+  pendencias  Pendencia[]
 }
 
 model PedidoDelivery {
@@ -96,47 +99,49 @@ model PedidoDelivery {
   usuario          Usuario?             @relation(fields: [usuarioId], references: [id])
 
   // Controle de entrega.
-  dataCarregada   DateTime?
-  dataEntrega        DateTime?
-  latitudeEntrega    Float?
-  longitudeEntrega   Float?
-  precisaoGps        Float?
+  dataCarregada    DateTime?
+  dataEntrega      DateTime?
+  latitudeEntrega  Float?
+  longitudeEntrega Float?
+  precisaoGps      Float?
 }
 
 model PedidoExterno {
   id               Int                 @id @default(autoincrement())
-  uuid             String              @unique 
+  uuid             String              @unique
   tipo             String              @default("externo")
   clienteId        Int
   formaPagamentoId Int
   vendedor         String?
   total            Float
   status           String              @default("pendente")
-  data             DateTime             
+  data             DateTime
   usuarioId        Int?
   itens            ItemPedidoExterno[]
   cliente          ClienteExterno      @relation(fields: [clienteId], references: [id])
   formaPagamento   FormaPagamento      @relation("PedidoExternoFormaPagamento", fields: [formaPagamentoId], references: [id])
   usuario          Usuario?            @relation(fields: [usuarioId], references: [id])
-  
+  cargaId          Int?
+  carga            Carga?              @relation(fields: [cargaId], references: [id])
+  pendencias       Pendencia[]
 }
 
 model PedidoBalcao {
-  id               Int                @id @default(autoincrement())
-  uuid             String             @unique @default(uuid())
-  tipo             String             @default("balcao")
-  cliente          String?
-  vendedor         String?
-  total            Float
-  status           String             @default("carregado")
-  data             DateTime           @default(now())
-  usuarioId        Int?
-  nomeUsuario      String
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  tipo        String   @default("balcao")
+  cliente     String?
+  vendedor    String?
+  total       Float
+  status      String   @default("carregado")
+  data        DateTime @default(now())
+  usuarioId   Int?
+  nomeUsuario String
 
-  itens            ItemPedidoBalcao[]
-  pagamentos       PagamentoPedidoBalcao[]
+  itens      ItemPedidoBalcao[]
+  pagamentos PagamentoPedidoBalcao[]
 
-  usuario          Usuario?           @relation(fields: [usuarioId], references: [id])
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
 }
 
 model ItemPedidoBalcao {
@@ -173,37 +178,38 @@ model ItemPedidoExterno {
 }
 
 model FormaPagamento {
-  id              Int              @id @default(autoincrement())
-  nome            String
-  status          String           @default("ATIVO")
-  tipo            String
-  
+  id     Int    @id @default(autoincrement())
+  nome   String
+  status String @default("ATIVO")
+  tipo   String
+
   pagamentosBalcao PagamentoPedidoBalcao[]
 
-  pedidosDelivery PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
-  pedidosExterno  PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
+  pedidosDelivery      PedidoDelivery[] @relation("PedidoDeliveryFormaPagamento")
+  pedidosExterno       PedidoExterno[]  @relation("PedidoExternoFormaPagamento")
+  pagamentosPendencias Pagamento[]
 
   @@map("formaPagamentos")
 }
 
 model Fechamento {
-  id             Int                  @id @default(autoincrement())
-  data           DateTime             @default(now())
-  setor          String
-  vendedor       String
-  status         String               @default("aberto")
-  totalSistema   Float                @default(0)
-  totalInformado Float                @default(0)
-  diferenca      Float                @default(0)
-  dia            String
-  nota200        Int?
-  nota100        Int?
-  nota50         Int?
-  nota20         Int?
-  nota10         Int?
-  nota5          Int?
-  nota2          Int?
-  movimentacoes  MovimentacaoManual[]
+  id                                 Int                                 @id @default(autoincrement())
+  data                               DateTime                            @default(now())
+  setor                              String
+  vendedor                           String
+  status                             String                              @default("aberto")
+  totalSistema                       Float                               @default(0)
+  totalInformado                     Float                               @default(0)
+  diferenca                          Float                               @default(0)
+  dia                                String
+  nota200                            Int?
+  nota100                            Int?
+  nota50                             Int?
+  nota20                             Int?
+  nota10                             Int?
+  nota5                              Int?
+  nota2                              Int?
+  movimentacoes                      MovimentacaoManual[]
   movimentacoesPagamentosEletronicos MovimentacaoPagamentosEletronicos[]
 
   @@unique([vendedor, dia, setor])
@@ -291,14 +297,14 @@ model TaxaEntregaDelivery {
 }
 
 model PagamentoPedidoBalcao {
-  id               Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   pedidoId         Int
   formaPagamentoId Int
   valor            Float
 
-  pedido           PedidoBalcao   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
-  formaPagamento   FormaPagamento @relation(fields: [formaPagamentoId], references: [id])
+  pedido         PedidoBalcao   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  formaPagamento FormaPagamento @relation(fields: [formaPagamentoId], references: [id])
 
   @@index([pedidoId])
   @@index([formaPagamentoId])
@@ -321,30 +327,114 @@ enum TipoMovimentacaoEstoque {
 }
 
 model RefreshToken {
-  id         Int      @id @default(autoincrement())
-  token      String   @unique
-  usuarioId  Int
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
-  expiraEm   DateTime 
-  criadoEm   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  usuarioId Int
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  expiraEm  DateTime
+  criadoEm  DateTime @default(now())
 
   @@map("refresh_tokens")
 }
 
 model Localizacao {
-  id          Int     @id @default(autoincrement())
-  uuid        String              @unique @default(uuid())
-  data        DateTime
-  latitude    Float?
-  longitude   Float?
-  precisao    Float?
-  origem      String
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid())
+  data      DateTime
+  latitude  Float?
+  longitude Float?
+  precisao  Float?
+  origem    String
 
-  usuarioId   Int
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
-  clienteId   Int
-  cliente     ClienteExterno @relation(fields: [clienteId], references: [id])
-
+  usuarioId Int
+  usuario   Usuario        @relation(fields: [usuarioId], references: [id])
+  clienteId Int
+  cliente   ClienteExterno @relation(fields: [clienteId], references: [id])
 }
 
+model Motorista {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  cpf      String  @unique
+  telefone String?
+  status   Boolean @default(true)
+  cargas   Carga[]
 
+  @@map("motoristas")
+}
+
+model Veiculo {
+  id         Int     @id @default(autoincrement())
+  nome       String
+  modelo     String
+  marca      String
+  placa      String  @unique
+  pesoMaximo Float   @default(0)
+  status     Boolean @default(true)
+  emRota     Boolean @default(false)
+  cargas     Carga[]
+
+  @@map("veiculos")
+}
+
+model Carga {
+  id               Int      @id @default(autoincrement())
+  data             DateTime @default(now())
+  descricao        String?
+  destino          String?
+  peso             Float    @default(0)
+  quantidadePedido Int      @default(0)
+  status           String   @default("pendente")
+
+  veiculoId Int
+  veiculo   Veiculo @relation(fields: [veiculoId], references: [id])
+
+  motoristaId Int
+  motorista   Motorista @relation(fields: [motoristaId], references: [id])
+
+  usuarioId Int
+  usuario   Usuario @relation("UsuarioCargas", fields: [usuarioId], references: [id])
+
+  pedidos PedidoExterno[]
+
+  @@map("cargas")
+}
+
+model Pendencia {
+  id             Int      @id @default(autoincrement())
+  data           DateTime @default(now())
+  dataVencimento DateTime
+  valor          Float
+  valorPago      Float    @default(0)
+  status         String   @default("aberta")
+
+  clienteId Int
+  cliente   ClienteExterno @relation(fields: [clienteId], references: [id])
+
+  pedidoId Int?
+  pedido   PedidoExterno? @relation(fields: [pedidoId], references: [id])
+
+  pagamentos Pagamento[]
+
+  @@map("pendencias")
+}
+
+model Pagamento {
+  id           Int      @id @default(autoincrement())
+  data         DateTime @default(now())
+  ultimaEdicao DateTime @updatedAt
+  valor        Float
+  status       String   @default("coletado")
+  observacao   String?
+
+  pendenciaId Int
+  pendencia   Pendencia @relation(fields: [pendenciaId], references: [id], onDelete: Cascade)
+
+  usuarioId Int
+  usuario   Usuario @relation("UsuarioPagamentos", fields: [usuarioId], references: [id])
+
+  formaPagamentoId Int?
+  formaPagamento   FormaPagamento? @relation(fields: [formaPagamentoId], references: [id])
+
+  @@map("pagamentos")
+}

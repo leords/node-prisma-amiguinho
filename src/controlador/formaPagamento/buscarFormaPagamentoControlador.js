@@ -28,7 +28,7 @@ class BuscarFormaPagamentControlador {
           'COLETA_PRODUTOS_BAD_REQUEST'
         )
       }
-
+      
       const servico = new BuscarFormaPagamentoServico()
       await servico.executar(dados.saida)
 

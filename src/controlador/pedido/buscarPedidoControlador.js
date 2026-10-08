@@ -21,6 +21,7 @@ class BuscarPedidoControlador {
       ? Number(req.query.usuarioId)
       : undefined
     const status = req.query.status ? req.query.status : undefined
+    const semCarga = req.query.semCarga === 'true' || req.query.semCarga === true
 
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
@@ -110,7 +111,8 @@ class BuscarPedidoControlador {
         inicio,
         fim,
         usuarioId,
-        status
+        status,
+        semCarga
       )
 
       return res.status(HTTP_STATUS_CODES.OK).json(resultado)

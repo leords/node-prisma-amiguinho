@@ -9,7 +9,8 @@ class BuscarPedidoServico {
     dataInicio,
     dataFim,
     usuarioId,
-    status
+    status,
+    semCarga = false
   ) {
     // Campos comuns aos três models.
     const queryBase = {}
@@ -40,6 +41,9 @@ class BuscarPedidoServico {
     // Externo: mesma estrutura do Delivery
     const queryExterno = { ...queryBase }
     if (formaPagamentoId) queryExterno.formaPagamentoId = formaPagamentoId
+    if (semCarga) {
+      queryExterno.cargaId = null
+    }
     if (cliente) {
       queryExterno.cliente = {
         nome: {
@@ -87,6 +91,12 @@ class BuscarPedidoServico {
             itens: true,
             cliente: true,
             formaPagamento: true,
+            carga: true,
+            usuario: {
+              select: {
+                nome: true,
+              },
+            },
           },
           orderBy: {
             data: 'desc',
@@ -131,6 +141,7 @@ class BuscarPedidoServico {
               itens: true,
               cliente: true,
               formaPagamento: true,
+              carga: true,
               usuario: {
                 select: {
                   nome: true,

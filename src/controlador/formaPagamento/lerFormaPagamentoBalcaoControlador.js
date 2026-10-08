@@ -1,10 +1,7 @@
 import {
-  ERRO_MSG_FORMA,
   HTTP_STATUS_CODES,
 } from '../../config/httpStatusCodes.js'
-import { AppError } from '../../error/appError.js'
 import { LerFormaPagamentoServico } from '../../servico/formaPagamento/lerFormaPagamentoServico.js'
-import { coletarErro } from '../../utilidades/coletarErro.js'
 
 class LerFormaPagamentoBalcaoControlador {
   async tratar(req, res, next) {

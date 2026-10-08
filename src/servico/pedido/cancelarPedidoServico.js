@@ -6,7 +6,6 @@ import { estornoEstoqueServico } from '../estoque/estornoEstoqueServico.js'
 class CancelarPedidoServico {
   async executar(uuid, setor) {
 
-    console.log('dados do controlador: ', uuid, setor)
     try {
 
        // SETOR DELIVERY

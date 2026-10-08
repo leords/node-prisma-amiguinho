@@ -39,6 +39,16 @@ class LerClienteExternoServico {
     try {
       const clientes = await prismaCliente.clienteExterno.findMany({
         where: condicoes,
+        include: {
+          pendencias: {
+            where: {
+              status: { notIn: ['cancelada'] },
+            },
+            include: {
+              pagamentos: true,
+            },
+          },
+        },
       })
 
       if (!clientes) {
@@ -49,7 +59,33 @@ class LerClienteExternoServico {
         )
       }
 
-      return clientes
+      const clientesFormatados = clientes.map((c) => {
+        const pendenciasAtivas = (c.pendencias || []).filter(
+          (p) => p.status !== 'fechada' && p.status !== 'cancelada'
+        )
+
+        const totalPendenciaOriginal = pendenciasAtivas.reduce(
+          (acc, p) => acc + Number(p.valor || 0),
+          0
+        )
+        const totalPago = pendenciasAtivas.reduce(
+          (acc, p) => acc + Number(p.valorPago || 0),
+          0
+        )
+        const totalSaldoDevedor = Number(
+          Math.max(0, totalPendenciaOriginal - totalPago).toFixed(2)
+        )
+
+        return {
+          ...c,
+          totalPendenciaOriginal: Number(totalPendenciaOriginal.toFixed(2)),
+          totalPendencia: totalSaldoDevedor,
+          totalPago: Number(totalPago.toFixed(2)),
+          temPendencia: totalSaldoDevedor > 0,
+        }
+      })
+
+      return clientesFormatados
     } catch (error) {
       console.log(error)
       throw error

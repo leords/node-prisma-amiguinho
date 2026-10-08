@@ -129,7 +129,122 @@ export const ERRO_MSG_PEDIDOS = {
   SETOR: 'Setor invalido. Use delivery, externo ou balcao',
   CAMPO_AUSENTE: 'Campo obrigatório ausente em algum item',
   VENDEDOR_BALCAO: 'Vendedor invalido. Use b1, b2 ou b3',
+  JA_DEVOLVIDO: 'Este pedido já está marcado como devolvido',
+  JA_CANCELADO: 'Este pedido já está cancelado',
+  DATA_OBRIGATORIA: 'Data inicial e data final são obrigatórias para o relatório',
 }
 export const SUCESSO_MSG_PEDIDOS = {
   CRIADO: 'Pedido criado com sucesso',
+  DEVOLVIDO: 'Pedido devolvido e estoque estornado com sucesso',
+  RELATORIO_DEVOLUCOES: 'Relatório de devoluções gerado com sucesso',
+}
+
+// Modelo Motorista !!!
+export const ERRO_MSG_MOTORISTA = {
+  NAO_ENCONTRADO: 'Motorista não encontrado',
+  CPF_JA_EXISTE: 'Já existe um motorista cadastrado com este CPF',
+  CAMPO_AUSENTE: 'Nome e CPF são campos obrigatórios',
+  TIPO_ID: 'ID deve ser do tipo número',
+  TIPO_STATUS: 'Status deve ser booleano (true ou false)',
+}
+export const SUCESSO_MSG_MOTORISTA = {
+  CRIADO: 'Motorista cadastrado com sucesso',
+  ATUALIZADO: 'Motorista atualizado com sucesso',
+}
+
+// Modelo Veículo !!!
+export const ERRO_MSG_VEICULO = {
+  NAO_ENCONTRADO: 'Veículo não encontrado',
+  PLACA_JA_EXISTE: 'Já existe um veículo cadastrado com esta placa',
+  CAMPO_AUSENTE: 'Nome, modelo, marca, placa e peso máximo são obrigatórios',
+  TIPO_ID: 'ID deve ser do tipo número',
+  TIPO_STATUS: 'Status deve ser booleano (true ou false)',
+  TIPO_EM_ROTA: 'Em rota deve ser booleano (true ou false)',
+}
+export const SUCESSO_MSG_VEICULO = {
+  CRIADO: 'Veículo cadastrado com sucesso',
+  ATUALIZADO: 'Veículo atualizado com sucesso',
+}
+
+// Modelo Carga !!!
+export const ERRO_MSG_CARGA = {
+  NAO_ENCONTRADO: 'Carga não encontrada',
+  CAMPO_AUSENTE: 'Veículo, motorista e lista de pedidos são obrigatórios',
+  TIPO_ID: 'ID deve ser do tipo número',
+  VEICULO_INATIVO: 'O veículo selecionado está inativo',
+  MOTORISTA_INATIVO: 'O motorista selecionado está inativo',
+  SEM_PEDIDOS: 'A carga precisa conter ao menos um pedido externo',
+  PEDIDO_NAO_ENCONTRADO: 'Um ou mais pedidos informados não foram encontrados',
+  PEDIDO_JA_EM_CARGA: 'Um ou mais pedidos já estão vinculados a outra carga',
+  PEDIDO_NAO_PERTENCE_CARGA: 'O pedido informado não pertence a esta carga',
+  CARGA_JA_EM_ROTA_OU_FINALIZADA:
+    'Esta carga já está em rota ou finalizada e não pode ser alterada.',
+  CARGA_NAO_PODE_RECEBER_PEDIDOS:
+    'Esta carga já está em rota ou finalizada e não pode receber novos pedidos.',
+  CARGA_NAO_PODE_SER_CANCELADA:
+    'Esta carga já está em rota ou finalizada e não pode ser cancelada.',
+  CARGA_NAO_PENDENTE:
+    'Apenas cargas com status pendente podem ser enviadas para rota.',
+  CARGA_JA_FINALIZADA: 'Esta carga já está em rota ou finalizada',
+  NAO_PODE_REABRIR_FINALIZADA:
+    'Não é possível reabrir uma carga já finalizada.',
+  STATUS_INVALIDO:
+    'Status de carga inválido. Permitidos: pendente, rota, finalizada',
+}
+export const SUCESSO_MSG_CARGA = {
+  CRIADO: 'Carga criada com sucesso',
+  FINALIZADA: 'Carga despachada para rota com sucesso',
+  PEDIDO_REMOVIDO: 'Pedido removido da carga com sucesso',
+  PEDIDOS_ADICIONADOS: 'Pedidos adicionados à carga com sucesso',
+  CANCELADA: 'Carga cancelada e pedidos devolvidos para pendente',
+  RETORNADA_PENDENTE: 'Carga retornada para o status pendente com sucesso',
+  CONCLUIDA: 'Carga finalizada com sucesso',
+}
+
+// Modelo Pendências !!!
+export const ERRO_MSG_PENDENCIA = {
+  NAO_ENCONTRADO: 'Pendência não encontrada',
+  TIPO_ID: 'ID deve ser do tipo número',
+  STATUS_INVALIDO: 'Status de pendência inválido',
+}
+export const SUCESSO_MSG_PENDENCIA = {
+  CRIADO: 'Pendência criada com sucesso',
+  ATUALIZADO: 'Pendência atualizada com sucesso',
+}
+
+// Modelo Pagamento !!!
+export const ERRO_MSG_PAGAMENTO = {
+  NAO_ENCONTRADO: 'Pagamento não encontrado',
+  CAMPO_AUSENTE: 'Pendência e valor do pagamento são obrigatórios',
+  VALOR_INVALIDO: 'Valor do pagamento deve ser maior que zero',
+  VALOR_EXCEDE_PENDENCIA: 'Valor do pagamento excede o saldo devedor da pendência',
+  TIPO_ID: 'ID deve ser do tipo número',
+}
+export const SUCESSO_MSG_PAGAMENTO = {
+  CRIADO: 'Pagamento registrado com sucesso',
+  ATUALIZADO: 'Pagamento atualizado com sucesso',
+}
+
+// Modelo Localização !!!
+export const ERRO_MSG_LOCALIZACAO = {
+  NAO_ENCONTRADO: 'Nenhuma localização encontrada para os filtros informados',
+  DATA_OBRIGATORIA: 'A data é obrigatória para consultar a rota',
+  USUARIO_OBRIGATORIO: 'O ID do usuário é obrigatório',
+  TIPO_ID: 'ID deve ser do tipo número',
+  FORMATO_DATA_INVALIDO: 'Formato de data inválido. Use YYYY-MM-DD',
+}
+export const SUCESSO_MSG_LOCALIZACAO = {
+  LISTADO: 'Rotas e localizações listadas com sucesso',
+  CRIADO: 'Localização registrada com sucesso',
+}
+// Modelo Desconto !!!
+export const ERRO_MSG_DESCONTO = {
+  PRODUTO_NAO_ENCONTRADO: "Produto 'DESCONTO' não encontrado no sistema",
+  SETOR_INVALIDO:
+    'Setor inválido. Use balcao, delivery, externo ou deixe vazio para todos',
+  DATA_INVALIDA: 'Formato de data inválido. Use YYYY-MM-DD',
+}
+export const SUCESSO_MSG_DESCONTO = {
+  METRICAS: 'Métricas de desconto calculadas com sucesso',
+  LISTADO: 'Relatório de pedidos com desconto listado com sucesso',
 }

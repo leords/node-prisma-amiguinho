@@ -18,6 +18,8 @@ import { carregarPedidoDeliveryControlador } from '../controlador/pedido/carrega
 import { finalizarPedidoDeliveryControlador } from '../controlador/pedido/finalizarPedidoDeliveryControlador.js'
 import { EditarPedidoBalcaoControlador } from '../controlador/pedido/editarPedidoBalcaoControlador.js'
 import { criarpedidoExternoControlador } from '../controlador/pedido/criarPedidoExternoControlador.js'
+import { DevolverPedidoExternoControlador } from '../controlador/pedido/devolverPedidoExternoControlador.js'
+import { RelatorioDevolucoesExternoControlador } from '../controlador/pedido/relatorioDevolucoesExternoControlador.js'
 
 const rotas = Router()
 
@@ -127,10 +129,18 @@ rotas.patch(
   new carregarPedidoDeliveryControlador().tratar
 )
 
+// ROTAS ESPECIFICAS PARA DEVOLUÇÃO E RELATÓRIOS EXTERNO
+
 rotas.patch(
-  '/finalizar-pedido-delivery/:uuid',
+  '/pedidos/externo/:id/devolver',
   autenticadorMiddleware,
-  new finalizarPedidoDeliveryControlador().tratar
+  new DevolverPedidoExternoControlador().tratar
+)
+
+rotas.get(
+  '/pedidos/externo/relatorio-devolucoes',
+  autenticadorMiddleware,
+  new RelatorioDevolucoesExternoControlador().tratar
 )
 
 export { rotas as pedidoRotas }

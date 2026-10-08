@@ -1,13 +1,11 @@
 // src/jobs/resumoDiario.js
-import { PrismaClient } from '@prisma/client'
-import { gerarTextoGroq } from '../utilidades/groq.js'
 import { enviarWhatsApp } from '../utilidades/whatsapp.js'
 import { EnviarEmailServico } from '../servico/email/enviarEmailServico.js'
-import { buscarIA } from '../utilidades/openRouter.js'
+import { buscarIA } from '../utilidades/gemini.js'
 import prismaCliente from '../prisma/index.js'
 
 export async function executarResumoDiario() {
-  console.log('[JOB] Iniciando resumo diário...')
+  console.log('[JOB] Iniciando resumo diário com IA (Gemini)...')
 
   const hoje = new Date()
   const inicioDia = new Date(
@@ -51,7 +49,7 @@ export async function executarResumoDiario() {
         }),
       ])
 
-    // 2. Calcula totais
+    // 2. Calcula totais e margens
     const totalBalcao = pedidosBalcao.reduce((acc, p) => acc + p.total, 0)
     const totalDelivery = pedidosDelivery.reduce((acc, p) => acc + p.total, 0)
     const totalExterno = pedidosExterno.reduce((acc, p) => acc + p.total, 0)
@@ -59,22 +57,57 @@ export async function executarResumoDiario() {
     const totalPedidos =
       pedidosBalcao.length + pedidosDelivery.length + pedidosExterno.length
 
-    // Top 3 produtos do dia (todos os setores)
-    const contagemProdutos = {}
-    ;[...pedidosBalcao, ...pedidosDelivery, ...pedidosExterno].forEach(
-      (pedido) => {
-        pedido.itens.forEach((item) => {
-          const nome = item.produto.nome
-          if (!contagemProdutos[nome])
-            contagemProdutos[nome] = { quantidade: 0, total: 0 }
-          contagemProdutos[nome].quantidade += item.quantidade
-          contagemProdutos[nome].total += item.valorTotal
-        })
-      }
-    )
+    if (totalPedidos === 0 && fechamento.length === 0) {
+      console.log('[JOB] Nenhum movimento registrado hoje para envio do resumo.')
+      return
+    }
 
+    const todosPedidos = [
+      ...pedidosBalcao,
+      ...pedidosDelivery,
+      ...pedidosExterno,
+    ]
+
+    let custoTotalEstimado = 0
+    const contagemProdutos = {}
+
+    todosPedidos.forEach((pedido) => {
+      pedido.itens.forEach((item) => {
+        const nome = item.produto.nome
+        const precoCompra = Number(item.produto.precoCompra) || 0
+        const precoVenda = Number(item.valorUnit) || 0
+
+        if (!contagemProdutos[nome]) {
+          contagemProdutos[nome] = {
+            quantidade: 0,
+            total: 0,
+            lucro: 0,
+          }
+        }
+
+        const custoItem = item.quantidade * precoCompra
+        const lucroItem = item.valorTotal - custoItem
+
+        custoTotalEstimado += custoItem
+        contagemProdutos[nome].quantidade += item.quantidade
+        contagemProdutos[nome].total += item.valorTotal
+        contagemProdutos[nome].lucro += lucroItem
+      })
+    })
+
+    const lucroEstimado = totalGeral - custoTotalEstimado
+    const margemMediaLucro =
+      totalGeral > 0 ? (lucroEstimado / totalGeral) * 100 : 0
+
+    // Top 3 produtos mais vendidos
     const topProdutos = Object.entries(contagemProdutos)
       .sort((a, b) => b[1].quantidade - a[1].quantidade)
+      .slice(0, 3)
+      .map(([nome, dados]) => ({ nome, ...dados }))
+
+    // Top 3 produtos mais lucrativos
+    const topLucrativos = Object.entries(contagemProdutos)
+      .sort((a, b) => b[1].lucro - a[1].lucro)
       .slice(0, 3)
       .map(([nome, dados]) => ({ nome, ...dados }))
 
@@ -86,7 +119,7 @@ export async function executarResumoDiario() {
       status: f.diferenca === 0 ? 'exato' : f.diferenca > 0 ? 'sobra' : 'falta',
     }))
 
-    // 3. Monta contexto e envia ao Groq
+    // 3. Monta contexto executivo e envia ao Gemini
     const dataFormatada = hoje.toLocaleDateString('pt-BR', {
       weekday: 'long',
       day: '2-digit',
@@ -95,28 +128,28 @@ export async function executarResumoDiario() {
     })
 
     const prompt = `
-        Você é um assistente de gestão de uma distribuidora de bebidas chamada Amigão Distribuidora.
-        Escreva um resumo diário em português, de forma clara, objetiva e profissional.
-        Use no máximo 5 parágrafos curtos. Não use markdown, apenas texto simples.
-        Inclua emojis sutis para facilitar a leitura.
+Você é um consultor e assistente de gestão executiva da Amigão Distribuidora de Bebidas.
+Escreva um resumo diário em português, com tom profissional, claro, estratégico e direto para os sócios/administradores.
+Use no máximo 4 a 5 parágrafos curtos. Não use markdown pesado, apenas texto simples com emojis pontuais para leitura rápida no WhatsApp/E-mail.
 
-        Data: ${dataFormatada}
+Data: ${dataFormatada}
 
-        Dados do dia:
-        - Total geral vendido: R$ ${totalGeral.toFixed(2)}
-        - Total de pedidos: ${totalPedidos}
-        - Balcão: R$ ${totalBalcao.toFixed(2)} (${pedidosBalcao.length} pedidos)
-        - Delivery: R$ ${totalDelivery.toFixed(2)} (${pedidosDelivery.length} pedidos)
-        - Externo: R$ ${totalExterno.toFixed(2)} (${pedidosExterno.length} pedidos)
-        - Top 3 produtos: ${topProdutos.map((p) => `${p.nome} (${p.quantidade} un.)`).join(', ')}
-        - Fechamentos: ${diferencasCaixa.length === 0 ? 'Nenhum fechamento registrado' : diferencasCaixa.map((d) => `${d.vendedor} (${d.setor}): ${d.status} de R$ ${Math.abs(d.diferenca).toFixed(2)}`).join(', ')}
+📊 Indicadores do Dia:
+- Faturamento Total: R$ ${totalGeral.toFixed(2)} (${totalPedidos} pedidos)
+- Lucro Bruto Estimado: R$ ${lucroEstimado.toFixed(2)} (Margem média: ${margemMediaLucro.toFixed(1)}%)
+- Balcão: R$ ${totalBalcao.toFixed(2)} (${pedidosBalcao.length} pedidos)
+- Delivery: R$ ${totalDelivery.toFixed(2)} (${pedidosDelivery.length} pedidos)
+- Externo: R$ ${totalExterno.toFixed(2)} (${pedidosExterno.length} pedidos)
+- Top 3 Produtos Mais Vendidos: ${topProdutos.map((p) => `${p.nome} (${p.quantidade} un. - R$ ${p.total.toFixed(2)})`).join(', ') || 'Nenhum'}
+- Top 3 Produtos Mais Lucrativos: ${topLucrativos.map((p) => `${p.nome} (Lucro: R$ ${p.lucro.toFixed(2)})`).join(', ') || 'Nenhum'}
+- Fechamento de Caixa: ${diferencasCaixa.length === 0 ? 'Nenhum caixa fechado ainda' : diferencasCaixa.map((d) => `${d.vendedor} (${d.setor}): ${d.status} de R$ ${Math.abs(d.diferenca).toFixed(2)}`).join(', ')}
 
-        Escreva o resumo agora:
-        `.trim()
+Destaque o canal com melhor performance, a saúde da margem e eventuais atenções de caixa. Escreva o resumo agora:
+    `.trim()
 
     const resumo = await buscarIA(prompt)
 
-    // 4. Busca admins com contato cadastrado
+    // 4. Busca admins ativos com e-mail ou WhatsApp
     const admins = await prismaCliente.usuario.findMany({
       where: { nivelAcesso: 'ADMIN', status: true },
       select: { nome: true, email: true, whatsapp: true },
@@ -131,24 +164,21 @@ export async function executarResumoDiario() {
     const assunto = `📊 Resumo do dia — ${hoje.toLocaleDateString('pt-BR')}`
 
     const htmlEmail = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
         <div style="background: #ff8c00; padding: 20px 30px; border-radius: 10px 10px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 20px;">📊 Resumo Diário</h1>
-          <p style="color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 14px;">${dataFormatada}</p>
+          <h1 style="color: white; margin: 0; font-size: 20px;">📊 Resumo Executivo Diário</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 4px 0 0; font-size: 14px;">${dataFormatada}</p>
         </div>
         <div style="background: white; padding: 30px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px;">
           <pre style="font-family: Arial, sans-serif; white-space: pre-wrap; line-height: 1.7; color: #333; font-size: 15px;">${resumo}</pre>
           <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-          <p style="font-size: 12px; color: #aaa; margin: 0;">Amigão Distribuidora de Bebidas — Sistema de Gestão</p>
+          <p style="font-size: 12px; color: #aaa; margin: 0;">Amigão Distribuidora de Bebidas — Sistema de Gestão Central</p>
         </div>
       </div>
     `
 
-    // enviando email e wpps para todos os usuarios que são ADMIN
     for (const admin of admins) {
       if (admin.email) {
-        //await enviarEmail({ para: admin.email, assunto, html: htmlEmail });
-
         const emailServico = new EnviarEmailServico()
         await emailServico.enviarNovoEmail(admin.email, assunto, htmlEmail)
       }
@@ -157,10 +187,8 @@ export async function executarResumoDiario() {
       }
     }
 
-    console.log('[JOB] Resumo diário enviado com sucesso.')
+    console.log('[JOB] Resumo diário processado e enviado com sucesso.')
   } catch (err) {
     console.error('[JOB] Erro no resumo diário:', err.message)
-  } finally {
-    await prismaCliente.$disconnect()
   }
 }

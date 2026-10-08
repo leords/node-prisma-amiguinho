@@ -16,8 +16,6 @@ class ListarOrdemCompraControlador {
       : undefined
     const status = req.query.status ? req.query.status : undefined
 
-    console.log(fornecedorId)
-
     try {
       if (id && isNaN(id)) {
         throw new AppError(

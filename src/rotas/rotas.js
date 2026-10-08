@@ -19,6 +19,12 @@ import { dashboardRotas } from './dashboardRotas.js'
 import { localizacaoRotas } from './localizacao.js'
 import { movimentacaopagamentosEletronicosRotas } from './movimentacaoPagamentosEletronicosRotas.js'
 import { whatsappRotas } from './whatsappRotas.js'
+import { motoristaRotas } from './motoristaRotas.js'
+import { veiculoRotas } from './veiculoRotas.js'
+import { cargaRotas } from './cargaRotas.js'
+import { pendenciaRotas } from './pendenciaRotas.js'
+import { pagamentoRotas } from './pagamentoRotas.js'
+import { descontoRotas } from './descontoRotas.js'
 
 const rotas = Router()
 
@@ -42,5 +48,13 @@ rotas.use(dashboardRotas)
 rotas.use(localizacaoRotas)
 rotas.use(movimentacaopagamentosEletronicosRotas)
 rotas.use(whatsappRotas)
+rotas.use(motoristaRotas)
+rotas.use(veiculoRotas)
+rotas.use(cargaRotas)
+rotas.use(pendenciaRotas)
+rotas.use(pagamentoRotas)
+rotas.use(descontoRotas)
 
 export { rotas }
+
+

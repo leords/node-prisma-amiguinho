@@ -10,8 +10,6 @@ class TicketMedioControlador {
     const dataInicio = req.query.dataInicio ? req.query.dataInicio : undefined
     const dataFim = req.query.dataFim ? req.query.dataFim : undefined
 
-    console.log('Setor ainda no controlador: ', setor)
-
     try {
       const opcoesSetor = ['delivery', 'externo', 'balcao']
 

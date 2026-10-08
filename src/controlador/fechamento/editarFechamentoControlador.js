@@ -17,19 +17,6 @@ class EditarFechamentoControlador {
       nota2,
     } = req.body
 
-    console.log(
-      'DEBUG: ',
-      id,
-      totalSistema,
-      totalInformado,
-      nota200,
-      nota100,
-      nota50,
-      nota20,
-      nota10,
-      nota5,
-      nota2
-    )
 
     try {
       if (!id) {

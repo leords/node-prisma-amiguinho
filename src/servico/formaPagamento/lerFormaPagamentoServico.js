@@ -10,7 +10,7 @@ class LerFormaPagamentoServico {
             in: ['BALCÃO', 'VENDAS'],
           },
           nome: {
-            not: 'BOLETO',
+            notIn: ['BOLETO', 'VALE'],
           },
         },
       })
@@ -29,6 +29,7 @@ class LerFormaPagamentoServico {
           tipo: 'VENDAS',
         },
       })
+
 
       return formas
     } catch (error) {
