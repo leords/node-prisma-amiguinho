@@ -23,29 +23,48 @@ class ProcessarMensagemWhatsAppServico {
         payload.data.message?.conversation ||
         payload.data.message?.extendedTextMessage?.text
 
+      // Prioriza JID que não seja @lid (identidade oculta do WhatsApp)
+      const candidatosJid = [
+        payload.data?.Info?.Sender,
+        payload.data?.Info?.Chat,
+        payload.data?.Info?.RemoteJid,
+        payload.data?.key?.participant,
+        payload.data?.key?.remoteJid,
+      ].filter(Boolean)
+
       const numeroOrigem =
-        payload.data.Info?.Chat ||
-        payload.data.Info?.RemoteJid ||
-        payload.data.key?.remoteJid ||
+        candidatosJid.find((j) => !String(j).endsWith('@lid')) ||
+        candidatosJid[0] ||
         ''
 
       if (!mensagem || !numeroOrigem) return
 
-      const numeroFormatado = numeroOrigem.split('@')[0]
+      // Remove @s.whatsapp.net e sufixos de dispositivo como :14 antes de pegar os dígitos
+      const numeroFormatado = String(numeroOrigem)
+        .split('@')[0]
+        .split(':')[0]
+        .replace(/\D/g, '')
+
       const nomeContato = payload.data.Info?.PushName || 'Colaborador'
 
-      console.log(`[WHATSAPP INTERNO] Mensagem de ${nomeContato} (${numeroFormatado}): "${mensagem}"`)
+      console.log(
+        `[WHATSAPP INTERNO] Mensagem de ${nomeContato} (JID: ${numeroOrigem} | Número: ${numeroFormatado}): "${mensagem}"`
+      )
 
       // 1. Identificação e Autenticação do Colaborador por Telefone
-      const usuario = await this.autenticarColaborador(numeroFormatado)
+      const usuario = await this.autenticarColaborador(numeroOrigem)
 
       if (!usuario) {
+        console.warn(
+          `[WHATSAPP INTERNO] Número ${numeroFormatado} (JID: ${numeroOrigem}) não encontrado ou não autorizado.`
+        )
         await enviarWhatsApp(
           numeroOrigem,
           `⛔ *Canal Interno Exclusivo — Amigão Distribuidora*\n\nOlá, ${nomeContato}! Este número é restrito para uso da equipe interna e vendedores da Amigão Distribuidora.\n\nSe você faz parte da equipe, solicite ao administrador o cadastro do seu número de WhatsApp no sistema.`
         )
         return
       }
+
 
       // 2. Roteamento Inteligente baseado no Nível de Acesso (RBAC)
       const textoLimpo = mensagem.trim().toLowerCase()
@@ -111,7 +130,12 @@ class ProcessarMensagemWhatsAppServico {
    * Localiza o usuário no banco de dados normalizando os dígitos do telefone.
    */
   async autenticarColaborador(numeroRecebido) {
-    const digitosRecebidos = String(numeroRecebido).replace(/\D/g, '')
+    const digitosRecebidos = String(numeroRecebido || '')
+      .split('@')[0]
+      .split(':')[0]
+      .replace(/\D/g, '')
+
+    if (!digitosRecebidos || digitosRecebidos.length < 8) return null
 
     const usuariosAtivos = await prismaCliente.usuario.findMany({
       where: {
@@ -127,18 +151,32 @@ class ProcessarMensagemWhatsAppServico {
       },
     })
 
-    return usuariosAtivos.find((u) => {
-      const digitosUsuario = String(u.whatsapp).replace(/\D/g, '')
-      if (!digitosUsuario) return false
+    const ultimos8Recebido = digitosRecebidos.slice(-8)
 
-      // Compara sufixos de 8 ou 9 dígitos para tolerar DDI 55 ou DDD
-      return (
+    return usuariosAtivos.find((u) => {
+      const digitosUsuario = String(u.whatsapp || '')
+        .split('@')[0]
+        .split(':')[0]
+        .replace(/\D/g, '')
+
+      if (!digitosUsuario || digitosUsuario.length < 8) return false
+
+      const ultimos8Usuario = digitosUsuario.slice(-8)
+
+      // 1. Match exato ou sufixo completo (tolerando DDI 55 ou DDD)
+      if (
+        digitosRecebidos === digitosUsuario ||
         digitosRecebidos.endsWith(digitosUsuario) ||
-        digitosUsuario.endsWith(digitosRecebidos) ||
-        digitosRecebidos.slice(-8) === digitosUsuario.slice(-8)
-      )
+        digitosUsuario.endsWith(digitosRecebidos)
+      ) {
+        return true
+      }
+
+      // 2. Match pelos últimos 8 dígitos (elimina divergência de 9º dígito no WhatsApp)
+      return ultimos8Recebido === ultimos8Usuario
     })
   }
+
 
   // --- Verificadores de Intenção ---
   ehComandoMenu(t) {
