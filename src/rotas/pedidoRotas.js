@@ -129,7 +129,14 @@ rotas.patch(
   new carregarPedidoDeliveryControlador().tratar
 )
 
+rotas.patch(
+  '/finalizar-pedido-delivery/:uuid',
+  autenticadorMiddleware,
+  new finalizarPedidoDeliveryControlador().tratar
+)
+
 // ROTAS ESPECIFICAS PARA DEVOLUÇÃO E RELATÓRIOS EXTERNO
+
 
 rotas.patch(
   '/pedidos/externo/:id/devolver',

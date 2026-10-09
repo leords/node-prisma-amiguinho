@@ -153,6 +153,12 @@ class ProcessarMensagemWhatsAppServico {
 
     const ultimos8Recebido = digitosRecebidos.slice(-8)
 
+    console.log(
+      `[WHATSAPP AUTH] Recebido: "${digitosRecebidos}" (Últimos 8: "${ultimos8Recebido}"). Usuários ativos com WhatsApp no banco (${usuariosAtivos.length}):`,
+      usuariosAtivos.map((u) => `${u.nome} [${u.nivelAcesso}]: ${u.whatsapp}`)
+    )
+
+
     return usuariosAtivos.find((u) => {
       const digitosUsuario = String(u.whatsapp || '')
         .split('@')[0]
